@@ -1,0 +1,15 @@
+module.exports = Object.freeze({
+    USERS_TABLE: "Users",
+    COURSES_TABLE: "Courses",
+    COURSE_CLASS_TABLE: "Course_Classes",
+    SUBMISSIONS_TABLE: "Submissions",
+    COURSEWORK_DETAILS_TABLE: "Coursework_Details",
+    SUBJECTS_TABLE: "Subjects",
+    SUPPORT_DOCUMENTS_TABLE: "Support_Documents",
+    SCHEDULE_SLOTS_TABLE: "Schedule_Slots",
+    SEMESTERS_TABLE: "Semesters",
+    ROOMS_TABLE: "Rooms",
+    CAMPUS_TABLE: "Campus",
+    ROLES_TABLE: "Roles",
+    DEPARTMENTS_TABLE: "Departments",
+})

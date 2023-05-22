@@ -8,6 +8,9 @@ app.use(express.urlencoded({ extended: true }));
 const authController = require("./controller/authController");
 app.use("/auth", authController);
 
+const campusController = require("./controller/campusController");
+app.use("/campus", campusController);
+
 const courseController = require("./controller/courseController");
 app.use("/course", courseController);
 
