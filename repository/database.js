@@ -41,7 +41,7 @@ const fetchDataById = async (collection, id) => {
     }
     return {
         id: snapshot.id,
-        data: snapshot.data(),
+        ...snapshot.data(),
     };
 };
 

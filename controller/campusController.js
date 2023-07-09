@@ -1,7 +1,10 @@
 const express = require("express");
-const { fetchAllData, fetchMatchingDataByField, fetchDataById } = require("../services/database");
+const { fetchAllData, fetchMatchingDataByField } = require("../repository/database");
 const constants = require("../utils/constants");
+const { RoomService } = require("../services/roomService");
 const router = express.Router();
+
+const roomService = new RoomService();
 
 router.get("/", async (req, res) => {
     let docs = await fetchAllData(constants.CAMPUS_TABLE);
@@ -24,15 +27,8 @@ router.get("/room", async (req, res) => {
     let id = req.query.id;
     console.log(id);
     if (id) {
-        let doc = await fetchDataById(constants.ROOMS_TABLE, id);
-        if (doc !== -1) {
-            res.status(200).json(doc);
-        } else {
-            res.status(300).json({
-                msg: "No matching room with ID"
-            })
-        }
-
+        let room = await roomService.getRoomById(id)
+        res.status(300).json(room)
     } else {
         res.status(300).json({
             msg: "No ID was input"

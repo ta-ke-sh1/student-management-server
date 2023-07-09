@@ -1,5 +1,5 @@
 const express = require("express");
-const { fetchAllData } = require("../services/database");
+const { fetchAllData } = require("../repository/database");
 const constants = require("../utils/constants");
 const router = express.Router();
 

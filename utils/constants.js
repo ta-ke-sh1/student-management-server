@@ -9,7 +9,7 @@ module.exports = Object.freeze({
     SCHEDULE_SLOTS_TABLE: "Schedule_Slots",
     SEMESTERS_TABLE: "Semesters",
     ROOMS_TABLE: "Rooms",
-    CAMPUS_TABLE: "Campus",
+    CAMPUS_TABLE: "Campuses",
     ROLES_TABLE: "Roles",
     DEPARTMENTS_TABLE: "Departments",
 })
