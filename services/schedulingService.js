@@ -1,4 +1,4 @@
-const { fetchDataById, addData, deleteData, setData, updateData, fetchMatchingDataByField } = require("../repository/database")
+const { fetchDataById, addData, deleteData, setData, updateData, fetchMatchingDataByField } = require("../repository/firebaseRepository")
 const constants = require("../utils/constants");
 
 const ScheduleService = class {
@@ -12,7 +12,7 @@ const ScheduleService = class {
     }
 
     async getAllSchedules(campus) {
-        const Schedules = await fetchMatchingDataByField(constants.SCHEDULE_SLOTS_TABLE, "campus", campus)
+        const schedules = await fetchMatchingDataByField(constants.SCHEDULE_SLOTS_TABLE, "campus", campus)
         return schedules;
     }
 

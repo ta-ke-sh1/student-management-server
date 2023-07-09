@@ -1,9 +1,19 @@
-const { fetchDataById, addData, deleteData, setData, updateData, fetchMatchingDataByField } = require("../repository/database")
+const { fetchDataById, addData, deleteData, setData, updateData, fetchMatchingDataByField } = require("../repository/firebaseRepository")
 const constants = require("../utils/constants");
 
 const UserService = class {
 
-    async getAllUsers(campus) {
+    async getAllUsersByCampus(campus) {
+        const Users = await fetchMatchingDataByField(constants.USERS_TABLE, "campus", campus)
+        return Users;
+    }
+
+    async getAllUsersByAcademicYear(year) {
+        const Users = await fetchMatchingDataByField(constants.USERS_TABLE, "campus", campus)
+        return Users;
+    }
+
+    async getAllUsersByClassId(classId) {
         const Users = await fetchMatchingDataByField(constants.USERS_TABLE, "campus", campus)
         return Users;
     }

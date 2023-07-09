@@ -1,4 +1,4 @@
-const { fetchDataById, addData, deleteData, setData, updateData, fetchMatchingDataByField } = require("../repository/database")
+const { fetchDataById, addData, deleteData, updateData, fetchMatchingDataByField } = require("../repository/firebaseRepository")
 const constants = require("../utils/constants");
 
 const GradingService = class {
@@ -11,8 +11,18 @@ const GradingService = class {
 
     }
 
-    async getAllGradings(campus) {
-        const Gradings = await fetchMatchingDataByField(constants.SUBMISSIONS_TABLE, "campus", campus)
+    async getAllGradingsByStudentIdAndClassId() {
+        const gradings = await fetchMatchingDataByField(constants.SUBMISSIONS_TABLE, "campus", campus)
+        return gradings;
+    }
+
+    async getAllGradingsByClassId() {
+        const gradings = await fetchMatchingDataByField(constants.SUBMISSIONS_TABLE, "campus", campus)
+        return gradings;
+    }
+
+    async getAllGradingsByCourseId() {
+        const gradings = await fetchMatchingDataByField(constants.SUBMISSIONS_TABLE, "campus", campus)
         return gradings;
     }
 
@@ -37,13 +47,13 @@ const GradingService = class {
                 error: "Invalid Grading id!"
             }
         }
-        let Grading = await fetchDataById(constants.SUBMISSIONS_TABLE, Grading_id);
-        if (Grading === -1) {
+        let grading = await fetchDataById(constants.SUBMISSIONS_TABLE, Grading_id);
+        if (grading === -1) {
             return {
                 error: "Grading does not exist"
             }
         }
-        return Grading;
+        return grading;
     }
 }
 

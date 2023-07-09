@@ -1,4 +1,4 @@
-const { fetchDataById, addData, deleteData, setData, updateData, fetchMatchingDataByField } = require("../repository/database")
+const { fetchDataById, addData, deleteData, setData, updateData, fetchMatchingDataByField } = require("../repository/firebaseRepository")
 const constants = require("../utils/constants");
 
 const RoomService = class {
@@ -11,13 +11,15 @@ const RoomService = class {
 
     }
 
-    async getAllRooms(campus) {
-        const rooms = await fetchMatchingDataByField(constants.ROOMS_TABLE, "campus", campus)
+    async getAllRoomsByCampus(campus) {
+        const rooms = await fetchMatchingDataByField(constants.ROOMS_TABLE, "campusId", campus)
         return rooms;
     }
 
-    async editRoom(room_id, room_obj) {
-        const res = await updateData(constants.ROOMS_TABLE, room_id, room_obj)
+    async editRoom(room_id, data) {
+        const res = await updateData(constants.ROOMS_TABLE, room_id, {
+            data
+        })
         return res;
     }
 
@@ -26,7 +28,10 @@ const RoomService = class {
         return res;
     }
 
-    async addRoom(room_obj) {
+    async addRoom(data) {
+        let room_obj = {
+            ...data
+        }
         const res = await addData(constants.ROOMS_TABLE, room_obj)
         return res;
     }

@@ -1,5 +1,5 @@
 const express = require("express");
-const { fetchAllData, fetchMatchingDataByField } = require("../repository/database");
+const { fetchAllData, fetchMatchingDataByField } = require("../repository/firebaseRepository");
 const constants = require("../utils/constants");
 const { RoomService } = require("../services/roomService");
 const router = express.Router();
@@ -11,36 +11,48 @@ router.get("/", async (req, res) => {
     res.status(200).json(docs);
 });
 
+router.post("/", async (req, res) => {
+
+});
+
+router.delete("/", async (req, res) => {
+
+});
+
+router.put("/", async (req, res) => {
+
+});
+
 router.get("/:id/room", async (req, res) => {
     let id = req.params['id'];
-    let docs = await fetchMatchingDataByField(constants.ROOMS_TABLE, 'campusId', id)
-    if (docs === -1) {
-        res.status(300).json({
-            msg: "This campus has no room"
-        })
-    } else {
-        res.status(200).json(docs);
-    }
+    let rooms = await roomService.getAllRoomsByCampus(id)
+    res.status(200).json(rooms);
 });
 
 router.get("/room", async (req, res) => {
     let id = req.query.id;
-    console.log(id);
-    if (id) {
-        let room = await roomService.getRoomById(id)
-        res.status(300).json(room)
-    } else {
-        res.status(300).json({
-            msg: "No ID was input"
-        })
-    }
-
+    let room = await roomService.getRoomById(id)
+    res.status(200).json(room)
 })
 
-router.post("/", async (req, res) => { });
+router.post("/:id/room", async (req, res) => {
+    let id = req.query.id;
+    let payload = { id, ...req.body }
+    let room = await roomService.addRoom()
+    res.status(200).json(room)
+})
 
-router.delete("/", async (req, res) => { });
+router.put("/room", async (req, res) => {
+    let id = req.query.id;
+    let room = await roomService.getRoomById(id)
+    res.status(200).json(room)
+})
 
-router.put("/", async (req, res) => { });
+router.delete("/room", async (req, res) => {
+    let id = req.query.id;
+    let room = await roomService.getRoomById(id)
+    res.status(200).json(room)
+})
+
 
 module.exports = router;
