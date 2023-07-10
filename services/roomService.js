@@ -1,55 +1,78 @@
-const { fetchDataById, addData, deleteData, setData, updateData, fetchMatchingDataByField } = require("../repository/firebaseRepository")
+const {
+    fetchDataById,
+    addData,
+    deleteData,
+    setData,
+    updateData,
+    fetchMatchingDataByField,
+} = require("../repository/firebaseRepository");
+const RoomRepository = require("../repository/roomBookingRepository");
 const constants = require("../utils/constants");
 
+const roomRepository = new RoomRepository();
+
 const RoomService = class {
-
-    async validRoom() {
-
-    }
-
-    async reserveRoom() {
-
+    async reserveRoom(data) {
+        let slot = {
+            subject: data.subject_id,
+            room: data.room_id,
+            date: data.date,
+            slot: data.slot,
+            lecture: data.lecture_id,
+            class: data.class_id,
+        };
+        if (utils.isNonEmptyObject(slot)) {
+            return {
+                error: "Invalid object: contains null",
+            };
+        } else {
+            return roomRepository.bookRoom(slot);
+        }
     }
 
     async getAllRoomsByCampus(campus) {
-        const rooms = await fetchMatchingDataByField(constants.ROOMS_TABLE, "campusId", campus)
+        const rooms = await fetchMatchingDataByField(
+            constants.ROOMS_TABLE,
+            "campusId",
+            campus
+        );
         return rooms;
     }
 
     async editRoom(room_id, data) {
         const res = await updateData(constants.ROOMS_TABLE, room_id, {
-            data
-        })
+            data,
+        });
         return res;
     }
 
     async deleteRoom(room_id) {
-        const res = await deleteData(constants.ROOMS_TABLE, room_id)
+        const res = await deleteData(constants.ROOMS_TABLE, room_id);
         return res;
     }
 
     async addRoom(data) {
         let room_obj = {
-            ...data
-        }
-        const res = await addData(constants.ROOMS_TABLE, room_obj)
+            ...data,
+        };
+        const res = await addData(constants.ROOMS_TABLE, room_obj);
         return res;
     }
 
     async getRoomById(room_id) {
         if (!room_id) {
             return {
-                error: "Invalid room id!"
-            }
+                error: "Invalid room id!",
+            };
         }
         let room = await fetchDataById(constants.ROOMS_TABLE, room_id);
         if (room === -1) {
             return {
-                error: "Room does not exist"
-            }
+                error: "Room does not exist",
+            };
         }
         return room;
     }
-}
+};
 
-module.exports = { RoomService }
+module.exports = RoomService;

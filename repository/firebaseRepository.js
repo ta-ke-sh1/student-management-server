@@ -3,35 +3,28 @@ const { initializeApp } = require("firebase-admin/app");
 const { getFirestore } = require("firebase-admin/firestore");
 
 const firebaseConfig = {
-    "type": process.env.PROJECT_TYPE,
-    "project_id": process.env.PROJECT_ID,
-    "private_key_id": process.env.PRIVATE_KEY_ID,
-    "private_key": process.env.PRIVATE_KEY,
-    "client_email": process.env.CLIENT_EMAIL,
-    "client_id": process.env.CLIENT_ID,
-    "auth_uri": process.env.AUTH_URI,
-    "token_uri": process.env.TOKEN_URI,
-    "auth_provider_x509_cert_url": process.env.AUTH_PROVIDER_X509_CERT_URL,
-    "client_x509_cert_url": process.env.CLIENT_X509_CERT_URL,
-    "universe_domain": process.env.UNIVERSE_DOMAIN
+    type: process.env.PROJECT_TYPE,
+    project_id: process.env.PROJECT_ID,
+    private_key_id: process.env.PRIVATE_KEY_ID,
+    private_key: process.env.PRIVATE_KEY,
+    client_email: process.env.CLIENT_EMAIL,
+    client_id: process.env.CLIENT_ID,
+    auth_uri: process.env.AUTH_URI,
+    token_uri: process.env.TOKEN_URI,
+    auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_X509_CERT_URL,
+    client_x509_cert_url: process.env.CLIENT_X509_CERT_URL,
+    universe_domain: process.env.UNIVERSE_DOMAIN,
 };
 
 initializeApp({
-    credential: admin.credential.cert(firebaseConfig)
+    credential: admin.credential.cert(firebaseConfig),
 });
 
 const db = getFirestore();
 
 const fetchAllData = async (collection) => {
-    let res = [];
     const snapshot = await db.collection(collection).get();
-    snapshot.forEach((doc) => {
-        res.push({
-            id: doc.id,
-            data: doc.data(),
-        });
-    });
-    return res;
+    return snapshotToArray(snapshot);
 };
 
 const fetchDataById = async (collection, id) => {
@@ -47,18 +40,11 @@ const fetchDataById = async (collection, id) => {
 
 const fetchMatchingDataByField = async (collection, field, keyword) => {
     const docRef = db.collection(collection);
-    const docs = await docRef.where(field, "==", keyword).get();
-    if (docs.empty) {
+    const snapshot = await docRef.where(field, "==", keyword).get();
+    if (snapshot.empty) {
         return -1;
     }
-    let res = [];
-    docs.forEach((doc) => {
-        res.push({
-            id: doc.id,
-            data: doc.data(),
-        });
-    });
-    return res;
+    return snapshotToArray(snapshot);
 };
 
 const addData = async (collection, obj) => {
@@ -89,6 +75,17 @@ const deleteData = async (collection, id) => {
     };
 };
 
+const snapshotToArray = async (snapshot) => {
+    let docs = [];
+    snapshot.forEach((doc) => {
+        docs.push({
+            id: doc.id,
+            ...doc.data(),
+        });
+    });
+    return docs;
+};
+
 module.exports = {
     fetchAllData,
     fetchDataById,
@@ -97,4 +94,5 @@ module.exports = {
     setData,
     updateData,
     deleteData,
+    snapshotToArray,
 };
