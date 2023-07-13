@@ -8,12 +8,10 @@ router.get("/", async (req, res) => {
     res.status(200).send(users);
 });
 
-router.post("/", (req, res) => {
+router.post("/", (req, res) => {});
 
-});
+router.delete("/", (req, res) => {});
 
-router.delete("/", (req, res) => { });
-
-router.put("/", (req, res) => { });
+router.put("/", (req, res) => {});
 
 module.exports = router;

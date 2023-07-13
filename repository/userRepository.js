@@ -25,4 +25,6 @@ module.exports = class UserRepository {
             department_id: user.department_id,
         });
     }
+
+    async updateAvatar(user, avatar) {}
 };

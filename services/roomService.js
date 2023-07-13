@@ -30,7 +30,7 @@ const RoomService = class {
         }
     }
 
-    async getAllRoomsByCampus(campus) {
+    async fetchAllRoomsByCampus(campus) {
         const rooms = await fetchMatchingDataByField(
             constants.ROOMS_TABLE,
             "campusId",
@@ -59,7 +59,7 @@ const RoomService = class {
         return res;
     }
 
-    async getRoomById(room_id) {
+    async fetchRoomById(room_id) {
         if (!room_id) {
             return {
                 error: "Invalid room id!",

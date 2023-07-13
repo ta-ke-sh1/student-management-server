@@ -12,7 +12,7 @@ const Utils = require("../utils/utils");
 const utils = new Utils();
 
 const CampusService = class {
-    async getAllCampus() {
+    async fetchAllCampus() {
         const campuses = await fetchAllData(constants.CAMPUS_TABLE);
         return campuses;
     }
@@ -43,7 +43,7 @@ const CampusService = class {
         return res;
     }
 
-    async getCampusById(Campus_id) {
+    async fetchCampusById(Campus_id) {
         if (!Campus_id) {
             return {
                 error: "Invalid Campus id!",

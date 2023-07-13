@@ -1,7 +1,13 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
+const cors = require("cors");
 
+app.use(
+    cors({
+        origin: process.env.CLIENT_URL,
+    })
+);
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: true }));
 
@@ -25,6 +31,9 @@ app.use("/subject", subjectController);
 
 const userController = require("./controller/userController");
 app.use("/user", userController);
+
+const requestController = require("./controller/requestController");
+app.use("/request", requestController);
 
 // Homepage
 app.get("/", async (req, res) => {
