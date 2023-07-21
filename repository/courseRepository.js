@@ -1,7 +1,57 @@
 const constants = require("../utils/constants");
-const { addData, deleteData, updateData } = require("./firebaseRepository");
+const {
+    addData,
+    deleteData,
+    updateData,
+    fetchMatchingDataByField,
+    fetchAllData,
+} = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
+    constructor() {}
+
+    async fetchCourseRegistrationByCampusId(campus_id) {
+        return [
+            {
+                id: "HdYSObbNePFj5uF7MtNj",
+                className: "TCH2101",
+                courseId: "1680",
+                courseName: "Design Pattern",
+                teacher: "Doan Tran Tung",
+                campus_id: "HaNoi",
+            },
+            {
+                id: "1dYSObbNePFj5uF7MtNj",
+                className: "TCH2101",
+                courseId: "1686",
+                courseName: "Advanced Computing",
+                teacher: "Doan Tran Tung",
+                campus_id: "HaNoi",
+            },
+            {
+                id: "2dYSObbNePFj5uF7MtNj",
+                className: "TCH2101",
+                courseId: "1520",
+                courseName: "Cloud Computing",
+                teacher: "Doan Tran Tung",
+                campus_id: "HaNoi",
+            },
+            {
+                id: "3dYSObbNePFj5uF7MtNj",
+                className: "TCH2101",
+                courseId: "1540",
+                courseName: "Research Methodologies",
+                teacher: "Doan Tran Tung",
+                campus_id: "HaNoi",
+            },
+        ];
+        // return await fetchMatchingDataByField(
+        //     constants.COURSES_TABLE,
+        //     "campus_id",
+        //     campus_id
+        // );
+    }
+
     async submitCourseworkSubmission(coursework) {
         return await addData(constants.SUBMISSIONS_TABLE, coursework);
     }
