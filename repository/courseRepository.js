@@ -8,7 +8,7 @@ const {
 } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
-    constructor() {}
+    constructor () { }
 
     async fetchCourseRegistrationByCampusId(campus_id) {
         return [
@@ -19,6 +19,7 @@ module.exports = class CourseRepostory {
                 courseName: "Design Pattern",
                 teacher: "Doan Tran Tung",
                 campus_id: "HaNoi",
+                semester: "Fall_2022"
             },
             {
                 id: "1dYSObbNePFj5uF7MtNj",
@@ -27,6 +28,7 @@ module.exports = class CourseRepostory {
                 courseName: "Advanced Computing",
                 teacher: "Doan Tran Tung",
                 campus_id: "HaNoi",
+                semester: "Fall_2022"
             },
             {
                 id: "2dYSObbNePFj5uF7MtNj",
@@ -35,6 +37,7 @@ module.exports = class CourseRepostory {
                 courseName: "Cloud Computing",
                 teacher: "Doan Tran Tung",
                 campus_id: "HaNoi",
+                semester: "Summer_2022"
             },
             {
                 id: "3dYSObbNePFj5uF7MtNj",
@@ -43,6 +46,7 @@ module.exports = class CourseRepostory {
                 courseName: "Research Methodologies",
                 teacher: "Doan Tran Tung",
                 campus_id: "HaNoi",
+                semester: "Spring_2022"
             },
         ];
         // return await fetchMatchingDataByField(
@@ -68,5 +72,5 @@ module.exports = class CourseRepostory {
         return await updateData(constants.COURSES_TABLE, course.id, {});
     }
 
-    async uploadSubmission(course, submissionFile) {}
+    async uploadSubmission(course, submissionFile) { }
 };
