@@ -1,4 +1,5 @@
 const express = require("express");
+const { json } = require("express");
 const app = express();
 require("dotenv").config();
 const cors = require("cors");
@@ -6,8 +7,12 @@ const cors = require("cors");
 app.use(
     cors({
         origin: process.env.CLIENT_URL,
+        methods: ["GET", "POST", "UPDATE", "DELETE", "PUT"],
     })
 );
+
+app.use(json());
+
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: true }));
 

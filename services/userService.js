@@ -65,6 +65,19 @@ const UserService = class {
         }
         return user;
     }
+
+    async fetchUserByUsername(username) {
+        if (!username) {
+            return {
+                error: "Invalid User id!",
+            };
+        }
+        let user = await fetchMatchingDataByField(constants.USERS_TABLE, "username", username);
+        if (user === -1) {
+            return false;
+        }
+        return user;
+    }
 };
 
 module.exports = { UserService };
