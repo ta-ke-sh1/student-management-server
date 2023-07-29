@@ -33,7 +33,7 @@ const RoomService = class {
     async fetchAllRoomsByCampus(campus) {
         const rooms = await fetchMatchingDataByField(
             constants.ROOMS_TABLE,
-            "campusId",
+            "campus",
             campus
         );
         return rooms;

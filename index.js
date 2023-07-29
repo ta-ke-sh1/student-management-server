@@ -45,6 +45,14 @@ app.get("/", async (req, res) => {
     res.status(200).json({ msg: "Hello world!" });
 });
 
+const MockService = require("./services/mockService");
+
+app.get("/mock", async (req, res) => {
+    const mockService = new MockService()
+    await mockService.AddUser();
+    res.status(200).json({});
+})
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);
 console.log("Server is running! " + PORT);

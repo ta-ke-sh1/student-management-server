@@ -87,6 +87,7 @@ const snapshotToArray = async (snapshot) => {
 };
 
 module.exports = {
+    db,
     fetchAllData,
     fetchDataById,
     fetchMatchingDataByField,

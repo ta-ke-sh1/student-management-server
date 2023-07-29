@@ -28,11 +28,11 @@ router.delete("/", async (req, res) => {
     res.status(200).json(result);
 });
 
-router.put("/", async (req, res) => {});
+router.put("/", async (req, res) => { });
 
-router.get("/:id/room", async (req, res) => {
-    let id = req.params["id"];
-    let rooms = await roomService.getAllRoomsByCampus(id);
+router.get("/rooms", async (req, res) => {
+    let id = req.query.id;
+    let rooms = await roomService.fetchAllRoomsByCampus(id);
     res.status(200).json(rooms);
 });
 
