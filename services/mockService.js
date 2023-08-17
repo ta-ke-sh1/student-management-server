@@ -5,6 +5,22 @@ const { uniqueNamesGenerator, names } = require('unique-names-generator');
 const utils = new Utils()
 module.exports = class MockService {
 
+    async AddRegistration() {
+
+        const batch = db.batch()
+
+        let semester = "Spring"
+        let year = "2023"
+        let subjects = ['1618', '1619', '1622', '1633', '1690', '1644', '1649', '1641', '1647']
+
+
+        for (let i = 0; i < subjects.length; i++) {
+
+        }
+
+        await batch.commit();
+    }
+
     async AddUser() {
         let departments = [
             "GDH", "GCH", "GBH", "GFH", "GMH"
