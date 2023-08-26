@@ -2,13 +2,14 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const CourseService = require("../services/courseService");
+const fs = require("fs");
 
 const courseService = new CourseService();
 
 const uploader = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
-            var dir = path.resolve() + "/courses" + req.path;
+            var dir = path.resolve() + "/asset/submissions" + req.path;
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir);
             }
@@ -46,9 +47,22 @@ router.delete("/", (req, res) => {});
 
 router.put("/", (req, res) => {});
 
-router.get("/student", (req, res) => {
+router.get("/student", async (req, res) => {
+    console.log(req.query);
+
+    let semester = req.query.semester;
+    let user_id = req.query.id;
+    let course_id = req.query.course;
+
+    let course = await courseService.fetchCourseByUserIdAndCourseId(
+        semester,
+        user_id,
+        course_id
+    );
+
     res.status(200).json({
         message: "Hello World! Course controller",
+        course: course,
     });
 });
 
