@@ -5,21 +5,51 @@ const {
     updateData,
     fetchMatchingDataByField,
     fetchAllData,
+    db,
+    snapshotToArray,
+    fetchDataById,
 } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
-    constructor () { }
+    constructor() {}
 
-    async fetchCourseRegistrationByCampusId(campus_id) {
+    async fetchCourseRegistrationByStudentIdAndSemester(semester, studentId) {
+        let res = [];
+
+        let studentCourses = await db
+            .collection(constants.COURSES_REGISTRATION_TABLE)
+            .where("semester", "==", semester)
+            .where("studentId", "==", studentId)
+            .get();
+
+        studentCourses.forEach(async (course) => {
+            let teacher = await fetchDataById(
+                constants.USERS_TABLE,
+                course.teacherId
+            );
+
+            res.push({
+                id: course.id,
+                className: course.classId,
+                courseId: course.id,
+                courseName: course.name,
+                teacher: teacher.lastName + " " + teacher.firstName,
+                campusId: "HaNoi",
+                semester: semester,
+                studentId: studentId,
+            });
+        });
+
         return [
             {
                 id: "HdYSObbNePFj5uF7MtNj",
                 className: "TCH2101",
                 courseId: "1680",
                 courseName: "Design Pattern",
-                teacher: "Doan Tran Tung",
-                campus_id: "HaNoi",
-                semester: "Fall_2022"
+                teacher: teacher.lastName + " " + teacher.firstName,
+                campusId: "HaNoi",
+                semester: "Fall_2022",
+                studentId: studentId,
             },
             {
                 id: "1dYSObbNePFj5uF7MtNj",
@@ -27,8 +57,9 @@ module.exports = class CourseRepostory {
                 courseId: "1686",
                 courseName: "Advanced Computing",
                 teacher: "Doan Tran Tung",
-                campus_id: "HaNoi",
-                semester: "Fall_2022"
+                campusId: "HaNoi",
+                semester: "Fall_2022",
+                studentId: studentId,
             },
             {
                 id: "2dYSObbNePFj5uF7MtNj",
@@ -36,8 +67,9 @@ module.exports = class CourseRepostory {
                 courseId: "1520",
                 courseName: "Cloud Computing",
                 teacher: "Doan Tran Tung",
-                campus_id: "HaNoi",
-                semester: "Summer_2022"
+                campusId: "HaNoi",
+                semester: "Summer_2022",
+                studentId: studentId,
             },
             {
                 id: "3dYSObbNePFj5uF7MtNj",
@@ -45,15 +77,30 @@ module.exports = class CourseRepostory {
                 courseId: "1540",
                 courseName: "Research Methodologies",
                 teacher: "Doan Tran Tung",
-                campus_id: "HaNoi",
-                semester: "Spring_2022"
+                campusId: "HaNoi",
+                semester: "Spring_2022",
+                studentId: studentId,
             },
         ];
         // return await fetchMatchingDataByField(
         //     constants.COURSES_TABLE,
-        //     "campus_id",
-        //     campus_id
+        //     "campusId",
+        //     campusId
         // );
+    }
+
+    async fetchCourseByUserIdAndCourseId(semester, user_id, course_id) {
+        // let data = await db
+        //     .collection(constants.COURSES_REGISTRATION_TABLE)
+        //     .where("semester", "==", semester)
+        //     .where("user_id", "==", user_id)
+        //     .where("course_id", "==", course_id)
+        //     .get();
+
+        // return snapshotToArray(data)[0];
+        return {
+            test: "Mocking",
+        };
     }
 
     async submitCourseworkSubmission(coursework) {
@@ -72,5 +119,16 @@ module.exports = class CourseRepostory {
         return await updateData(constants.COURSES_TABLE, course.id, {});
     }
 
-    async uploadSubmission(course, submissionFile) { }
+    async uploadSubmission(course, submissionFile) {}
+
+    async fetchScheduleByDateAndRoom(date, room, user_id) {
+        // let data = await db
+        //     .collection(constants.SCHEDULE_SLOTS_TABLE)
+        //     .where("date", "==", date)
+        //     .where("room", "==", room)
+        //     .where("user_id", "==", user_id)
+        //     .get();
+        // return snapshotToArray(data);
+        return [];
+    }
 };

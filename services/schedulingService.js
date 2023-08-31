@@ -1,3 +1,4 @@
+const CourseRepostory = require("../repository/courseRepository");
 const {
     fetchDataById,
     addData,
@@ -8,8 +9,17 @@ const {
 } = require("../repository/firebaseRepository");
 const constants = require("../utils/constants");
 
+const courseRepository = new CourseRepostory();
+
 const ScheduleService = class {
-    async validSchedule() {}
+    async validSchedule(date, room, user_id) {
+        let slot = courseRepository.fetchScheduleByDateAndRoom(
+            date,
+            room,
+            user_id
+        );
+        return slot.length === 0;
+    }
 
     async reserveSchedule() {}
 

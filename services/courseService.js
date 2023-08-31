@@ -22,13 +22,14 @@ module.exports = class CourseService {
 
     async fetchCourseByClassAndId(course_id, class_id) {}
 
-    async fetchCourseByTeacherId(teacher_id) {}
-
-    async fetchCourseByStudentId(student_id) {}
-
-    async fetchClassByStudentId(student_id) {}
-
-    async fetchClassByTeacherId(teacher_id) {}
+    async fetchCourseByUserIdAndCourseId(semester, user_id, course_id) {
+        let course = await this.courseRepository.fetchCourseByUserIdAndCourseId(
+            semester,
+            user_id,
+            course_id
+        );
+        return course;
+    }
 
     async fetchClassBySemester(semester, course_id, class_id) {}
 
