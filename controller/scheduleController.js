@@ -11,43 +11,55 @@ router.get("/", (req, res) => {
         {
             id: "1",
             date: 1689220135000,
-            subjectId: "JL5UFScLPrRD8eOnkZfE",
-            roomId: "ajyuWACqUBQcYmHv7DJS",
+            class: "GCH0902",
+            status: 1,
+            subject: "1650",
+            room: "G405",
             slot: 1,
             notes: "",
+            lecturer: "tungdt",
         },
         {
             id: "2",
             date: 1689220135000,
-            subjectId: "JL5UFScLPrRD8eOnkZfE",
-            roomId: "ajyuWACqUBQcYmHv7DJS",
+            class: "GCH0902",
+            status: 1,
+            subject: "1650",
+            room: "G405",
             slot: 2,
             notes: "",
+            lecturer: "tungdt",
         },
         {
             id: "3",
             date: 1689120135000,
-            subjectId: "2HH5V7OkgUzqBYf1HcOK",
-            roomId: "ajyuWACqUBQcYmHv7DJS",
+            class: "GCH0902",
+            status: 0,
+            subject: "1649",
+            room: "G407",
             slot: 3,
             notes: "",
+            lecturer: "tungdt",
         },
         {
             id: "4",
             date: 1689120135000,
-            subjectId: "2HH5V7OkgUzqBYf1HcOK",
-            roomId: "ajyuWACqUBQcYmHv7DJS",
+            class: "GCH0902",
+            status: -1,
+            subject: "1649",
+            room: "G407",
             slot: 4,
             notes: "",
+            lecturer: "tungdt",
         },
     ];
     res.status(200).json(schedules);
 });
 
-router.post("/", (req, res) => {});
+router.post("/", (req, res) => { });
 
-router.delete("/", (req, res) => {});
+router.delete("/", (req, res) => { });
 
-router.put("/", (req, res) => {});
+router.put("/", (req, res) => { });
 
 module.exports = router;

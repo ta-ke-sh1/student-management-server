@@ -3,17 +3,19 @@ const jwt = require("jsonwebtoken")
 
 module.exports = class AuthService {
 
-    constructor () {
+    constructor() {
         this.userService = new UserService();
     }
 
     authenticate = async (username, password) => {
-        let user = await this.userService.fetchUserByUsername(username)
-        if (!user) {
+        let res = await this.userService.fetchUserByUsername(username)
+        if (res.length === 0) {
             return {
                 error: "User does not exists!"
             }
         }
+
+        const user = res[0]
 
         if (user.password !== password) {
             return {
