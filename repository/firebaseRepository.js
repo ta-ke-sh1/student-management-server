@@ -69,10 +69,12 @@ const updateData = async (collection, id, obj) => {
 };
 
 const deleteData = async (collection, id) => {
-    await db.collection(collection).doc(id).delete();
-    return {
-        msg: "Deleted data with ID: " + id,
-    };
+    try {
+        await db.collection(collection).doc(id).delete();
+        return true;
+    } catch (e) {
+        return false;
+    }
 };
 
 const snapshotToArray = async (snapshot) => {

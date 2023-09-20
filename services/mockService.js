@@ -65,6 +65,8 @@ module.exports = class MockService {
 
         const batch = db.batch()
 
+        let capacity = [40, 50, 30, 100]
+
         for (let i = 1; i <= 4; i++) {
             for (let j = 0; j < 20; j++) {
                 let index = i * 100 + j;
@@ -72,7 +74,8 @@ module.exports = class MockService {
                 batch.set(ref, {
                     room: index.toString(),
                     building: "Pham Van Bach",
-                    campus: "HN"
+                    campus: "HN",
+                    capacity: capacity[utils.randomIntWithinRange(0, 3)]
                 })
             }
         }
@@ -84,7 +87,8 @@ module.exports = class MockService {
                 batch.set(ref, {
                     room: index.toString(),
                     building: "Block A",
-                    campus: "HCM"
+                    campus: "HCM",
+                    capacity: capacity[utils.randomIntWithinRange(0, 3)]
                 })
             }
         }
@@ -96,7 +100,8 @@ module.exports = class MockService {
                 batch.set(ref, {
                     room: index.toString(),
                     building: "Block B",
-                    campus: "HCM"
+                    campus: "HCM",
+                    capacity: capacity[utils.randomIntWithinRange(0, 3)]
                 })
             }
         }

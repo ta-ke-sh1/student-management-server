@@ -41,7 +41,7 @@ const RoomService = class {
 
     async editRoom(room_id, data) {
         const res = await updateData(constants.ROOMS_TABLE, room_id, {
-            data,
+            ...data
         });
         return res;
     }
@@ -52,10 +52,7 @@ const RoomService = class {
     }
 
     async addRoom(data) {
-        let room_obj = {
-            ...data,
-        };
-        const res = await addData(constants.ROOMS_TABLE, room_obj);
+        const res = await setData(constants.ROOMS_TABLE, "Room-" + data.campus + "-" + data.building + "-" + data.number, data)
         return res;
     }
 
