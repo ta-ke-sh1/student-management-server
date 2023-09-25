@@ -11,7 +11,18 @@ const {
 } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
-    constructor() {}
+    constructor() { }
+
+    async fetchGroupsByProgrammeAndTerm(programme, term) {
+        let data = await db.collection(constants.PROGRAMME_TABLE)
+            .doc(programme)
+            .collection(constants.TERMS_TABLE)
+            .doc(term)
+            .collection(constants.CLASS_TABLE)
+            .get();
+
+        return snapshotToArray(data);
+    }
 
     async fetchCourseRegistrationByStudentIdAndSemester(semester, studentId) {
         let res = [];
@@ -119,7 +130,7 @@ module.exports = class CourseRepostory {
         return await updateData(constants.COURSES_TABLE, course.id, {});
     }
 
-    async uploadSubmission(course, submissionFile) {}
+    async uploadSubmission(course, submissionFile) { }
 
     async fetchScheduleByDateAndRoom(date, room, user_id) {
         // let data = await db

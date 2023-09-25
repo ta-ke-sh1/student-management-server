@@ -8,39 +8,48 @@ module.exports = class AuthService {
     }
 
     authenticate = async (username, password) => {
-        let res = await this.userService.fetchUserByUsername(username)
-        if (res.length === 0) {
-            return {
-                error: "User does not exists!"
+        try {
+            let res = await this.userService.fetchUserByUsername(username)
+            if (res.length === 0) {
+                return {
+                    error: "User does not exists!"
+                }
             }
-        }
 
-        const user = res[0]
+            const user = res[0]
 
-        if (user.password !== password) {
-            return {
-                error: "Incorrect password!"
+            console.log(user)
+            if (user.password !== password) {
+                return {
+                    error: "Incorrect password!"
+                }
             }
-        }
 
-        var access_token = jwt.sign({
-            avatar: user.avatar,
-            user: username,
-            email: user.email,
-            role: user.role,
-        }, process.env.JWT_SECRET_KEY, {
-            expiresIn: "1d"
-        })
+            var access_token = jwt.sign({
+                avatar: user.avatar,
+                user: username,
+                email: user.email,
+                role: user.role,
+            }, process.env.JWT_SECRET_KEY, {
+                expiresIn: "1d"
+            })
 
-        var refresh_token = jwt.sign({
-            user: user.id
-        }, process.env.JWT_SECRET_KEY, {
-            expiresIn: "2d"
-        })
+            var refresh_token = jwt.sign({
+                user: user.id
+            }, process.env.JWT_SECRET_KEY, {
+                expiresIn: "2d"
+            })
 
-        return {
-            accessToken: "Bearer " + access_token,
-            refreshToken: "Bearer " + refresh_token,
+            return {
+                status: true,
+                accessToken: "Bearer " + access_token,
+                refreshToken: "Bearer " + refresh_token,
+            }
+        } catch (e) {
+            return {
+                status: false,
+                error: e
+            }
         }
     }
 

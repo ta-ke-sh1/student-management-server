@@ -12,6 +12,37 @@ const constants = require("../utils/constants");
 const courseRepository = new CourseRepostory();
 
 const ScheduleService = class {
+
+    async fetchGroupsByProgrammeAndTerm(programme, term) {
+        try {
+            let groups = await courseRepository.fetchGroupsByProgrammeAndTerm(programme, term)
+            return {
+                status: true,
+                data: groups
+            }
+        } catch (e) {
+            return {
+                status: false,
+                error: e
+            }
+        }
+    }
+
+    async addGroup(programme, term, group) {
+        try {
+            let groups = await courseRepository.fetchGroupsByProgrammeAndTerm(programme, term)
+            return {
+                status: true,
+                data: groups
+            }
+        } catch (e) {
+            return {
+                status: false,
+                error: e
+            }
+        }
+    }
+
     async validSchedule(date, room, user_id) {
         let slot = courseRepository.fetchScheduleByDateAndRoom(
             date,
@@ -21,7 +52,7 @@ const ScheduleService = class {
         return slot.length === 0;
     }
 
-    async reserveSchedule() {}
+    async reserveSchedule() { }
 
     async fetchAllSchedules(campus) {
         const schedules = await fetchMatchingDataByField(
