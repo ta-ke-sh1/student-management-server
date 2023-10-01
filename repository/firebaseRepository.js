@@ -38,7 +38,7 @@ const fetchDataById = async (collection, id) => {
     };
 };
 
-const fetchMatchingDataByField = async (collection, field, keyword) => {
+const fetchMatchingDataByField = async (collection, field, keyword) => { // search where ... = ....
     const docRef = db.collection(collection);
     const snapshot = await docRef.where(field, "==", keyword).get();
     if (snapshot.empty) {

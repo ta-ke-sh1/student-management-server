@@ -26,7 +26,7 @@ module.exports = class MockService {
             "GDH", "GCH", "GBH", "GFH", "GMH"
         ]
         const batch = db.batch()
-        for (let i = 1; i <= 200; i++) {
+        for (let i = 1; i <= 10; i++) {
 
             let firstName = uniqueNamesGenerator({
                 dictionaries: [names],

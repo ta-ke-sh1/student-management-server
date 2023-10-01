@@ -45,7 +45,9 @@ router.post("/", async (req, res) => {
     res.status(200).json({ result: response.msg });
 });
 
-router.delete("/", (req, res) => {});
+router.delete("/", (req, res) => {
+    
+});
 
 router.put("/", async (req, res) => {
     const id = req.query.id;

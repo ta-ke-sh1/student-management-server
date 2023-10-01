@@ -54,15 +54,31 @@ const schedules = [
 router.get("/", async (req, res) => {
     console.log(req.query)
     // const schedules = scheduleService.fetchAllSchedules(campus);
-
-    const groups = await scheduleService.fetchGroupsByProgrammeAndTerm(req.query.programme, req.query.term)
-
-    console.log(groups)
-
-    res.status(200).json(groups);
+    try {
+        const groups = await scheduleService.fetchGroupsByProgrammeAndTerm(req.query.programme, req.query.term, req.query.department)
+        console.log(groups)
+        res.status(200).json(groups);
+    } catch (e) {
+        res.status(300).json({
+            status: false,
+            error: e
+        })
+    }
 });
 
-router.post("/", (req, res) => { });
+router.post("/", async (req, res) => {
+    try {
+        console.log(req.body)
+        const result = await scheduleService.addGroup(req.body)
+        res.status(200).json(result)
+
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            error: e
+        })
+    }
+});
 
 router.delete("/", (req, res) => { });
 

@@ -8,20 +8,55 @@ const {
     db,
     snapshotToArray,
     fetchDataById,
+    setData,
 } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
     constructor() { }
 
-    async fetchGroupsByProgrammeAndTerm(programme, term) {
-        let data = await db.collection(constants.PROGRAMME_TABLE)
+    async fetchGroupsByProgrammeAndTermAndDepartment(programme, term, department) {
+        let data = await db
+            .collection(constants.PROGRAMME_TABLE)
             .doc(programme)
             .collection(constants.TERMS_TABLE)
             .doc(term)
+            .collection(constants.DEPARTMENTS_TABLE)
+            .doc(department)
             .collection(constants.CLASS_TABLE)
             .get();
 
         return snapshotToArray(data);
+    }
+
+    async addGroupBySemester(data) {
+        let ref = db
+            .collection(constants.PROGRAMME_TABLE)
+            .doc(data.programme)
+            .collection(constants.TERMS_TABLE)
+            .doc(data.term)
+            .collection(constants.DEPARTMENTS_TABLE)
+            .doc(data.department)
+            .collection(constants.CLASS_TABLE)
+            .doc(data.name)
+
+        let g = await ref.get()
+        if (g.exists) {
+            return {
+                status: false,
+                msg: "Group already exists!"
+            }
+        }
+
+        let res = await ref.set({
+            lecturer: data.lecturer ?? "NA",
+            subject: data.subject ?? "NA",
+            slots: data.slots ?? 0
+        })
+
+        return {
+            status: true,
+            msg: res,
+        }
     }
 
     async fetchCourseRegistrationByStudentIdAndSemester(semester, studentId) {

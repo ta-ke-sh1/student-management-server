@@ -49,7 +49,7 @@ const MockService = require("./services/mockService");
 
 app.get("/mock", async (req, res) => {
     const mockService = new MockService()
-    await mockService.AddRoom();
+    await mockService.AddUser();
     res.status(200).json({});
 })
 

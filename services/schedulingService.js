@@ -13,9 +13,9 @@ const courseRepository = new CourseRepostory();
 
 const ScheduleService = class {
 
-    async fetchGroupsByProgrammeAndTerm(programme, term) {
+    async fetchGroupsByProgrammeAndTerm(programme, term, department) {
         try {
-            let groups = await courseRepository.fetchGroupsByProgrammeAndTerm(programme, term)
+            let groups = await courseRepository.fetchGroupsByProgrammeAndTermAndDepartment(programme, term, department)
             return {
                 status: true,
                 data: groups
@@ -28,19 +28,8 @@ const ScheduleService = class {
         }
     }
 
-    async addGroup(programme, term, group) {
-        try {
-            let groups = await courseRepository.fetchGroupsByProgrammeAndTerm(programme, term)
-            return {
-                status: true,
-                data: groups
-            }
-        } catch (e) {
-            return {
-                status: false,
-                error: e
-            }
-        }
+    async addGroup(data) {
+        return await courseRepository.addGroupBySemester(data)
     }
 
     async validSchedule(date, room, user_id) {
