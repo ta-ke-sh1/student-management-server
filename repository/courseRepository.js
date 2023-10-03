@@ -15,12 +15,16 @@ module.exports = class CourseRepostory {
     constructor() { }
 
     async fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
-        let snapshot = await db.collection(constants.SCHEDULE_SLOTS_TABLE)
-            .where("group_id", "==", id)
-            .where("term", "==", term)
-            .where("programme", "==", programme)
-            .where("department", "==", department)
-            .get()
+        let snapshot = await db
+            .collection(constants.PROGRAMME_TABLE)
+            .doc(programme)
+            .collection(constants.TERMS_TABLE)
+            .doc(term)
+            .collection(constants.DEPARTMENTS_TABLE)
+            .doc(department)
+            .collection(constants.CLASS_TABLE)
+            .doc(id).collection(constants.SCHEDULE_SLOTS_TABLE)
+            .get();
 
         if (snapshot.empty) {
             console.log('No matching documents.');
@@ -30,12 +34,17 @@ module.exports = class CourseRepostory {
     }
 
     async fetchParticipantsByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
-        let data = await db.collection(constants.COURSES_REGISTRATION_TABLE)
-            .where("group_id", "==", id)
-            .where("term", "==", term)
-            .where("programme", "==", programme)
-            .where("department", "==", department)
-            .get()
+        let data = await db
+            .collection(constants.PROGRAMME_TABLE)
+            .doc(programme)
+            .collection(constants.TERMS_TABLE)
+            .doc(term)
+            .collection(constants.DEPARTMENTS_TABLE)
+            .doc(department)
+            .collection(constants.CLASS_TABLE)
+            .doc(id)
+            .collection(constants.SCHEDULE_SLOTS_TABLE)
+            .get();
 
         if (data.empty) {
             console.log('No matching documents.');
