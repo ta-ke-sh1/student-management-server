@@ -1,12 +1,71 @@
 const express = require("express");
+const { ScheduleService } = require("../services/schedulingService");
 const router = express.Router();
 
-router.get("/", (req, res) => {});
+const scheduleService = new ScheduleService();
 
-router.post("/", (req, res) => {});
+router.get("/schedules", async (req, res) => {
+    try {
+        console.log(req.query)
+        let result = await scheduleService.fetchScheduleByIdAndTermAndProgrammeAndDepartment(req.query.id, req.query.term, req.query.programme, req.query.department);
+        res.status(200).json(result)
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e
+        })
+    }
+});
 
-router.delete("/", (req, res) => {});
+router.get("/participants", async (req, res) => {
+    try {
+        let result = await scheduleService.fetchParticipantsByIdAndTermAndProgrammeAndDepartment(req.query.id, req.query.term, req.query.programme, req.query.department);
+        res.status(200).json(result)
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e
+        })
+    }
+});
 
-router.put("/", (req, res) => {});
+router.post("/", async (req, res) => {
+    try {
+        res.status(200).json({
+            status: true,
+        })
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e
+        })
+    }
+});
+
+router.delete("/", async (req, res) => {
+    try {
+        res.status(200).json({
+            status: true,
+        })
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e
+        })
+    }
+});
+
+router.put("/", async (req, res) => {
+    try {
+        res.status(200).json({
+            status: true,
+        })
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e
+        })
+    }
+});
 
 module.exports = router;

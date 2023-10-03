@@ -1,7 +1,7 @@
 module.exports = Object.freeze({
     USERS_TABLE: "Users",
     COURSES_TABLE: "Courses",
-    COURSES_REGISTRATION_TABLE: "CourseRegistration",
+    COURSES_REGISTRATION_TABLE: "Course_Registration",
     COURSE_CLASS_TABLE: "Course_Classes",
     SUBMISSIONS_TABLE: "Submissions",
     COURSEWORK_DETAILS_TABLE: "Coursework_Details",

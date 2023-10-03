@@ -13,9 +13,45 @@ const courseRepository = new CourseRepostory();
 
 const ScheduleService = class {
 
+    async fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
+        if (id && term && programme && department) {
+            let result = await courseRepository.fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department);
+            console.log("Result:")
+            console.log(result)
+            return {
+                status: true,
+                data: result
+            }
+        } else {
+            return {
+                status: false,
+                data: "Missing parameters"
+            }
+        }
+    }
+
+    async fetchParticipantsByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
+        if (id && term && programme && department) {
+            let result = await courseRepository.fetchParticipantsByIdAndTermAndProgrammeAndDepartment(id, term, programme, department);
+            console.log("Result:")
+            console.log(result)
+            return {
+                status: true,
+                data: result
+            }
+        }
+        else {
+            return {
+                status: false,
+                data: "Missing parameters"
+            }
+        }
+    }
+
     async fetchGroupsByProgrammeAndTerm(programme, term, department) {
         try {
             let groups = await courseRepository.fetchGroupsByProgrammeAndTermAndDepartment(programme, term, department)
+            console.log(groups)
             return {
                 status: true,
                 data: groups

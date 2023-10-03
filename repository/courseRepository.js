@@ -14,6 +14,38 @@ const {
 module.exports = class CourseRepostory {
     constructor() { }
 
+    async fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
+        let snapshot = await db.collection(constants.SCHEDULE_SLOTS_TABLE)
+            .where("group_id", "==", id)
+            .where("term", "==", term)
+            .where("programme", "==", programme)
+            .where("department", "==", department)
+            .get()
+
+        if (snapshot.empty) {
+            console.log('No matching documents.');
+            return [];
+        }
+        return snapshotToArray(snapshot)
+    }
+
+    async fetchParticipantsByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
+        let data = await db.collection(constants.COURSES_REGISTRATION_TABLE)
+            .where("group_id", "==", id)
+            .where("term", "==", term)
+            .where("programme", "==", programme)
+            .where("department", "==", department)
+            .get()
+
+        if (data.empty) {
+            console.log('No matching documents.');
+            return [];
+        }
+
+        return snapshotToArray(data)
+    }
+
+
     async fetchGroupsByProgrammeAndTermAndDepartment(programme, term, department) {
         let data = await db
             .collection(constants.PROGRAMME_TABLE)
@@ -25,7 +57,15 @@ module.exports = class CourseRepostory {
             .collection(constants.CLASS_TABLE)
             .get();
 
-        return snapshotToArray(data);
+        let results = await snapshotToArray(data)
+
+        results.forEach((result) => {
+            result.programme = programme;
+            result.term = term;
+            result.department = department
+        })
+
+        return results;
     }
 
     async addGroupBySemester(data) {
