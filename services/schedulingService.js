@@ -83,7 +83,7 @@ const ScheduleService = class {
     return slot.length === 0;
   }
 
-  async reserveSchedule() {}
+  async reserveSchedule() { }
 
   async fetchAllSchedules(campus) {
     const schedules = await fetchMatchingDataByField(constants.SCHEDULE_SLOTS_TABLE, "campus", campus);
@@ -100,8 +100,10 @@ const ScheduleService = class {
     return res;
   }
 
-  async addSchedule(Schedule_obj) {
-    const res = await scheduleRepository;
+  async addSchedule(data) {
+    const res = await courseRepository.addGroupBySemester(data);
+    console.log("Schedule service: add schedule")
+    console.log(res)
     return res;
   }
 

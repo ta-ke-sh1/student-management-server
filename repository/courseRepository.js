@@ -2,7 +2,7 @@ const constants = require("../utils/constants");
 const { addData, deleteData, updateData, fetchMatchingDataByField, fetchAllData, db, snapshotToArray, fetchDataById, setData } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
-  constructor() {}
+  constructor() { }
 
   async fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
     let snapshot = await db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.CLASS_TABLE).doc(id).collection(constants.SCHEDULE_SLOTS_TABLE).get();
@@ -29,7 +29,6 @@ module.exports = class CourseRepostory {
     let data = await db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.CLASS_TABLE).where("status", "==", true).get();
 
     let results = await snapshotToArray(data);
-
     results.forEach((result) => {
       result.programme = programme;
       result.term = term;
@@ -40,26 +39,43 @@ module.exports = class CourseRepostory {
   }
 
   async addGroupBySemester(data) {
-    let ref = db.collection(constants.PROGRAMME_TABLE).doc(data.programme).collection(constants.TERMS_TABLE).doc(data.term).collection(constants.DEPARTMENTS_TABLE).doc(data.department).collection(constants.CLASS_TABLE).doc(data.name).where("status", "==", true);
+    console.log(data)
+    let ref = db
+      .collection(constants.PROGRAMME_TABLE)
+      .doc(data.programme)
+      .collection(constants.TERMS_TABLE)
+      .doc(data.term)
+      .collection(constants.DEPARTMENTS_TABLE)
+      .doc(data.department)
+      .collection(constants.CLASS_TABLE)
+      .doc(data.name);
 
     let g = await ref.get();
     if (g.exists) {
+      console.log({
+        status: false,
+        msg: "Group already exists!",
+      })
       return {
         status: false,
         msg: "Group already exists!",
       };
+    } else {
+      console.log("Add group")
+
+      let res = await ref.set({
+        lecturer: data.lecturer ?? "NA",
+        subject: data.subject ?? "NA",
+        slots: data.slots ?? 0,
+      });
+
+      return {
+        status: true,
+        msg: res,
+      };
     }
 
-    let res = await ref.set({
-      lecturer: data.lecturer ?? "NA",
-      subject: data.subject ?? "NA",
-      slots: data.slots ?? 0,
-    });
 
-    return {
-      status: true,
-      msg: res,
-    };
   }
 
   async addSubmission(submision) {
@@ -166,7 +182,7 @@ module.exports = class CourseRepostory {
     return await updateData(constants.COURSES_TABLE, course.id, {});
   }
 
-  async uploadSubmission(course, submissionFile) {}
+  async uploadSubmission(course, submissionFile) { }
 
   async fetchScheduleByDateAndRoom(date, room, user_id) {
     // let data = await db

@@ -45,4 +45,4 @@ function containsRole(role) {
     };
 }
 
-export { containsRole };
+module.exports = { containsRole };

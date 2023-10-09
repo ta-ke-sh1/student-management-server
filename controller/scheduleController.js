@@ -1,6 +1,7 @@
 const express = require("express");
 const { ScheduleService } = require("../services/schedulingService");
 const router = express.Router();
+const { containsRole } = require("../middleware/tokenCheck")
 
 const scheduleService = new ScheduleService();
 
@@ -18,7 +19,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/create", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const result = await scheduleService.addSchedule(req.body);
     res.status(200).json(result);
@@ -54,11 +55,11 @@ router.post("/group", async (req, res) => {
   }
 });
 
-router.put("/restore", (req, res) => {});
+router.put("/restore", (req, res) => { });
 
-router.delete("/", (req, res) => {});
+router.delete("/", (req, res) => { });
 
-router.delete("/hard", containsRole(3), (req, res) => {});
+router.delete("/hard", containsRole(3), (req, res) => { });
 
 router.get("/fetch", async (req, res) => {
   console.log(req.query);
