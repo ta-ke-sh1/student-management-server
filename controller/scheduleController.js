@@ -54,6 +54,26 @@ router.post("/group", async (req, res) => {
   }
 });
 
+router.put("/restore", (req, res) => {});
+
 router.delete("/", (req, res) => {});
+
+router.delete("/hard", containsRole(3), (req, res) => {});
+
+router.get("/fetch", async (req, res) => {
+  console.log(req.query);
+  try {
+    let result = await scheduleService.fetchScheduleByUserIdAndTermAndProgrammeAndDepartment(req.query);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
 
 module.exports = router;

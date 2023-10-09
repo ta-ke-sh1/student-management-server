@@ -36,6 +36,7 @@ router.post("/submit", uploader.array("items", 10), async (req, res) => {
     let assignment = req.body;
     delete assignment.fileNames;
     assignment.submissions = fileNames;
+    assignment.status = true;
 
     let result = "";
     // let result = await courseService.submitAssignment(assignment);
@@ -134,7 +135,7 @@ router.put("/resources", uploader.array("items", 10), async (req, res) => {});
 router.delete("/resources", async (req, res) => {
   try {
     console.log(req.query);
-    let result = await courseService.deleteResourceByQuery(req.query);
+    let result = await courseService.deleteLocalResourceByQuery(req.query);
     console.log(result);
     res.status(200).json({
       status: true,

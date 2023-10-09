@@ -1,10 +1,29 @@
 const CourseRepostory = require("../repository/courseRepository");
 const { fetchDataById, addData, deleteData, setData, updateData, fetchMatchingDataByField } = require("../repository/firebaseRepository");
+const ScheduleRepository = require("../repository/scheduleRepository");
 const constants = require("../utils/constants");
 
 const courseRepository = new CourseRepostory();
+const scheduleRepository = new ScheduleRepository();
 
 const ScheduleService = class {
+  async fetchScheduleByUserIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
+    if (id && term && programme && department) {
+      let result = await courseRepository.fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department);
+      console.log("Result:");
+      console.log(result);
+      return {
+        status: true,
+        data: result,
+      };
+    } else {
+      return {
+        status: false,
+        data: "Missing parameters",
+      };
+    }
+  }
+
   async fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
     if (id && term && programme && department) {
       let result = await courseRepository.fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department);
@@ -82,7 +101,7 @@ const ScheduleService = class {
   }
 
   async addSchedule(Schedule_obj) {
-    const res = await addData(constants.SCHEDULE_SLOTS_TABLE, Schedule_obj);
+    const res = await scheduleRepository;
     return res;
   }
 

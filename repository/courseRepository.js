@@ -26,7 +26,7 @@ module.exports = class CourseRepostory {
   }
 
   async fetchGroupsByProgrammeAndTermAndDepartment(programme, term, department) {
-    let data = await db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.CLASS_TABLE).get();
+    let data = await db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.CLASS_TABLE).where("status", "==", true).get();
 
     let results = await snapshotToArray(data);
 
@@ -40,7 +40,7 @@ module.exports = class CourseRepostory {
   }
 
   async addGroupBySemester(data) {
-    let ref = db.collection(constants.PROGRAMME_TABLE).doc(data.programme).collection(constants.TERMS_TABLE).doc(data.term).collection(constants.DEPARTMENTS_TABLE).doc(data.department).collection(constants.CLASS_TABLE).doc(data.name);
+    let ref = db.collection(constants.PROGRAMME_TABLE).doc(data.programme).collection(constants.TERMS_TABLE).doc(data.term).collection(constants.DEPARTMENTS_TABLE).doc(data.department).collection(constants.CLASS_TABLE).doc(data.name).where("status", "==", true);
 
     let g = await ref.get();
     if (g.exists) {
@@ -70,7 +70,7 @@ module.exports = class CourseRepostory {
   async fetchCourseRegistrationByStudentIdAndSemester(semester, studentId) {
     let res = [];
 
-    let studentCourses = await db.collection(constants.COURSES_REGISTRATION_TABLE).where("semester", "==", semester).where("studentId", "==", studentId).get();
+    let studentCourses = await db.collection(constants.COURSES_REGISTRATION_TABLE).where("semester", "==", semester).where("studentId", "==", studentId).where("status", "==", true).get();
 
     studentCourses.forEach(async (course) => {
       let teacher = await fetchDataById(constants.USERS_TABLE, course.teacherId);

@@ -3,6 +3,7 @@ const { fetchAllData, fetchMatchingDataByField } = require("../repository/fireba
 const constants = require("../utils/constants");
 const RoomService = require("../services/roomService");
 const CampusService = require("../services/campusService");
+const { containsRole } = require("../middleware/tokenCheck");
 const router = express.Router();
 
 const roomService = new RoomService();
@@ -76,7 +77,7 @@ router.get("/room/:id", async (req, res) => {
 
 router.post("/room", async (req, res) => {
   try {
-    let payload = { ...req.body };
+    let payload = { ...req.body, status: true };
     console.log(payload);
     const room = await roomService.addRoom(payload);
     res.status(200).json({ status: room });
@@ -102,6 +103,25 @@ router.put("/room", async (req, res) => {
 });
 
 router.delete("/room", async (req, res) => {
+  try {
+    console.log(req.query.q);
+    let query = req.query.q.split("@");
+    let flag = false;
+
+    query.forEach(async (e) => {
+      console.log(e);
+      flag = await roomService.editRoom(e, { status: false });
+    });
+    res.status(200).json({ status: flag });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      error: e,
+    });
+  }
+});
+
+router.delete("/room/hard", containsRole(3), async (req, res) => {
   try {
     console.log(req.query.q);
     let query = req.query.q.split("@");

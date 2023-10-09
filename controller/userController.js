@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
 
 router.get("/deactivate", async (req, res) => {
   try {
-    const users = await fetchAllData(constants.USERS_TABLE);
+    await userService.deactivateUser(req.query.id);
     res.status(200).send(users);
   } catch (e) {
     res.status(200).json({

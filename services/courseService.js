@@ -39,7 +39,7 @@ module.exports = class CourseService {
     return response;
   }
 
-  async deleteResourceByQuery(query) {
+  async deleteLocalResourceByQuery(query) {
     let file_path = "asset\\course\\resources\\" + query.programme + "\\" + query.semester + "\\" + query.course + "\\" + query.group + "\\" + query.file;
     var dir = path.resolve() + "\\" + file_path ?? "";
     return await this.utils.deleteFileByPath(dir);
