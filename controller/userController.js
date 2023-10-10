@@ -7,8 +7,9 @@ const AES = require("crypto-js/aes");
 
 const multer = require("multer");
 const fs = require("fs");
-const { UserService } = require("../services/userService");
 const path = require("path");
+
+const { UserService } = require("../services/userService");
 
 const userService = new UserService();
 

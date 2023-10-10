@@ -1,31 +1,26 @@
 const constants = require("../utils/constants");
-const {
-    addData,
-    deleteData,
-    updateData,
-    fetchAllData,
-} = require("./firebaseRepository");
+const { addData, deleteData, updateData, fetchAllData } = require("./firebaseRepository");
 
-module.exports = class RequestRepostory {
-    async fetchRequest() {
-        return await fetchAllData(constants.REQUEST_TABLE);
-    }
+module.exports = class RequestRepository {
+  async fetchRequest() {
+    return await fetchAllData(constants.REQUEST_TABLE);
+  }
 
-    async submitRequestSubmission(coursework) {
-        return await addData(constants.SUBMISSIONS_TABLE, coursework);
-    }
+  async updateRequest(id, request) {
+    return await updateData(constants.REQUEST_TABLE, id, request);
+  }
 
-    async updateRequestSubmission(coursework) {
-        return await updateData(constants.COURSES_TABLE, coursework.id, {});
-    }
+  async addRequest(request) {
+    return await addData(constants.REQUEST_TABLE, request);
+  }
 
-    async addRequest(course) {
-        return await addData(constants.COURSES_TABLE, course);
-    }
+  async editRequest(id, request) {
+    return await updateData(constants.REQUEST_TABLE, id, request);
+  }
 
-    async editRequest(course) {
-        return await updateData(constants.COURSES_TABLE, course.id, {});
-    }
+  async deleteRequest(id) {}
 
-    async uploadSubmission(course, submissionFile) {}
+  async deleteHardRequest(id) {
+    return await deleteDataData(constants.REQUEST_TABLE, id);
+  }
 };
