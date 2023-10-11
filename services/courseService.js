@@ -52,4 +52,25 @@ module.exports = class CourseService {
   async editClass(class_id, class_obj) {}
 
   async deleteClass(class_id) {}
+
+  async addCourse(course) {
+    course.status = true;
+    return this.courseRepository.addCourse(course);
+  }
+
+  async deleteCourse(id) {
+    return this.courseRepository.deleteCourse(id);
+  }
+
+  async deleteHardCourse(id) {
+    return this.courseRepository.deleteHardCourse(id);
+  }
+
+  async editCourse(id, course) {
+    return this.courseRepository.editCourse(id, course);
+  }
+
+  async handleCourse(id, option) {
+    return this.courseRepository.editCourse(id, option);
+  }
 };

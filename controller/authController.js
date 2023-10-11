@@ -5,9 +5,16 @@ const router = express.Router();
 const authService = new AuthService();
 
 router.get("/", (req, res) => {
-  res.status(200).json({
-    message: "Hello World! Auth controller",
-  });
+  try {
+    res.status(200).json({
+      status: true,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
 });
 
 router.post("/login", async (req, res) => {

@@ -2,40 +2,89 @@ const constants = require("../utils/constants");
 const { addData, updateData, db } = require("./firebaseRepository");
 
 module.exports = class UserRepository {
-  async addUser(data) {
-    return await addData(constants.USERS_TABLE, data);
+  async addAdmin(data) {
+    return await addData(constants.ADMINS_TABLE, data);
   }
 
-  async switchRole(user_id, role) {
-    return await updateData(constants.USERS_TABLE, user_id, { role: role });
+  async addStudent(data) {
+    return await addData(constants.STUDENTS_TABLE, data);
   }
 
-  async switchUserStatus(user_id, status) {
-    return await updateData(constants.USERS_TABLE, user_id, {
-      status: status,
-    });
+  async addStudent(data) {
+    return await addData(constants.LECTURERS_TABLE, data);
   }
 
-  async updateUserDetails(user) {
-    return await updateData(constants.USERS_TABLE, user.id, {
-      dob: user.dob,
-      address: user.address,
-      phone: user.phone,
-      email: user.email,
-      department_id: user.department_id,
-    });
-  }
-
-  async updateAvatar(user, avatar) {}
-
-  async deactivateUser(id) {
-    let ref = db.collection(constants.USERS_TABLE).doc(id);
-    let snapshot = await ref.get();
-    if (snapshot.exists) {
-      snapshot.data().status;
-      return await ref.update({
-        status: snapshot.data().status == "deactivated" ? "activated" : "deactivated",
+  async updateUserStatus(user_id, type, status) {
+    let table;
+    switch (type) {
+      case "Student":
+        table = constants.STUDENTS_TABLE;
+        break;
+      case "Teacher":
+        table = constants.TEACHERS_TABLE;
+        break;
+      case "Admin":
+        table = constants.ADMINS_TABLE;
+        break;
+      default:
+        break;
+    }
+    if (table) {
+      return await updateData(constants.USERS_TABLE, user_id, {
+        status: status,
       });
+    } else {
+      throw Error("Invalid user type");
+    }
+  }
+
+  async updateUserDetails(user, type) {
+    let table;
+    switch (type) {
+      case "Student":
+        table = constants.STUDENTS_TABLE;
+        break;
+      case "Teacher":
+        table = constants.TEACHERS_TABLE;
+        break;
+      case "Admin":
+        table = constants.ADMINS_TABLE;
+        break;
+      default:
+        break;
+    }
+    if (table) {
+      return await updateData(constants.USERS_TABLE, user.id, {
+        dob: user.dob,
+        address: user.address,
+        phone: user.phone,
+        email: user.email,
+        department_id: user.department_id,
+      });
+    } else {
+      throw Error("Invalid user type");
+    }
+  }
+
+  async updateAvatar(user, type, avatar) {
+    let table;
+    switch (type) {
+      case "Student":
+        table = constants.STUDENTS_TABLE;
+        break;
+      case "Teacher":
+        table = constants.TEACHERS_TABLE;
+        break;
+      case "Admin":
+        table = constants.ADMINS_TABLE;
+        break;
+      default:
+        break;
+    }
+    if (table) {
+      return await updateData(constants.USERS_TABLE, user.id, { avatar: avatar });
+    } else {
+      throw Error("Invalid user type");
     }
   }
 };

@@ -81,7 +81,18 @@ router.put("/submit", uploader.array("items", 10), async (req, res) => {
   }
 });
 
-router.get("/resources", async (req, res) => {});
+router.get("/resources", async (req, res) => {
+  try {
+    res.status(200).json({
+      status: true,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
 
 router.get("/resource/download", async (req, res) => {
   try {
@@ -130,7 +141,18 @@ router.post("/resources", uploader.array("items", 10), async (req, res) => {
   }
 });
 
-router.put("/resources", uploader.array("items", 10), async (req, res) => {});
+router.put("/resources", uploader.array("items", 10), async (req, res) => {
+  try {
+    res.status(200).json({
+      status: true,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
 
 router.delete("/resources", async (req, res) => {
   try {
@@ -150,45 +172,129 @@ router.delete("/resources", async (req, res) => {
   }
 });
 
-router.get("/submissions", (req, res) => {
-  res.status(200).json({ status: true, data: "Submitted" });
+router.get("/submissions", async (req, res) => {
+  try {
+    res.status(200).json({
+      status: true,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
 });
 
 router.get("/", async (req, res) => {
-  console.log(req.query.campus);
-  let courses = await courseService.fetchCourseByCampus(req.query.campus);
-  res.status(200).json([...courses]);
+  try {
+    let courses = await courseService.fetchCourseByCampus(req.query.campus);
+    res.status(200).json({
+      status: true,
+      data: [...courses],
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
 });
 
-router.post("/", (req, res) => {});
+router.post("/", async (req, res) => {
+  try {
+    const course = req.body;
+    course.status = true;
+    const result = await courseService.addCourse(course);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
 
-router.delete("/", (req, res) => {});
+router.delete("/", async (req, res) => {
+  try {
+    const id = req.query.id;
+    const result = await courseService.deleteCourse(id);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
 
-router.put("/", (req, res) => {});
+router.delete("/hard", async (req, res) => {
+  try {
+    const id = req.query.id;
+    const result = await courseService.deleteHardCourse(id);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
+
+router.put("/", async (req, res) => {
+  try {
+    let id = req.query.id;
+    const result = await courseService.editCourse(id, req.body);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
 
 router.get("/student", async (req, res) => {
-  console.log(req.query);
+  try {
+    let semester = req.query.semester;
+    let user_id = req.query.id;
+    let course_id = req.query.course;
 
-  let semester = req.query.semester;
-  let user_id = req.query.id;
-  let course_id = req.query.course;
-
-  let course = await courseService.fetchCourseByUserIdAndCourseId(semester, user_id, course_id);
-
-  res.status(200).json({
-    message: "Hello World! Course controller",
-    course: course,
-  });
+    let course = await courseService.fetchCourseByUserIdAndCourseId(semester, user_id, course_id);
+    res.status(200).json({
+      status: true,
+      data: course,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
 });
 
-router.put("/student", (req, res) => {});
-
-router.get("/teacher", (req, res) => {
-  res.status(200).json({
-    message: "Hello World! Course controller",
-  });
+router.post("/grade", async (req, res) => {
+  try {
+    res.status(200).json({
+      status: true,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
 });
-
-router.post("/teacher", (req, res) => {});
 
 module.exports = router;
