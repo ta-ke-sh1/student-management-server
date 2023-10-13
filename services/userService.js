@@ -5,6 +5,10 @@ const constants = require("../utils/constants");
 const userRepository = new UserRepository();
 
 const UserService = class {
+  async fetchAllUsers(type) {
+    return await userRepository.fetchAllUsers(type);
+  }
+
   async deactivateUser(id) {
     return await userRepository.deactivateUser(id);
   }
@@ -66,12 +70,25 @@ const UserService = class {
         error: "Invalid User id!",
       };
     }
-    let user = await fetchMatchingDataByField(constants.USERS_TABLE, "username", username);
+    let user = await fetchMatchingDataByField(constants.ADMINS_TABLE, "username", username);
     if (user === -1) {
-      return false;
+      user = await fetchMatchingDataByField(constants.LECTURERS_TABLE_TABLE, "username", username);
+      if (user === -1) {
+        user = await fetchMatchingDataByField(constants.STUDENTS_TABLE_TABLE, "username", username);
+        if (user === -1) {
+          return false;
+        } else {
+          user[0].role = 1
+        }
+      } else {
+        user[0].role = 2
+      }
+    } else {
+      user[0].role = 3
     }
-    return user;
+    return user
   }
+
 };
 
 module.exports = { UserService };

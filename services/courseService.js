@@ -1,4 +1,5 @@
 const CourseRepostory = require("../repository/courseRepository");
+const SubmissionRepository = require("../repository/submissionRepository");
 const Utils = require("../utils/utils");
 const ClassService = require("./classService");
 const { UserService } = require("./userService");
@@ -9,12 +10,14 @@ module.exports = class CourseService {
   courseRepository;
   userService;
   utils;
+  submissionRepository
 
   constructor() {
     this.courseRepository = new CourseRepostory();
     this.userService = new UserService();
     this.classService = new ClassService();
     this.utils = new Utils();
+    this.submissionRepository = new SubmissionRepository();
   }
 
   async fetchCourseByCampus(campus_id) {
@@ -24,9 +27,16 @@ module.exports = class CourseService {
     // );
   }
 
-  async fetchCourseById(course_id) {}
+  async fetchCourseById(id) {
+    let course = await this.courseRepository.fetchCourseByProgrammeAndTermAndDepartmentAndId(id)
+    let assignments = await this.courseRepository.fetchAssignmentsByCourse(id)
+    course.assignments = assignments
+    return course;
+  }
 
-  async fetchCourseByClassAndId(course_id, class_id) {}
+  async fetchCourseByClassAndId(course_id, class_id) {
+
+  }
 
   async fetchCourseByUserIdAndCourseId(semester, user_id, course_id) {
     let course = await this.courseRepository.fetchCourseByUserIdAndCourseId(semester, user_id, course_id);
@@ -45,13 +55,13 @@ module.exports = class CourseService {
     return await this.utils.deleteFileByPath(dir);
   }
 
-  async fetchClassBySemester(semester, course_id, class_id) {}
+  async fetchClassBySemester(semester, course_id, class_id) { }
 
-  async addClass(class_obj) {}
+  async addClass(class_obj) { }
 
-  async editClass(class_id, class_obj) {}
+  async editClass(class_id, class_obj) { }
 
-  async deleteClass(class_id) {}
+  async deleteClass(class_id) { }
 
   async addCourse(course) {
     course.status = true;
@@ -72,5 +82,13 @@ module.exports = class CourseService {
 
   async handleCourse(id, option) {
     return this.courseRepository.editCourse(id, option);
+  }
+
+  async fetchSubmissionByCourseIdAndUserAndAssignmentId(id, user, asm) {
+    return this.submissionRepository.fetchSubmissionByCourseIdAndUserAndAssignmentId(id, user, asm)
+  }
+
+  async addCourseAssignment(assignment) {
+    return this.courseRepository.addCourseAssignment(assignment)
   }
 };

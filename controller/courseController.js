@@ -200,6 +200,21 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/details", async (req, res) => {
+  try {
+    let course = await courseService.fetchCourseById(req.query.id)
+    res.status(200).json({
+      status: true,
+      data: course,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const course = req.body;
@@ -296,5 +311,20 @@ router.post("/grade", async (req, res) => {
     });
   }
 });
+
+router.post("/coursework", async (req, res) => {
+  try {
+    let result = courseService.addCourseAssignment(req.body)
+    res.status(200).json({
+      status: true,
+      data: result
+    })
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e
+    })
+  }
+})
 
 module.exports = router;

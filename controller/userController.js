@@ -16,11 +16,15 @@ const userService = new UserService();
 const uploader = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      var dir = path.resolve() + "\\asset\\avatar\\" + req.query.username ? req.query.username + "\\" : "";
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
+      try {
+        var dir = path.resolve() + "\\asset\\avatar\\" + req.query.username ? req.query.username + "\\" : "";
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
+        cb(null, dir);
+      } catch (e) {
+        console.log(e);
       }
-      cb(null, dir);
     },
     filename: function (req, file, cb) {
       cb(null, "avatar.jpg");
@@ -28,10 +32,46 @@ const uploader = multer({
   }),
 });
 
-router.get("/", async (req, res) => {
+router.get("/admins", async (req, res) => {
   try {
-    const users = await fetchAllData(constants.USERS_TABLE);
-    res.status(200).send(users);
+    const users = await userService.fetchAllUsers("admin");
+    console.log("Admin: " + users.length)
+    res.status(200).json({
+      status: true,
+      data: users ?? [],
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      error: e,
+    });
+  }
+});
+
+router.get("/lecturers", async (req, res) => {
+  try {
+    const users = await userService.fetchAllUsers("lecturer");
+    console.log("Lecturers" + users.length)
+    res.status(200).json({
+      status: true,
+      data: users ?? [],
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      error: e,
+    });
+  }
+});
+
+router.get("/students", async (req, res) => {
+  try {
+    const users = await userService.fetchAllUsers("student");
+    console.log("Students" + users.length)
+    res.status(200).json({
+      status: true,
+      data: users ?? [],
+    });
   } catch (e) {
     res.status(200).json({
       status: false,

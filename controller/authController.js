@@ -17,18 +17,34 @@ router.get("/", (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/oauth", async (req, res) => {
   try {
-    console.log({
-      username: req.body.username,
-      password: req.body.password,
-    });
     const result = await authService.authenticate(req.body.username, req.body.password);
-    res.status(200).json(result);
+    console.log(result);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
       error: e,
+    });
+  }
+});
+
+router.post("/refresh", async (req, res) => {
+  try {
+    const result = await authService.refresh(req.body.refreshToken);
+    console.log(result);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
     });
   }
 });

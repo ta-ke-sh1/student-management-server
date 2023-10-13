@@ -1,5 +1,5 @@
 const constants = require("../utils/constants");
-const { addData, updateData, db } = require("./firebaseRepository");
+const { addData, updateData, db, fetchAllData } = require("./firebaseRepository");
 
 module.exports = class UserRepository {
   async addAdmin(data) {
@@ -12,6 +12,24 @@ module.exports = class UserRepository {
 
   async addStudent(data) {
     return await addData(constants.LECTURERS_TABLE, data);
+  }
+
+  async fetchAllUsers(type) {
+    let table;
+    switch (type) {
+      case "student":
+        table = constants.STUDENTS_TABLE;
+        break;
+      case "lecturer":
+        table = constants.LECTURERS_TABLE;
+        break;
+      case "admin":
+        table = constants.ADMINS_TABLE;
+        break;
+      default:
+        break;
+    }
+    return await fetchAllData(table);
   }
 
   async updateUserStatus(user_id, type, status) {

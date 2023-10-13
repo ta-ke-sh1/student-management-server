@@ -8,9 +8,9 @@ const {
 const constants = require("../utils/constants");
 
 const GradingService = class {
-    async validGrading() {}
+    async validGrading() { }
 
-    async reserveGrading() {}
+    async reserveGrading() { }
 
     async fetchAllGradingsByStudentIdAndClassId() {
         const gradings = await fetchMatchingDataByField(
