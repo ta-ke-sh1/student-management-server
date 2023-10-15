@@ -10,7 +10,7 @@ module.exports = class DocumentsRepository {
     return await fetchDataById(constants.SUPPORT_DOCUMENTS_TABLE, id);
   }
 
-  async submitDocument(document) {
+  async addDocument(document) {
     return await addData(constants.SUPPORT_DOCUMENTS_TABLE, document);
   }
 
@@ -26,5 +26,5 @@ module.exports = class DocumentsRepository {
     return await deleteData(constants.SUPPORT_DOCUMENTS_TABLE, id);
   }
 
-  async uploadSubmission(course, submissionFile) {}
+  async uploadSubmission(course, submissionFile) { }
 };

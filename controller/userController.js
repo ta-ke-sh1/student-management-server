@@ -1,6 +1,4 @@
 const express = require("express");
-const { fetchAllData } = require("../repository/firebaseRepository");
-const constants = require("../utils/constants");
 const router = express.Router();
 
 const AES = require("crypto-js/aes");
@@ -35,7 +33,6 @@ const uploader = multer({
 router.get("/admins", async (req, res) => {
   try {
     const users = await userService.fetchAllUsers("admin");
-    console.log("Admin: " + users.length)
     res.status(200).json({
       status: true,
       data: users ?? [],
@@ -51,7 +48,6 @@ router.get("/admins", async (req, res) => {
 router.get("/lecturers", async (req, res) => {
   try {
     const users = await userService.fetchAllUsers("lecturer");
-    console.log("Lecturers" + users.length)
     res.status(200).json({
       status: true,
       data: users ?? [],
@@ -67,7 +63,6 @@ router.get("/lecturers", async (req, res) => {
 router.get("/students", async (req, res) => {
   try {
     const users = await userService.fetchAllUsers("student");
-    console.log("Students" + users.length)
     res.status(200).json({
       status: true,
       data: users ?? [],

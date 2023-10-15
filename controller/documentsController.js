@@ -11,6 +11,7 @@ const uploader = multer({
     destination: function (req, file, cb) {
       try {
         var dir = path.resolve() + "\\asset\\documents\\";
+        console.log(dir)
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true });
         }
@@ -20,7 +21,7 @@ const uploader = multer({
       }
     },
     filename: function (req, file, cb) {
-      cb(null, file.filename);
+      cb(null, req.body.name);
     },
   }),
 });
@@ -42,8 +43,13 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/download", async (req, res) => {
+  res.status(200).download(req.query.path)
+})
+
 router.post("/", uploader.single("file"), async (req, res) => {
   try {
+    console.log(req.body)
     let result = await documentSerivce.addDocument(req.body);
     res.status(200).json({
       status: true,
