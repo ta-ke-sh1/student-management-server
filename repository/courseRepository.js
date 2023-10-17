@@ -2,18 +2,7 @@ const constants = require("../utils/constants");
 const { addData, deleteData, updateData, fetchMatchingDataByField, fetchAllData, db, snapshotToArray, fetchDataById, setData } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
-  constructor() { }
-
-  async fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
-    let snapshot = await db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.CLASS_TABLE).doc(id).collection(constants.SCHEDULE_SLOTS_TABLE).get();
-
-    if (snapshot.empty) {
-      console.log("No matching documents.");
-      return [];
-    }
-    return snapshotToArray(snapshot);
-  }
-
+  constructor() {}
   async fetchParticipantsByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
     let data = await db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.CLASS_TABLE).doc(id).collection(constants.SCHEDULE_SLOTS_TABLE).get();
 
@@ -73,22 +62,21 @@ module.exports = class CourseRepostory {
     return result;
   }
 
-
   async fetchCourseByProgrammeAndTermAndDepartmentAndId(id) {
-    let snapshot = await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(id).get()
+    let snapshot = await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(id).get();
     if (snapshot.exists) {
       return {
         id: snapshot.id,
         ...snapshot.data(),
-      }
+      };
     } else {
-      throw "Course does not exist!"
+      throw "Course does not exist!";
     }
   }
 
   async fetchAssignmentsByCourse(id) {
-    const snapshots = await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(id).collection(constants.SUBMISSIONS_TABLE).get()
-    return snapshotToArray(snapshots)
+    const snapshots = await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(id).collection(constants.SUBMISSIONS_TABLE).get();
+    return snapshotToArray(snapshots);
   }
 
   async fetchCourseByUserIdAndCourseId(semester, user_id, course_id) {
@@ -98,7 +86,7 @@ module.exports = class CourseRepostory {
   }
 
   async submitCourseworkSubmission(coursework) {
-    return await addData(constants.SUBMISSIONS_TABLE, coursework);
+    return await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(assignment.id).collection(constants.SUBMISSIONS_TABLE).doc(assignment.name).collection(constants.SUBMISSIONS_TABLE).doc(coursework.student_id).set(coursework);
   }
 
   async updateCourseworkSubmission(coursework) {
@@ -113,11 +101,13 @@ module.exports = class CourseRepostory {
     return await updateData(constants.COURSES_TABLE, course.id, {});
   }
 
-  async deleteCourse(id) { }
+  async deleteCourse(id) {
+    return await updateData(constants.COURSES_TABLE, id, { status: false });
+  }
 
-  async deleteHardCourse(id) { }
-
-  async uploadSubmission(course, submissionFile) { }
+  async deleteHardCourse(id) {
+    return await deleteData(constants.COURSES_TABLE, id);
+  }
 
   async fetchScheduleByDateAndRoom(date, room, user_id) {
     // let data = await db
@@ -133,20 +123,23 @@ module.exports = class CourseRepostory {
   async addCourseAssignment(assignment) {
     let doc = await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(assignment.id).collection(constants.SUBMISSIONS_TABLE).doc(assignment.name).get();
     if (doc.exists) {
-      throw "Already exists assignment with this name!"
-    }
-
-    else {
+      throw "Already exists assignment with this name!";
+    } else {
       let asm = assignment;
-      let name = asm.name
+      let name = asm.name;
 
-      delete asm.name
-      delete asm.id
+      delete asm.name;
+      delete asm.id;
 
-      return await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(assignment.id).collection(constants.SUBMISSIONS_TABLE).doc(name).set({
-        ...assignment,
-        status: true
-      })
+      return await db
+        .collection(constants.COURSES_REGISTRATION_TABLE)
+        .doc(assignment.id)
+        .collection(constants.SUBMISSIONS_TABLE)
+        .doc(name)
+        .set({
+          ...assignment,
+          status: true,
+        });
     }
   }
 };

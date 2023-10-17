@@ -1,7 +1,7 @@
 const express = require("express");
 const { ScheduleService } = require("../services/schedulingService");
 const router = express.Router();
-const { containsRole } = require("../middleware/tokenCheck")
+const { containsRole } = require("../middleware/tokenCheck");
 
 const scheduleService = new ScheduleService();
 
@@ -55,16 +55,48 @@ router.post("/group", async (req, res) => {
   }
 });
 
-router.put("/restore", (req, res) => { });
+router.put("/restore", (req, res) => {});
 
-router.delete("/", (req, res) => { });
+router.delete("/", (req, res) => {});
 
-router.delete("/hard", containsRole(3), (req, res) => { });
+router.delete("/hard", containsRole(3), (req, res) => {});
 
-router.get("/fetch", async (req, res) => {
+router.get("/student", async (req, res) => {
   console.log(req.query);
   try {
-    let result = await scheduleService.fetchScheduleByUserIdAndTermAndProgrammeAndDepartment(req.query);
+    let result = await scheduleService.fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(req.query);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
+
+router.get("/lecturer", async (req, res) => {
+  console.log(req.query);
+  try {
+    let result = await scheduleService.fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(req.query);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
+
+router.post("attendance", async (req, res) => {
+  const attendace = req.body;
+  try {
+    let result = await scheduleService.checkAttendance(attendace);
     res.status(200).json({
       status: true,
       data: result,
