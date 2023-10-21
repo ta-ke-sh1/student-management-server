@@ -30,6 +30,11 @@ const RoomService = class {
         }
     }
 
+    async fetchAllRooms() {
+        const rooms = await roomRepository.fetchAllRooms()
+        return rooms;
+    }
+
     async fetchAllRoomsByCampus(campus) {
         const rooms = await fetchMatchingDataByField(
             constants.ROOMS_TABLE,

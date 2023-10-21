@@ -47,13 +47,16 @@ router.delete("/", async (req, res) => {
   }
 });
 
-router.put("/", async (req, res) => {});
+router.put("/", async (req, res) => { });
 
 router.get("/rooms", async (req, res) => {
   try {
-    let id = req.query.id;
-    let rooms = await roomService.fetchAllRoomsByCampus(id);
-    res.status(200).json(rooms);
+    let rooms = await roomService.fetchAllRooms();
+    console.log(rooms)
+    res.status(200).json({
+      status: true,
+      data: rooms
+    });
   } catch (e) {
     res.status(200).json({
       status: false,

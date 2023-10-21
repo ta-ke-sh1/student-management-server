@@ -9,9 +9,13 @@ const Utils = require("../utils/utils");
 
 const db = getFirestore();
 
-const utils = new Utils();
 
 module.exports = class RoomRepository {
+    async fetchAllRooms() {
+        const snapshots = await db.collection(constants.ROOMS_TABLE).get()
+        return snapshotToArray(snapshots)
+    }
+
     async fetchRoomByIdAndDateAndSlot(room_id, date, slot) {
         const snapshot = await db
             .collection(constants.SCHEDULE_SLOTS_TABLE)
