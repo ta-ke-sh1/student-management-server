@@ -72,7 +72,7 @@ router.get("/student", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -88,7 +88,7 @@ router.get("/lecturer", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -104,7 +104,7 @@ router.post("attendance", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });

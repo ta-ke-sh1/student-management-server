@@ -17,6 +17,7 @@ module.exports = class CourseRepostory {
   async fetchGroupsByProgrammeAndTermAndDepartment(programme, term, department) {
     let data = await db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.CLASS_TABLE).where("status", "==", true).get();
 
+    db.collection(constants.ADMINS_TABLE).orderBy("__name__").startAt();
     let results = await snapshotToArray(data);
     results.forEach((result) => {
       result.programme = programme;

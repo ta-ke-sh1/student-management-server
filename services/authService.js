@@ -75,7 +75,7 @@ module.exports = class AuthService {
       var token = req.get("Authorization");
       if (token === undefined) {
         res.status(401).send({
-          success: false,
+          status: false,
           message: "No Token Provided.",
         });
         return;
@@ -83,7 +83,7 @@ module.exports = class AuthService {
 
       if (!token.startsWith("Bearer ")) {
         res.status(400).send({
-          success: false,
+          status: false,
           message: "Invalid token format.",
         });
         return;
@@ -92,13 +92,13 @@ module.exports = class AuthService {
       try {
         var decoded = jwt.verify(token.substring(7, token.length), process.env.JWT_SECRET_ACCESS);
       } catch (err) {
-        res.status(406).send({ success: false, message: err });
+        res.status(406).send({ status: false, message: err });
         return;
       }
 
       if (!decoded.role.includes(role)) {
         res.status(401).send({
-          success: false,
+          status: false,
           message: "You are unauthorized for this action!",
         });
       } else {

@@ -29,19 +29,19 @@ const courseService = new CourseService();
 
 router.get("/", async (req, res) => {
   try {
-    const id = req.query.id
-    const user = req.query.user
-    const asm = req.query.assignment
-    console.log(req.query)
-    let result = await courseService.fetchSubmissionByCourseIdAndUserAndAssignmentId(id, user, asm)
+    const id = req.query.id;
+    const user = req.query.user;
+    const asm = req.query.assignment;
+    console.log(req.query);
+    let result = await courseService.fetchSubmissionByCourseIdAndUserAndAssignmentId(id, user, asm);
     res.status(200).json({
       status: true,
-      data: result
+      data: result,
     });
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -54,7 +54,7 @@ router.post("/", uploader.array("file", 10), async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -67,7 +67,7 @@ router.put("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -80,7 +80,7 @@ router.get("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });

@@ -7,17 +7,17 @@ const courseRepository = new CourseRepostory();
 const scheduleRepository = new ScheduleRepository();
 
 const ScheduleService = class {
-  async fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(user_id, startDate, endDate, term, programme, department) {
-    if (user_id && term && programme && department) {
-      return await scheduleRepository.fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(user_id, startDate, endDate, term, programme, department);
+  async fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(query) {
+    if (query.user_id && query.term && query.programme && query.department && query.startDate && query.endDate) {
+      return await scheduleRepository.fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(query.user_id, query.startDate, query.endDate, query.term, query.programme, query.department);
     } else {
       throw "Missing parameters";
     }
   }
 
-  async fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(user_id, startDate, endDate, term, programme, department) {
-    if (user_id && term && programme && department) {
-      return await scheduleRepository.fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(user_id, startDate, endDate, term, programme, department);
+  async fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(query) {
+    if (query.user_id && query.term && query.programme && query.department && query.startDate && query.endDate) {
+      return await scheduleRepository.fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(query.user_id, query.startDate, query.endDate, query.term, query.programme, query.department);
     } else {
       throw "Missing parameters";
     }
@@ -33,7 +33,7 @@ const ScheduleService = class {
 
   async fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
     if (id && term && programme && department) {
-      return await scheduleRepository.fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department);
+      return await scheduleRepository.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(id, term, programme, department);
     } else {
       throw "Missing parameters";
     }
@@ -90,15 +90,11 @@ const ScheduleService = class {
 
   async fetchScheduleById(Schedule_id) {
     if (!Schedule_id) {
-      return {
-        error: "Invalid Schedule id!",
-      };
+      throw "Invalid Schedule id!";
     }
     let schedule = await fetchDataById(constants.SCHEDULE_SLOTS_TABLE, Schedule_id);
     if (schedule === -1) {
-      return {
-        error: "Schedule does not exist",
-      };
+      throw "Schedule does not exist";
     }
     return schedule;
   }

@@ -45,17 +45,11 @@ const UserService = class {
 
   async fetchUserById(User_id) {
     if (!User_id) {
-      return {
-        status: false,
-        error: "Invalid User id!",
-      };
+      throw "Invalid User id!";
     }
     let user = await fetchDataById(constants.USERS_TABLE, User_id);
     if (user === -1) {
-      return {
-        status: false,
-        error: "User does not exist",
-      };
+      throw "User does not exist";
     }
 
     return {
@@ -66,9 +60,7 @@ const UserService = class {
 
   async fetchUserByUsername(username) {
     if (!username) {
-      return {
-        error: "Invalid User id!",
-      };
+      throw "Missing username!";
     }
     let user = await fetchMatchingDataByField(constants.ADMINS_TABLE, "username", username);
     if (user === -1) {
@@ -78,17 +70,16 @@ const UserService = class {
         if (user === -1) {
           return false;
         } else {
-          user[0].role = 1
+          user[0].role = 1;
         }
       } else {
-        user[0].role = 2
+        user[0].role = 2;
       }
     } else {
-      user[0].role = 3
+      user[0].role = 3;
     }
-    return user
+    return user;
   }
-
 };
 
 module.exports = { UserService };

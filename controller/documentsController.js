@@ -11,7 +11,7 @@ const uploader = multer({
     destination: function (req, file, cb) {
       try {
         var dir = path.resolve() + "\\asset\\documents\\";
-        console.log(dir)
+        console.log(dir);
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true });
         }
@@ -38,18 +38,18 @@ router.get("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
 
 router.get("/download", async (req, res) => {
-  res.status(200).download(req.query.path)
-})
+  res.status(200).download(req.query.path);
+});
 
 router.post("/", uploader.single("file"), async (req, res) => {
   try {
-    console.log(req.body)
+    console.log(req.body);
     let result = await documentSerivce.addDocument(req.body);
     res.status(200).json({
       status: true,
@@ -58,7 +58,7 @@ router.post("/", uploader.single("file"), async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -74,7 +74,7 @@ router.delete("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -90,7 +90,7 @@ router.delete("/hard/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -106,7 +106,7 @@ router.put("/", uploader.single("file"), async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -123,7 +123,7 @@ router.get("resolve", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });

@@ -43,8 +43,8 @@ app.use("/user", userController);
 const requestController = require("./controller/requestController");
 app.use("/request", requestController);
 
-const documentController = require("./controller/documentsController")
-app.use("/document", documentController)
+const documentController = require("./controller/documentsController");
+app.use("/document", documentController);
 
 // Homepage
 app.get("/", async (req, res) => {

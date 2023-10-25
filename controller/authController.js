@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -28,7 +28,7 @@ router.post("/oauth", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      error: e.toString(),
     });
   }
 });
@@ -44,7 +44,7 @@ router.post("/refresh", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });

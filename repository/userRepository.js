@@ -80,7 +80,7 @@ module.exports = class UserRepository {
         department_id: user.department_id,
       });
     } else {
-      throw Error("Invalid user type");
+      throw "Invalid user type";
     }
   }
 
@@ -97,12 +97,12 @@ module.exports = class UserRepository {
         table = constants.ADMINS_TABLE;
         break;
       default:
-        break;
+        throw "Invalid user type!";
     }
     if (table) {
       return await updateData(constants.USERS_TABLE, user.id, { avatar: avatar });
     } else {
-      throw Error("Invalid user type");
+      throw "Invalid user type";
     }
   }
 };

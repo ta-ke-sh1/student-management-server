@@ -48,7 +48,7 @@ router.post("/submit", uploader.array("items", 10), async (req, res) => {
   } catch (e) {
     res.status(200).send({
       success: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -76,7 +76,7 @@ router.put("/submit", uploader.array("items", 10), async (req, res) => {
   } catch (e) {
     res.status(200).send({
       success: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -89,7 +89,7 @@ router.get("/resources", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -111,7 +111,7 @@ router.get("/resource/download", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -136,7 +136,7 @@ router.post("/resources", uploader.array("items", 10), async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -149,7 +149,7 @@ router.put("/resources", uploader.array("items", 10), async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -167,7 +167,7 @@ router.delete("/resources", async (req, res) => {
     console.log(e);
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -180,7 +180,7 @@ router.get("/submissions", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -195,14 +195,14 @@ router.get("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
 
 router.get("/details", async (req, res) => {
   try {
-    let course = await courseService.fetchCourseById(req.query.id)
+    let course = await courseService.fetchCourseById(req.query.id);
     res.status(200).json({
       status: true,
       data: course,
@@ -210,7 +210,7 @@ router.get("/details", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -227,7 +227,7 @@ router.post("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -243,7 +243,7 @@ router.delete("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -259,7 +259,7 @@ router.delete("/hard", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -275,7 +275,7 @@ router.put("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -294,7 +294,7 @@ router.get("/student", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -307,24 +307,24 @@ router.post("/grade", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
 
 router.post("/coursework", async (req, res) => {
   try {
-    let result = courseService.addCourseAssignment(req.body)
+    let result = courseService.addCourseAssignment(req.body);
     res.status(200).json({
       status: true,
-      data: result
-    })
+      data: result,
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e
-    })
+      data: e,
+    });
   }
-})
+});
 
 module.exports = router;

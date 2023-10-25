@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      error: e.toString(),
     });
   }
 });
@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      error: e.toString(),
     });
   }
 });
@@ -42,25 +42,25 @@ router.delete("/", async (req, res) => {
     res.status(200).json(result);
     res.status(200).json({
       status: false,
-      error: e,
+      error: e.toString(),
     });
   }
 });
 
-router.put("/", async (req, res) => { });
+router.put("/", async (req, res) => {});
 
 router.get("/rooms", async (req, res) => {
   try {
     let rooms = await roomService.fetchAllRooms();
-    console.log(rooms)
+    console.log(rooms);
     res.status(200).json({
       status: true,
-      data: rooms
+      data: rooms,
     });
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      error: e.toString(),
     });
   }
 });
@@ -73,7 +73,7 @@ router.get("/room/:id", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      error: e.toString(),
     });
   }
 });
@@ -87,7 +87,7 @@ router.post("/room", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      error: e.toString(),
     });
   }
 });
@@ -100,7 +100,7 @@ router.put("/room", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      error: e.toString(),
     });
   }
 });
@@ -119,7 +119,7 @@ router.delete("/room", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      error: e.toString(),
     });
   }
 });
@@ -138,7 +138,7 @@ router.delete("/room/hard", containsRole(3), async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      error: e.toString(),
     });
   }
 });

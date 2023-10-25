@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
     });
   }
 });
@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
     });
   }
 });
@@ -35,7 +35,7 @@ router.delete("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
     });
   }
 });
@@ -48,7 +48,7 @@ router.put("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
     });
   }
 });

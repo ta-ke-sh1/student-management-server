@@ -8,8 +8,10 @@ const fs = require("fs");
 const path = require("path");
 
 const { UserService } = require("../services/userService");
+const { GradingService } = require("../services/gradingService");
 
 const userService = new UserService();
+const gradingService = new GradingService();
 
 const uploader = multer({
   storage: multer.diskStorage({
@@ -40,7 +42,7 @@ router.get("/admins", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
     });
   }
 });
@@ -55,7 +57,7 @@ router.get("/lecturers", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
     });
   }
 });
@@ -70,7 +72,7 @@ router.get("/students", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
     });
   }
 });
@@ -82,7 +84,7 @@ router.get("/deactivate", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
     });
   }
 });
@@ -96,7 +98,7 @@ router.put("/avatar", uploader.single("avatar"), async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
     });
   }
 });
@@ -117,7 +119,7 @@ router.post("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
     });
   }
 });
@@ -127,7 +129,7 @@ router.delete("/", (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
     });
   }
 });
@@ -141,7 +143,52 @@ router.put("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString(),
+    });
+  }
+});
+
+router.get("/grade/all", async (req, res) => {
+  try {
+    let data = await gradingService.fetchAllGradesByStudentId(req.query);
+    res.status(200).json({
+      status: false,
+      data: data,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
+router.get("/grade/group", async (req, res) => {
+  try {
+    let data = await gradingService.fetchAllGradesByStudentIdAndSemester(req.query);
+    res.status(200).json({
+      status: false,
+      data: data,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
+router.get("/grade/semester", async (req, res) => {
+  try {
+    let data = await gradingService.fetchAllGradesByStudentIdAndTermAndProgrammeAndDepartmentAndGroup(req.query);
+    res.status(200).json({
+      status: false,
+      data: data,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
     });
   }
 });
