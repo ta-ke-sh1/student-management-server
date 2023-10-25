@@ -148,11 +148,26 @@ router.put("/", async (req, res) => {
   }
 });
 
+router.get("/grade", async (req, res) => {
+  try {
+    let data = await gradingService.fetchAllGrades();
+    res.status(200).json({
+      status: true,
+      data: data,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
 router.get("/grade/all", async (req, res) => {
   try {
     let data = await gradingService.fetchAllGradesByStudentId(req.query);
     res.status(200).json({
-      status: false,
+      status: true,
       data: data,
     });
   } catch (e) {
@@ -167,7 +182,7 @@ router.get("/grade/group", async (req, res) => {
   try {
     let data = await gradingService.fetchAllGradesByStudentIdAndSemester(req.query);
     res.status(200).json({
-      status: false,
+      status: true,
       data: data,
     });
   } catch (e) {
@@ -182,7 +197,7 @@ router.get("/grade/semester", async (req, res) => {
   try {
     let data = await gradingService.fetchAllGradesByStudentIdAndTermAndProgrammeAndDepartmentAndGroup(req.query);
     res.status(200).json({
-      status: false,
+      status: true,
       data: data,
     });
   } catch (e) {

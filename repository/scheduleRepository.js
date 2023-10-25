@@ -2,6 +2,36 @@ const constants = require("../utils/constants");
 const { db, addData, updateData, snapshotToArray } = require("./firebaseRepository");
 
 module.exports = class ScheduleRepository {
+
+  async fetchGroupsByProgrammeAndTermAndDepartment(programme, term, department) {
+    let snapshot = await db
+      .collection(constants.PROGRAMME_TABLE)
+      .doc(programme)
+      .collection(constants.TERMS_TABLE)
+      .doc(term)
+      .collection(constants.DEPARTMENTS_TABLE)
+      .doc(department)
+      .collection(constants.CLASS_TABLE)
+      .get();
+
+    return snapshotToArray(snapshot);
+  }
+
+  async fetchScheduleByGroupIdAndDateAndTermAndProgrammeAndDepartment(id, programme, term, department) {
+    let snapshot = await db
+      .collection(constants.PROGRAMME_TABLE)
+      .doc(programme)
+      .collection(constants.TERMS_TABLE)
+      .doc(term)
+      .collection(constants.DEPARTMENTS_TABLE)
+      .doc(department)
+      .collection(constants.CLASS_TABLE)
+      .doc(id).collection(constants.SCHEDULE_SLOTS_TABLE)
+      .get();
+
+    return snapshotToArray(snapshot);
+  }
+
   async fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(user_id, startDate, endDate, term, programme, department, group) {
     let snapshot = await db
       .collection(constants.PROGRAMME_TABLE)
@@ -18,9 +48,6 @@ module.exports = class ScheduleRepository {
       .where("date", "<=", endDate)
       .get();
 
-    if (snapshot.empty) {
-      throw "No matching documents";
-    }
     return snapshotToArray(snapshot);
   }
 
@@ -40,19 +67,40 @@ module.exports = class ScheduleRepository {
       .where("date", "<=", endDate)
       .get();
 
-    if (snapshot.empty) {
-      throw "No matching documents";
-    }
-
     return snapshotToArray(snapshot);
   }
 
   async fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
-    let snapshot = await db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.CLASS_TABLE).doc(id).collection(constants.SCHEDULE_SLOTS_TABLE).get();
+    let snapshot = await db
+      .collection(constants.PROGRAMME_TABLE)
+      .doc(programme)
+      .collection(constants.TERMS_TABLE)
+      .doc(term)
+      .collection(constants.DEPARTMENTS_TABLE)
+      .doc(department)
+      .collection(constants.CLASS_TABLE)
+      .doc(id)
+      .collection(constants.SCHEDULE_SLOTS_TABLE)
+      .get();
 
-    if (snapshot.empty) {
-      throw "No matching documents";
-    }
+
+    return snapshotToArray(snapshot);
+  }
+
+  async fetchParticipantsByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
+    let snapshot = await db
+      .collection(constants.PROGRAMME_TABLE)
+      .doc(programme)
+      .collection(constants.TERMS_TABLE)
+      .doc(term)
+      .collection(constants.DEPARTMENTS_TABLE)
+      .doc(department)
+      .collection(constants.CLASS_TABLE)
+      .doc(id)
+      .collection(constants.PARTICIPANTS_TABLE)
+      .get();
+
+
     return snapshotToArray(snapshot);
   }
 

@@ -9,9 +9,13 @@ const GradingService = class {
     this.gradeRepository = new GradeRepository();
   }
 
-  async validGrading() {}
+  async validGrading() { }
 
-  async reserveGrading() {}
+  async reserveGrading() { }
+
+  async fetchAllGrades() {
+    return await this.gradeRepository.fetchAllGrades();
+  }
 
   async fetchAllGradesByStudentId(query) {
     if (!query.id) throw "Missing parameter!";

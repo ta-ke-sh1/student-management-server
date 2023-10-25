@@ -20,4 +20,5 @@ module.exports = Object.freeze({
   PROGRAMME_TABLE: "Programme",
   TERMS_TABLE: "Terms",
   GRADE_TABLE: "Grades",
+  PARTICIPANTS_TABLE: "Participants"
 });

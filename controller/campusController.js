@@ -11,8 +11,12 @@ const campusService = new CampusService();
 
 router.get("/", async (req, res) => {
   try {
-    let docs = await fetchAllData(constants.CAMPUS_TABLE);
-    res.status(200).json(docs);
+    let data = await fetchAllData(constants.CAMPUS_TABLE);
+    console.log(data)
+    res.status(200).json({
+      status: true,
+      data: data
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
@@ -47,12 +51,12 @@ router.delete("/", async (req, res) => {
   }
 });
 
-router.put("/", async (req, res) => {});
+router.put("/", async (req, res) => { });
 
 router.get("/rooms", async (req, res) => {
   try {
+    console.log("Rooms")
     let rooms = await roomService.fetchAllRooms();
-    console.log(rooms);
     res.status(200).json({
       status: true,
       data: rooms,

@@ -6,15 +6,17 @@ const { containsRole } = require("../middleware/tokenCheck");
 const scheduleService = new ScheduleService();
 
 router.get("/", async (req, res) => {
-  console.log(req.query);
-  // const schedules = scheduleService.fetchAllSchedules(campus);
   try {
+    console.log(req.query);
     const groups = await scheduleService.fetchGroupsByProgrammeAndTerm(req.query.programme, req.query.term, req.query.department);
-    res.status(200).json(groups);
+    res.status(200).json({
+      status: true,
+      data: groups
+    });
   } catch (e) {
-    res.status(300).json({
+    res.status(200).json({
       status: false,
-      error: e,
+      error: e.toString(),
     });
   }
 });
@@ -55,11 +57,43 @@ router.post("/group", async (req, res) => {
   }
 });
 
-router.put("/restore", (req, res) => {});
+router.put("/restore", (req, res) => { });
 
-router.delete("/", (req, res) => {});
+router.delete("/", (req, res) => { });
 
-router.delete("/hard", containsRole(3), (req, res) => {});
+router.delete("/hard", containsRole(3), (req, res) => { });
+
+router.get("/info/schedule", async (req, res) => {
+  let q = req.query
+  let data = await scheduleService.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(q.id, q.term, q.programme, q.department)
+  try {
+    res.status(200).json({
+      status: true,
+      data: data
+    })
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString()
+    })
+  }
+})
+
+router.get("/info/participants", async (req, res) => {
+  let q = req.query
+  let data = await scheduleService.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(q.id, q.term, q.programme, q.department)
+  try {
+    res.status(200).json({
+      status: true,
+      data: data
+    })
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString()
+    })
+  }
+})
 
 router.get("/student", async (req, res) => {
   console.log(req.query);

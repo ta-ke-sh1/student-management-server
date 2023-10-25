@@ -2,7 +2,7 @@ const constants = require("../utils/constants");
 const { addData, deleteData, updateData, fetchAllData, fetchDataById, fetchMatchingDataByField, db, snapshotToArray } = require("./firebaseRepository");
 
 module.exports = class GradeRepository {
-  async fetchGrades() {
+  async fetchAllGrades() {
     return await fetchAllData(constants.GRADE_TABLE);
   }
 

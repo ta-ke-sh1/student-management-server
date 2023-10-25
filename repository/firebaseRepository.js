@@ -23,7 +23,7 @@ initializeApp({
 const db = getFirestore();
 
 const fetchAllData = async (collection) => {
-  const snapshot = await db.collection(collection).get();
+  const snapshot = await db.collection(collection).where("status", "==", true).get();
   return snapshotToArray(snapshot);
 };
 
@@ -39,6 +39,7 @@ const fetchDataById = async (collection, id) => {
 };
 
 const fetchMatchingDataByField = async (collection, field, keyword) => {
+  // search where ... = ....
   const docRef = db.collection(collection);
   const snapshot = await docRef.where(field, "==", keyword).get();
   if (snapshot.empty) {
@@ -48,6 +49,7 @@ const fetchMatchingDataByField = async (collection, field, keyword) => {
 };
 
 const addData = async (collection, obj) => {
+  // INSERT {} IN TABLE ...
   const res = await db.collection(collection).add(obj);
   return {
     msg: "Added data with ID: " + res.id,
@@ -55,6 +57,8 @@ const addData = async (collection, obj) => {
 };
 
 const setData = async (collection, id, obj) => {
+  // SET {} WHERE ID = ID
+  // 
   await db.collection(collection).doc(id).set(obj);
   return {
     msg: "Set data with ID: " + id,

@@ -7,8 +7,11 @@ const scheduleService = new ScheduleService();
 router.get("/schedules", async (req, res) => {
   try {
     console.log(req.query);
-    let result = await scheduleService.fetchScheduleByIdAndTermAndProgrammeAndDepartment(req.query.id, req.query.term, req.query.programme, req.query.department);
-    res.status(200).json(result);
+    let result = await scheduleService.fetchScheduleByIdAndDateAndTermAndProgrammeAndDepartment(req.query);
+    res.status(200).json({
+      status: true,
+      data: result
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
@@ -20,7 +23,10 @@ router.get("/schedules", async (req, res) => {
 router.get("/participants", async (req, res) => {
   try {
     let result = await scheduleService.fetchParticipantsByIdAndTermAndProgrammeAndDepartment(req.query.id, req.query.term, req.query.programme, req.query.department);
-    res.status(200).json(result);
+    res.status(200).json({
+      status: true,
+      data: result
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
