@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
     const groups = await scheduleService.fetchGroupsByProgrammeAndTerm(req.query.programme, req.query.term, req.query.department);
     res.status(200).json({
       status: true,
-      data: groups
+      data: groups,
     });
   } catch (e) {
     res.status(200).json({
@@ -57,43 +57,43 @@ router.post("/group", async (req, res) => {
   }
 });
 
-router.put("/restore", (req, res) => { });
+router.put("/restore", (req, res) => {});
 
-router.delete("/", (req, res) => { });
+router.delete("/", (req, res) => {});
 
-router.delete("/hard", containsRole(3), (req, res) => { });
+router.delete("/hard", containsRole(3), (req, res) => {});
 
 router.get("/info/schedule", async (req, res) => {
-  let q = req.query
-  let data = await scheduleService.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(q.id, q.term, q.programme, q.department)
+  let q = req.query;
+  let data = await scheduleService.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(q.id, q.term, q.programme, q.department);
   try {
     res.status(200).json({
       status: true,
-      data: data
-    })
+      data: data,
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e.toString()
-    })
+      data: e.toString(),
+    });
   }
-})
+});
 
 router.get("/info/participants", async (req, res) => {
-  let q = req.query
-  let data = await scheduleService.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(q.id, q.term, q.programme, q.department)
+  let q = req.query;
+  let data = await scheduleService.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(q.id, q.term, q.programme, q.department);
   try {
     res.status(200).json({
       status: true,
-      data: data
-    })
+      data: data,
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e.toString()
-    })
+      data: e.toString(),
+    });
   }
-})
+});
 
 router.get("/student", async (req, res) => {
   console.log(req.query);

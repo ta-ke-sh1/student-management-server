@@ -7,7 +7,7 @@ module.exports = class GradeRepository {
   }
 
   async fetchAllGradesByStudentId(id) {
-    return await fetchMatchingDataByField(constants.GRADE_TABLE, "student", id);
+    return await fetchMatchingDataByField(constants.GRADE_TABLE, "student_id", id);
   }
 
   async fetchAllGradesByStudentIdAndSemester(id, semester) {

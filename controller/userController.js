@@ -208,4 +208,19 @@ router.get("/grade/semester", async (req, res) => {
   }
 });
 
+router.get("/curricullum", async (req, res) => {
+  try {
+    let data = await userService.fetchUserCurricullum(req.query.id);
+    res.status(200).json({
+      status: true,
+      data: data,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
 module.exports = router;
