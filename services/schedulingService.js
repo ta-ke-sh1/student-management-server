@@ -90,6 +90,10 @@ const ScheduleService = class {
     return groups
   }
 
+  async fetchAllGroups() {
+    return await courseRepository.fetchAllGroups();
+  }
+
   async addGroup(data) {
     return await courseRepository.addGroupBySemester(data);
   }

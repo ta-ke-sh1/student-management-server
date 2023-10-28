@@ -2,13 +2,23 @@ const constants = require("../utils/constants");
 const { addData, deleteData, updateData, db, snapshotToArray } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
-  constructor() {}
+  constructor() { }
+
+  async fetchAllGroups() {
+    let data = await db.collection(constants.CLASS_TABLE).where("status", "==", true).get();
+
+    if (data.empty) {
+      throw ("Empty table, please add some data!");
+    }
+
+    return snapshotToArray(data);
+  }
+
   async fetchParticipantsByIdAndTermAndProgrammeAndDepartment(group) {
     let data = await db.collection(constants.PARTICIPANTS_TABLE).where("group", "==", group).where("status", "==", true).get();
 
     if (data.empty) {
-      console.log("No matching documents.");
-      return [];
+      throw ("No matching documents.");
     }
 
     return snapshotToArray(data);

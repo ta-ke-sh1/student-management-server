@@ -4,6 +4,21 @@ const router = express.Router();
 
 const scheduleService = new ScheduleService();
 
+router.get("/groups", async (req, res) => {
+  try {
+    let result = await scheduleService.fetchAllGroups();
+    res.status(200).json({
+      status: true,
+      data: result
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
 router.get("/schedules", async (req, res) => {
   try {
     console.log(req.query);

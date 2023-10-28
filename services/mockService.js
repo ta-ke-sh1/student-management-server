@@ -89,7 +89,13 @@ module.exports = class MockService {
             }
             const docRef = programme + "20" + i.toString()
 
-            db.collection(constants.PROGRAMME_TABLE).doc(programmes[utils.randomIntWithinRange(0, 3)]).collection(constants.TERMS_TABLE).doc(semesters[utils.randomIntWithinRange(0, 2)] + "-" + years[utils.randomIntWithinRange(0, 3)]).collection(constants.DEPARTMENTS_TABLE).doc(programme).collection(constants.CLASS_TABLE).doc(docRef).set(group)
+            db.collection(constants.CLASS_TABLE).add({
+                name: docRef,
+                ...group,
+                programme: programmes[utils.randomIntWithinRange(0, 3)],
+                term: semesters[utils.randomIntWithinRange(0, 2)] + "-" + years[utils.randomIntWithinRange(0, 3)],
+                department: programme
+            })
         }
 
     }
