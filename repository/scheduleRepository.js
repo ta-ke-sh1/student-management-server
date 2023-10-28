@@ -2,6 +2,13 @@ const constants = require("../utils/constants");
 const { db, addData, updateData, snapshotToArray } = require("./firebaseRepository");
 
 module.exports = class ScheduleRepository {
+
+  async fetchScheduleByGroupId(id) {
+    let snapshot = await db.collection(constants.SCHEDULE_SLOTS_TABLE).where("group_id", "==", group_id).get();
+    return snapshotToArray(snapshot);
+  }
+
+
   async fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(user_id, startDate, endDate, term, programme, department, group) {
     let snapshot = await db
       .collection(constants.SCHEDULE_SLOTS_TABLE)
@@ -40,7 +47,6 @@ module.exports = class ScheduleRepository {
 
   async fetchParticipantsByGroupId(group_id) {
     let snapshot = await db.collection(constants.PARTICIPANTS_TABLE).where("group_id", "==", group_id).get();
-
     return snapshotToArray(snapshot);
   }
 

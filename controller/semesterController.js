@@ -22,7 +22,7 @@ router.get("/groups", async (req, res) => {
 router.get("/schedules", async (req, res) => {
   try {
     console.log(req.query);
-    let result = await scheduleService.fetchScheduleByIdAndDateAndTermAndProgrammeAndDepartment(req.query);
+    let result = await scheduleService.fetchScheduleByGroupId(req.query.id, req.query.slots);
     res.status(200).json({
       status: true,
       data: result
@@ -37,7 +37,7 @@ router.get("/schedules", async (req, res) => {
 
 router.get("/participants", async (req, res) => {
   try {
-    let result = await scheduleService.fetchParticipantsByIdAndTermAndProgrammeAndDepartment(req.query.id, req.query.term, req.query.programme, req.query.department);
+    let result = await scheduleService.fetchParticipantsByGroupId(req.query.id);
     res.status(200).json({
       status: true,
       data: result

@@ -49,10 +49,17 @@ router.get("/admins", async (req, res) => {
 
 router.get("/lecturers", async (req, res) => {
   try {
-    const users = await userService.fetchAllUsers("lecturer");
+    let users = []
+    let dept = req.query.department;
+    console.log(dept)
+    if (dept) {
+      users = await userService.fetchAllLecturersByDepartment(dept);
+    } else {
+      users = await userService.fetchAllUsers("lecturer");
+    }
     res.status(200).json({
       status: true,
-      data: users ?? [],
+      data: users,
     });
   } catch (e) {
     res.status(200).json({

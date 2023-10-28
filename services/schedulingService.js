@@ -7,24 +7,13 @@ const courseRepository = new CourseRepostory();
 const scheduleRepository = new ScheduleRepository();
 
 const ScheduleService = class {
-  async fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(query) {
-    if (query.user_id && query.term && query.programme && query.department && query.startDate && query.endDate) {
-      let schedules = await scheduleRepository.fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(query.user_id, query.startDate, query.endDate, query.term, query.programme, query.department);
-      schedules.forEach((schedule) => {
 
-      })
-      return schedules
-    } else {
-      throw "Missing parameters";
-    }
-  }
-
-  async fetchScheduleByIdAndDateAndTermAndProgrammeAndDepartment(query) {
-    if (query.id && query.term && query.programme && query.department) {
-      let res = await scheduleRepository.fetchScheduleByGroupIdAndDateAndTermAndProgrammeAndDepartment(query.id, query.programme, query.term, query.department);
+  async fetchScheduleByGroupId(id, slots) {
+    if (id) {
+      let res = await scheduleRepository.fetchScheduleByGroupId(id);
       console.log("Search result:")
       let leftover = res.length;
-      for (let i = 1; i <= 50 - leftover; i++) {
+      for (let i = 1; i <= slots - leftover; i++) {
         res.push({
           id: i
         })
@@ -32,7 +21,7 @@ const ScheduleService = class {
       console.log(res.length)
       return res;
     } else {
-      throw "Missing parameters";
+      throw "Missing id";
     }
   }
 
@@ -68,11 +57,16 @@ const ScheduleService = class {
     }
   }
 
-  async fetchParticipantsByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
-    if (id && term && programme && department) {
-      return await scheduleRepository.fetchParticipantsByIdAndTermAndProgrammeAndDepartment(id, term, programme, department);
+  async fetchParticipantsByGroupId(id) {
+    if (id) {
+      let result = await scheduleRepository.fetchParticipantsByGroupId(id);
+      if (result.length < 1) {
+        throw "This group has no participants"
+      } else {
+        return result
+      }
     } else {
-      throw "Missing parameters";
+      throw "Missing group id";
     }
   }
 

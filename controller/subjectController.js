@@ -4,8 +4,19 @@ const router = express.Router();
 
 const subjectService = new SubjectService();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
+    let data = []
+    console.log("Department is: " + req.query.department)
+    if (req.query.department) {
+      data = await subjectService.fetchAllSubjectsByDepartment(req.query.department);
+    } else {
+      data = await subjectService.fetchAllSubjects();
+    }
+    res.status(200).json({
+      status: true,
+      data: data
+    })
   } catch (e) {
     res.status(200).json({
       status: false,
@@ -16,9 +27,11 @@ router.get("/", (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    console.log(req.body);
     let result = await subjectService.addSubject(req.body);
-    res.status(200).json(result);
+    res.status(200).json({
+      status: true,
+      data: result
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
@@ -30,8 +43,12 @@ router.post("/", async (req, res) => {
 router.delete("/", async (req, res) => {
   try {
     let id = req.query.id;
+    console.log(id)
     let result = await subjectService.deleteSubject(id);
-    res.status(200).json(result);
+    res.status(200).json({
+      status: true,
+      data: result
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
@@ -44,8 +61,12 @@ router.put("/", async (req, res) => {
   try {
     let id = req.query.id;
     let result = await subjectService.editSubject(id, req.body);
-    res.status(200).json(result);
+    res.status(200).json({
+      status: true,
+      data: result
+    });
   } catch (e) {
+    console.log(e.toString())
     res.status(200).json({
       status: false,
       data: e.toString(),

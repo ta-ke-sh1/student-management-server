@@ -55,7 +55,7 @@ const MockService = require("./services/mockService");
 
 app.get("/mock", async (req, res) => {
   const mockService = new MockService();
-  await mockService.AddGroup();
+  await mockService.AddRoom();
   res.status(200).json({});
 });
 

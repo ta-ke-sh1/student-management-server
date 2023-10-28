@@ -14,6 +14,11 @@ const UserService = class {
     this.subjectService = new SubjectService();
     this.gradingService = new GradingService();
   }
+
+  async fetchAllLecturersByDepartment(department) {
+    return await this.userRepository.fetchAllLecturersByDepartment(department)
+  }
+
   async fetchAllUsers(type) {
     return await this.userRepository.fetchAllUsers(type);
   }

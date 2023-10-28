@@ -127,32 +127,6 @@ module.exports = class MockService {
             }
         }
 
-        for (let i = 1; i <= 3; i++) {
-            for (let j = 0; j < 20; j++) {
-                let index = i * 100 + j;
-                const ref = db.collection("Rooms").doc("Room-HCM-A-" + index)
-                batch.set(ref, {
-                    room: index.toString(),
-                    building: "Block A",
-                    campus: "HCM",
-                    capacity: capacity[utils.randomIntWithinRange(0, 3)]
-                })
-            }
-        }
-
-        for (let i = 1; i <= 4; i++) {
-            for (let j = 0; j < 10; j++) {
-                let index = i * 100 + j;
-                const ref = db.collection("Rooms").doc("Room-HCM-B-" + index)
-                batch.set(ref, {
-                    room: index.toString(),
-                    building: "Block B",
-                    campus: "HCM",
-                    capacity: capacity[utils.randomIntWithinRange(0, 3)]
-                })
-            }
-        }
-
         await batch.commit();
     }
 

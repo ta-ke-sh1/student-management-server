@@ -23,7 +23,7 @@ initializeApp({
 const db = getFirestore();
 
 const fetchAllData = async (collection) => {
-  const snapshot = await db.collection(collection).where("status", "==", true).get();
+  const snapshot = await db.collection(collection).get();
   return snapshotToArray(snapshot);
 };
 

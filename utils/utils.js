@@ -3,7 +3,7 @@ const fs = require("fs");
 module.exports = class Utils {
   async isNonEmptyObject(obj) {
     let values = Object.values(obj);
-    return values.includes("");
+    return values.includes("") || values.includes(undefined);
   }
 
   randomIntWithinRange(min, max) {
