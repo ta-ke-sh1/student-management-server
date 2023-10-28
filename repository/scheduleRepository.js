@@ -2,47 +2,13 @@ const constants = require("../utils/constants");
 const { db, addData, updateData, snapshotToArray } = require("./firebaseRepository");
 
 module.exports = class ScheduleRepository {
-
-  async fetchGroupsByProgrammeAndTermAndDepartment(programme, term, department) {
-    let snapshot = await db
-      .collection(constants.PROGRAMME_TABLE)
-      .doc(programme)
-      .collection(constants.TERMS_TABLE)
-      .doc(term)
-      .collection(constants.DEPARTMENTS_TABLE)
-      .doc(department)
-      .collection(constants.CLASS_TABLE)
-      .get();
-
-    return snapshotToArray(snapshot);
-  }
-
-  async fetchScheduleByGroupIdAndDateAndTermAndProgrammeAndDepartment(id, programme, term, department) {
-    let snapshot = await db
-      .collection(constants.PROGRAMME_TABLE)
-      .doc(programme)
-      .collection(constants.TERMS_TABLE)
-      .doc(term)
-      .collection(constants.DEPARTMENTS_TABLE)
-      .doc(department)
-      .collection(constants.CLASS_TABLE)
-      .doc(id).collection(constants.SCHEDULE_SLOTS_TABLE)
-      .get();
-
-    return snapshotToArray(snapshot);
-  }
-
   async fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(user_id, startDate, endDate, term, programme, department, group) {
     let snapshot = await db
-      .collection(constants.PROGRAMME_TABLE)
-      .doc(programme)
-      .collection(constants.TERMS_TABLE)
-      .doc(term)
-      .collection(constants.DEPARTMENTS_TABLE)
-      .doc(department)
-      .collection(constants.CLASS_TABLE)
-      .doc(group)
       .collection(constants.SCHEDULE_SLOTS_TABLE)
+      .where("term", "==", term)
+      .where("programme", "==", programme)
+      .where("department", "==", department)
+      .where("group", "==", group)
       .where("lecturer", "==", user_id)
       .where("date", ">=", startDate)
       .where("date", "<=", endDate)
@@ -53,15 +19,11 @@ module.exports = class ScheduleRepository {
 
   async fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(user_id, startDate, endDate, term, programme, department, group) {
     let snapshot = await db
-      .collection(constants.PROGRAMME_TABLE)
-      .doc(programme)
-      .collection(constants.TERMS_TABLE)
-      .doc(term)
-      .collection(constants.DEPARTMENTS_TABLE)
-      .doc(department)
-      .collection(constants.CLASS_TABLE)
-      .doc(group)
       .collection(constants.SCHEDULE_SLOTS_TABLE)
+      .where("term", "==", term)
+      .where("programme", "==", programme)
+      .where("department", "==", department)
+      .where("group", "==", group)
       .where("user_id", "==", user_id)
       .where("date", ">=", startDate)
       .where("date", "<=", endDate)
@@ -70,36 +32,14 @@ module.exports = class ScheduleRepository {
     return snapshotToArray(snapshot);
   }
 
-  async fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
-    let snapshot = await db
-      .collection(constants.PROGRAMME_TABLE)
-      .doc(programme)
-      .collection(constants.TERMS_TABLE)
-      .doc(term)
-      .collection(constants.DEPARTMENTS_TABLE)
-      .doc(department)
-      .collection(constants.CLASS_TABLE)
-      .doc(id)
-      .collection(constants.SCHEDULE_SLOTS_TABLE)
-      .get();
-
+  async fetchScheduleByGroupId(group_id) {
+    let snapshot = await db.collection(constants.SCHEDULE_SLOTS_TABLE).where("group_id", "==", group_id).get();
 
     return snapshotToArray(snapshot);
   }
 
-  async fetchParticipantsByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
-    let snapshot = await db
-      .collection(constants.PROGRAMME_TABLE)
-      .doc(programme)
-      .collection(constants.TERMS_TABLE)
-      .doc(term)
-      .collection(constants.DEPARTMENTS_TABLE)
-      .doc(department)
-      .collection(constants.CLASS_TABLE)
-      .doc(id)
-      .collection(constants.PARTICIPANTS_TABLE)
-      .get();
-
+  async fetchParticipantsByGroupId(group_id) {
+    let snapshot = await db.collection(constants.PARTICIPANTS_TABLE).where("group_id", "==", group_id).get();
 
     return snapshotToArray(snapshot);
   }
@@ -134,7 +74,7 @@ module.exports = class ScheduleRepository {
     }
     for (let i = 0; i < report.attendance.length; i++) {
       try {
-        let ref = db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.SCHEDULE_SLOTS_TABLE).doc(report.attendance[i].student_id);
+        let ref = db.collection(constants.SCHEDULE_SLOTS_TABLE).doc(report.attendance[i].student_id).where("group_id", "==", report.id);
 
         await ref.update({
           attendance_status: report.attendance[i].attendance_status,
@@ -148,7 +88,7 @@ module.exports = class ScheduleRepository {
   }
 
   async editAttendance(id, status) {
-    let ref = db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.SCHEDULE_SLOTS_TABLE).doc(id);
+    let ref = db.collection(constants.SCHEDULE_SLOTS_TABLE).doc(id);
 
     await ref.update({
       attendance_status: status,

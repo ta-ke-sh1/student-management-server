@@ -1,10 +1,10 @@
 const constants = require("../utils/constants");
-const { addData, deleteData, updateData, fetchMatchingDataByField, fetchAllData, db, snapshotToArray, fetchDataById, setData } = require("./firebaseRepository");
+const { addData, deleteData, updateData, db, snapshotToArray } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
   constructor() {}
-  async fetchParticipantsByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
-    let data = await db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.CLASS_TABLE).doc(id).collection(constants.SCHEDULE_SLOTS_TABLE).get();
+  async fetchParticipantsByIdAndTermAndProgrammeAndDepartment(group) {
+    let data = await db.collection(constants.PARTICIPANTS_TABLE).where("group", "==", group).where("status", "==", true).get();
 
     if (data.empty) {
       console.log("No matching documents.");
@@ -15,9 +15,8 @@ module.exports = class CourseRepostory {
   }
 
   async fetchGroupsByProgrammeAndTermAndDepartment(programme, term, department) {
-    let data = await db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.CLASS_TABLE).where("status", "==", true).get();
+    let data = await db.collection(constants.CLASS_TABLE).where("programme", "==", programme).where("term", "==", term).where("department", "==", department).where("status", "==", true).get();
 
-    db.collection(constants.ADMINS_TABLE).orderBy("__name__").startAt();
     let results = await snapshotToArray(data);
     results.forEach((result) => {
       result.programme = programme;
@@ -30,18 +29,11 @@ module.exports = class CourseRepostory {
 
   async addGroupBySemester(data) {
     console.log(data);
-    let ref = db.collection(constants.PROGRAMME_TABLE).doc(data.programme).collection(constants.TERMS_TABLE).doc(data.term).collection(constants.DEPARTMENTS_TABLE).doc(data.department).collection(constants.CLASS_TABLE).doc(data.name);
+    let ref = db.collection(constants.CLASS_TABLE).where("programme", "==", programme).where("term", "==", term).where("department", "==", department).doc();
 
     let g = await ref.get();
     if (g.exists) {
-      console.log({
-        status: false,
-        msg: "Group already exists!",
-      });
-      return {
-        status: false,
-        msg: "Group already exists!",
-      };
+      throw "Group already exists!";
     } else {
       console.log("Add group");
 
@@ -76,7 +68,8 @@ module.exports = class CourseRepostory {
   }
 
   async fetchAssignmentsByCourse(id) {
-    const snapshots = await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(id).collection(constants.SUBMISSIONS_TABLE).get();
+    const snapshots = await db.collection(constants.SUBMISSIONS_TABLE).where("group", "==", id).get();
+
     return snapshotToArray(snapshots);
   }
 
@@ -87,7 +80,7 @@ module.exports = class CourseRepostory {
   }
 
   async submitCourseworkSubmission(coursework) {
-    return await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(assignment.id).collection(constants.SUBMISSIONS_TABLE).doc(assignment.name).collection(constants.SUBMISSIONS_TABLE).doc(coursework.student_id).set(coursework);
+    return await db.collection(constants.SUBMISSIONS_TABLE).add(coursework);
   }
 
   async updateCourseworkSubmission(coursework) {
@@ -122,7 +115,7 @@ module.exports = class CourseRepostory {
   }
 
   async addCourseAssignment(assignment) {
-    let doc = await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(assignment.id).collection(constants.SUBMISSIONS_TABLE).doc(assignment.name).get();
+    let doc = await db.collection(constants.SUBMISSIONS_TABLE).doc(assignment.id).get();
     if (doc.exists) {
       throw "Already exists assignment with this name!";
     } else {

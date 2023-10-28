@@ -7,7 +7,7 @@ module.exports = class SubmissionRepository {
   }
 
   async fetchSubmissionByTermAndProgrammeAndDepartmentAndGroup(term, programme, department, group) {
-    let snapshot = await db.collection(constants.PROGRAMME_TABLE).doc(programme).collection(constants.TERMS_TABLE).doc(term).collection(constants.DEPARTMENTS_TABLE).doc(department).collection(constants.CLASS_TABLE).doc(group).collection(constants.SUBMISSIONS_TABLE).get();
+    let snapshot = await db.collection(constants.SUBMISSIONS_TABLE).where("group", "==", group).get();
 
     if (snapshot.empty) {
       throw "No matching documents";
@@ -16,8 +16,8 @@ module.exports = class SubmissionRepository {
     return snapshotToArray(snapshot);
   }
 
-  async fetchSubmissionByCourseIdAndUserAndAssignmentId(id, user, asm) {
-    let snapshots = await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(id).collection(constants.SUBMISSIONS_TABLE).doc(asm).collection("Submissions").doc(user).get();
+  async fetchSubmissionByCourseIdAndUserAndAssignmentId(group, user, asm) {
+    let snapshots = await db.collection(constants.SUBMISSIONS_TABLE).where("group", "==", group).where("assignment_id", "==", asm).get();
     return {
       id: snapshots.id,
       ...snapshots.data(),
