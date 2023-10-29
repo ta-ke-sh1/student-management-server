@@ -18,7 +18,9 @@ router.get("/", (req, res) => {
 });
 
 router.post("/oauth", async (req, res) => {
+  console.log("OAuth")
   try {
+    console.log(req.body.username + "-" + req.body.password)
     const result = await authService.authenticate(req.body.username, req.body.password);
     console.log(result);
     res.status(200).json({

@@ -42,6 +42,8 @@ module.exports = class MockService {
             let department = departments[utils.randomIntWithinRange(0, 4)]
 
             let user = {
+                username: firstName + lastName,
+                password: "root",
                 firstName: firstName,
                 lastName: lastName,
                 dob: utils.randomIntWithinRange(1990, 2002) + "-" + utils.randomIntWithinRange(1, 12) + "-" + utils.randomIntWithinRange(1, 29),
@@ -51,10 +53,12 @@ module.exports = class MockService {
                 email: (firstName + lastName[0] + department.toUpperCase() + (200000 + i) + "@fpt.edu.vn").toLowerCase(),
                 password: "",
                 status: true,
+                address: "M/A",
+                city: "Hanoi"
             }
 
-            const ref = db.collection(table[utils.randomIntWithinRange(0, 2)]).doc((firstName + lastName[0]).toLowerCase())
-            await ref.set(user)
+            const ref = db.collection(table[utils.randomIntWithinRange(0, 2)])
+            await ref.add(user)
 
             console.log(user)
         }

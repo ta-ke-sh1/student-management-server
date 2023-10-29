@@ -32,6 +32,22 @@ const uploader = multer({
   }),
 });
 
+router.get("/", async (req, res) => {
+  try {
+    let id = req.query.id
+    const user = await userService.fetchUserById(id);
+    res.status(200).json({
+      status: true,
+      data: user,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
 router.get("/admins", async (req, res) => {
   try {
     const users = await userService.fetchAllUsers("admin");
@@ -215,8 +231,9 @@ router.get("/grade/semester", async (req, res) => {
   }
 });
 
-router.get("/curricullum", async (req, res) => {
+router.get("/curriculum", async (req, res) => {
   try {
+    console.log(req.query.id)
     let data = await userService.fetchUserCurricullum(req.query.id);
     res.status(200).json({
       status: true,

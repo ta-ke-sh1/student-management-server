@@ -4,6 +4,7 @@ const Utils = require("../utils/utils");
 
 
 const SubjectService = class {
+
   async fetchAllSubjectsByDepartment(department) {
     return await fetchMatchingDataByField(constants.SUBJECTS_TABLE, "department", department)
   }

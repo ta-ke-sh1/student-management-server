@@ -27,20 +27,6 @@ const UserService = class {
     return await this.userRepository.deactivateUser(id);
   }
 
-  async fetchAllUsersByCampus(campus) {
-    const Users = await fetchMatchingDataByField(constants.USERS_TABLE, "campus", campus);
-    return Users;
-  }
-
-  async fetchAllUsersByAcademicYear(year) {
-    const Users = await fetchMatchingDataByField(constants.USERS_TABLE, "campus", campus);
-    return Users;
-  }
-
-  async fetchAllUsersByClassId(classId) {
-    const Users = await fetchMatchingDataByField(constants.USERS_TABLE, "campus", campus);
-    return Users;
-  }
 
   async editUser(User_id, User_obj) {
     const res = await updateData(constants.USERS_TABLE, User_id, User_obj);
@@ -57,19 +43,27 @@ const UserService = class {
     return res;
   }
 
-  async fetchUserById(User_id) {
-    if (!User_id) {
-      throw "Invalid User id!";
+  async fetchUserById(username) {
+    if (!username) {
+      throw "Missing username!";
     }
-    let user = await fetchDataById(constants.USERS_TABLE, User_id);
+    let user = await fetchMatchingDataByField(constants.ADMINS_TABLE, "__name__", username);
     if (user === -1) {
-      throw "User does not exist";
+      user = await fetchMatchingDataByField(constants.LECTURERS_TABLE, "__name__", username);
+      if (user === -1) {
+        user = await fetchMatchingDataByField(constants.STUDENTS_TABLE, "__name__", username);
+        if (user === -1) {
+          return false;
+        } else {
+          user[0].role = 1;
+        }
+      } else {
+        user[0].role = 2;
+      }
+    } else {
+      user[0].role = 3;
     }
-
-    return {
-      status: true,
-      data: user,
-    };
+    return user;
   }
 
   async fetchUserByUsername(username) {
@@ -78,9 +72,9 @@ const UserService = class {
     }
     let user = await fetchMatchingDataByField(constants.ADMINS_TABLE, "username", username);
     if (user === -1) {
-      user = await fetchMatchingDataByField(constants.LECTURERS_TABLE_TABLE, "username", username);
+      user = await fetchMatchingDataByField(constants.LECTURERS_TABLE, "username", username);
       if (user === -1) {
-        user = await fetchMatchingDataByField(constants.STUDENTS_TABLE_TABLE, "username", username);
+        user = await fetchMatchingDataByField(constants.STUDENTS_TABLE, "username", username);
         if (user === -1) {
           return false;
         } else {
@@ -96,34 +90,45 @@ const UserService = class {
   }
 
   async fetchUserCurricullum(id) {
+    if (!id) {
+      throw "Missing parameter!: ID"
+    }
+
     let student = await this.userRepository.fetchStudentById(id);
     if (student === -1) {
       throw "Student does not exist in database!";
     }
 
-    let curricullum = await this.subjectService.fetchAllSubjectByDepartment(user.department);
-    let grades = await this.gradingService.fetchAllGradesByStudentId(id);
+    let curricullum = await this.subjectService.fetchAllSubjectsByDepartment(student.department_id);
+    let grades = await this.gradingService.fetchAllGradesByStudentId(student.id);
+
+    console.log(curricullum)
+    console.log(grades)
 
     let res = [];
     curricullum.forEach((subject) => {
       let flag = false;
-      grades.forEach((grade) => {
-        if (subject.id == grade.subject) {
-          res.push({
-            student_id: id,
-            subject: subject.id,
-            name: subject.name,
-            grade: grade.grade,
-          });
-          flag = true;
-        }
-      });
+
+      if (grades !== -1) {
+        grades.forEach((grade) => {
+          if (subject.id == grade.subject) {
+            res.push({
+              id: id,
+              subject: subject.id,
+              name: subject.name,
+              grade: grade.grade,
+            });
+            flag = true;
+          }
+        });
+      }
+
       if (!flag) {
         res.push({
+          id: subject.id,
           student_id: id,
-          subject: subject.id,
           name: subject.name,
-          grade: "Noy yet",
+          grade: "Not yet",
         });
       }
     });

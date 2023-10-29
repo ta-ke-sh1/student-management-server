@@ -10,7 +10,8 @@ module.exports = class AuthService {
   signToken = async (username, user) => {
     var access_token = jwt.sign(
       {
-        avatar: user.avatar ?? "/asset/avatar/default.jpg",
+        id: user.id,
+        avatar: user.avatar ?? "default.jpg",
         user: username,
         email: user.email,
         role: user.role,
@@ -55,11 +56,14 @@ module.exports = class AuthService {
   };
 
   authenticate = async (username, password) => {
+    console.log("auth")
     let res = await this.userService.fetchUserByUsername(username);
+
     if (res.length === 0) {
       throw "User does not exists!";
     }
 
+    console.log("assign user")
     const user = res[0];
 
     console.log(user);

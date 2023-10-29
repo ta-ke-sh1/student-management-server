@@ -17,9 +17,8 @@ const GradingService = class {
     return await this.gradeRepository.fetchAllGrades();
   }
 
-  async fetchAllGradesByStudentId(query) {
-    if (!query.id) throw "Missing parameter!";
-    return await this.gradeRepository.fetchAllGradesByStudentId(query.id);
+  async fetchAllGradesByStudentId(id) {
+    return await this.gradeRepository.fetchAllGradesByStudentId(id);
   }
 
   async fetchAllGradesByStudentIdAndSemester(query) {
