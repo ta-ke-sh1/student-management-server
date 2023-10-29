@@ -15,7 +15,7 @@ const ScheduleService = class {
       let leftover = res.length;
       for (let i = 1; i <= slots - leftover; i++) {
         res.push({
-          id: i
+          id: id + "-" + i
         })
       }
       console.log(res.length)
@@ -39,7 +39,7 @@ const ScheduleService = class {
       await scheduleRepository.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(id, term, programme, department);
       for (let i = 1; i <= 50 - res.length; i++) {
         res.push({
-          id: i
+          id: id + "-" + i
         })
       }
       console.log(res.length)

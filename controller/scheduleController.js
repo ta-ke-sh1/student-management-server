@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e.toString(),
+      data: e.toString()
     });
   }
 });
@@ -24,14 +24,33 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const result = await scheduleService.addSchedule(req.body);
-    res.status(200).json(result);
+    res.status(200).json({
+      status: true,
+      data: "Succeed"
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString()
     });
   }
 });
+
+router.post("/participant", async (req, res) => {
+  try {
+    console.log(req.body)
+    const result = await scheduleService.addParticipantToGroup(req.body)
+    res.status(200).json({
+      status: true,
+      data: "Succeed"
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString()
+    });
+  }
+})
 
 router.put("/", async (req, res) => {
   try {
@@ -40,7 +59,7 @@ router.put("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString()
     });
   }
 });
@@ -52,16 +71,16 @@ router.post("/group", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      error: e,
+      data: e.toString()
     });
   }
 });
 
-router.put("/restore", (req, res) => {});
+router.put("/restore", (req, res) => { });
 
-router.delete("/", (req, res) => {});
+router.delete("/", (req, res) => { });
 
-router.delete("/hard", containsRole(3), (req, res) => {});
+router.delete("/hard", containsRole(3), (req, res) => { });
 
 router.get("/info/schedule", async (req, res) => {
   let q = req.query;
@@ -142,5 +161,8 @@ router.post("attendance", async (req, res) => {
     });
   }
 });
+
+
+
 
 module.exports = router;
