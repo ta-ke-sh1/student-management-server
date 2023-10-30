@@ -2,13 +2,13 @@ const constants = require("../utils/constants");
 const { addData, deleteData, updateData, db, snapshotToArray } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
-  constructor() { }
+  constructor() {}
 
   async fetchAllGroups() {
     let data = await db.collection(constants.CLASS_TABLE).where("status", "==", true).get();
 
     if (data.empty) {
-      throw ("Empty table, please add some data!");
+      throw "Empty table, please add some data!";
     }
 
     return snapshotToArray(data);
@@ -18,7 +18,7 @@ module.exports = class CourseRepostory {
     let data = await db.collection(constants.PARTICIPANTS_TABLE).where("group", "==", group).where("status", "==", true).get();
 
     if (data.empty) {
-      throw ("No matching documents.");
+      throw "No matching documents.";
     }
 
     return snapshotToArray(data);
@@ -37,26 +37,15 @@ module.exports = class CourseRepostory {
     return results;
   }
 
-  async addGroupBySemester(data) {
-    console.log(data);
-    let ref = db.collection(constants.CLASS_TABLE).where("programme", "==", programme).where("term", "==", term).where("department", "==", department).doc();
-
+  async addGroup(data) {
+    let ref = db.collection(constants.CLASS_TABLE).doc(data.id);
     let g = await ref.get();
     if (g.exists) {
       throw "Group already exists!";
     } else {
-      console.log("Add group");
-
-      let res = await ref.set({
-        lecturer: data.lecturer ?? "NA",
-        subject: data.subject ?? "NA",
-        slots: data.slots ?? 0,
-      });
-
-      return {
-        status: true,
-        msg: res,
-      };
+      delete data.id;
+      await ref.set(data);
+      return true;
     }
   }
 

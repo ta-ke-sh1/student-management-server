@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e.toString()
+      data: e.toString(),
     });
   }
 });
@@ -26,31 +26,31 @@ router.post("/", async (req, res) => {
     const result = await scheduleService.addSchedule(req.body);
     res.status(200).json({
       status: true,
-      data: "Succeed"
+      data: result,
     });
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e.toString()
+      data: e.toString(),
     });
   }
 });
 
 router.post("/participant", async (req, res) => {
   try {
-    console.log(req.body)
-    const result = await scheduleService.addParticipantToGroup(req.body)
+    console.log(req.body);
+    const result = await scheduleService.addParticipantToGroup(req.body);
     res.status(200).json({
       status: true,
-      data: "Succeed"
+      data: result,
     });
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e.toString()
+      data: e.toString(),
     });
   }
-})
+});
 
 router.put("/", async (req, res) => {
   try {
@@ -59,32 +59,65 @@ router.put("/", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e.toString()
+      data: e.toString(),
     });
   }
 });
 
 router.post("/group", async (req, res) => {
   try {
-    const result = await scheduleService.addGroup(req.body);
-    res.status(200).json(result);
+    let result = await scheduleService.addGroupAndCreateSchedules(req.body);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e.toString()
+      data: e.toString(),
     });
   }
 });
 
-router.put("/restore", (req, res) => { });
+router.put("/group", async (req, res) => {
+  try {
+    let result = true;
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
 
-router.delete("/", (req, res) => { });
+router.delete("/group", async (req, res) => {
+  try {
+    let result = true;
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
 
-router.delete("/hard", containsRole(3), (req, res) => { });
+router.put("/restore", (req, res) => {});
+
+router.delete("/", (req, res) => {});
+
+router.delete("/hard", containsRole(3), (req, res) => {});
 
 router.get("/info/schedule", async (req, res) => {
   let q = req.query;
-  let data = await scheduleService.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(q.id, q.term, q.programme, q.department);
+  let data = await scheduleService.fetchScheduleByGroupId(q.id);
   try {
     res.status(200).json({
       status: true,
@@ -100,7 +133,7 @@ router.get("/info/schedule", async (req, res) => {
 
 router.get("/info/participants", async (req, res) => {
   let q = req.query;
-  let data = await scheduleService.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(q.id, q.term, q.programme, q.department);
+  let data = await scheduleService.fetchParticipantsByGroupId(q.id);
   try {
     res.status(200).json({
       status: true,
@@ -117,7 +150,7 @@ router.get("/info/participants", async (req, res) => {
 router.get("/student", async (req, res) => {
   console.log(req.query);
   try {
-    let result = await scheduleService.fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(req.query);
+    let result = await scheduleService.fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(req.query);
     res.status(200).json({
       status: true,
       data: result,
@@ -133,7 +166,7 @@ router.get("/student", async (req, res) => {
 router.get("/lecturer", async (req, res) => {
   console.log(req.query);
   try {
-    let result = await scheduleService.fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(req.query);
+    let result = await scheduleService.fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(req.query);
     res.status(200).json({
       status: true,
       data: result,
@@ -146,7 +179,22 @@ router.get("/lecturer", async (req, res) => {
   }
 });
 
-router.post("attendance", async (req, res) => {
+router.get("/attendances", async (req, res) => {
+  try {
+    let result = await scheduleService.fetchAllAttendancesByScheduleId(req.query.id);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
+router.post("/attendance", async (req, res) => {
   const attendace = req.body;
   try {
     let result = await scheduleService.checkAttendance(attendace);
@@ -161,8 +209,5 @@ router.post("attendance", async (req, res) => {
     });
   }
 });
-
-
-
 
 module.exports = router;

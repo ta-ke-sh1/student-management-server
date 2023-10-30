@@ -1,5 +1,5 @@
 const CourseRepostory = require("../repository/courseRepository");
-const { fetchDataById, addData, deleteData, setData, updateData, fetchMatchingDataByField } = require("../repository/firebaseRepository");
+const { fetchDataById, deleteData, updateData, fetchMatchingDataByField } = require("../repository/firebaseRepository");
 const ScheduleRepository = require("../repository/scheduleRepository");
 const constants = require("../utils/constants");
 
@@ -7,18 +7,9 @@ const courseRepository = new CourseRepostory();
 const scheduleRepository = new ScheduleRepository();
 
 const ScheduleService = class {
-
-  async fetchScheduleByGroupId(id, slots) {
+  async fetchScheduleByGroupId(id) {
     if (id) {
       let res = await scheduleRepository.fetchScheduleByGroupId(id);
-      console.log("Search result:")
-      let leftover = res.length;
-      for (let i = 1; i <= slots - leftover; i++) {
-        res.push({
-          id: id + "-" + i
-        })
-      }
-      console.log(res.length)
       return res;
     } else {
       throw "Missing id";
@@ -34,24 +25,10 @@ const ScheduleService = class {
     }
   }
 
-  async fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
-    if (id && term && programme && department) {
-      await scheduleRepository.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(id, term, programme, department);
-      for (let i = 1; i <= 50 - res.length; i++) {
-        res.push({
-          id: id + "-" + i
-        })
-      }
-      console.log(res.length)
+  async fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(query) {
+    if (query.user_id && query.term && query.programme && query.department && query.startDate && query.endDate) {
+      let res = await scheduleRepository.fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(query.user_id, query.startDate, query.endDate, query.term, query.programme, query.department);
       return res;
-    } else {
-      throw "Missing parameters";
-    }
-  }
-
-  async fetchScheduleByIdAndTermAndProgrammeAndDepartment(id, term, programme, department) {
-    if (id && term && programme && department) {
-      return await scheduleRepository.fetchScheduleByGroupIdAndTermAndProgrammeAndDepartment(id, term, programme, department);
     } else {
       throw "Missing parameters";
     }
@@ -61,9 +38,9 @@ const ScheduleService = class {
     if (id) {
       let result = await scheduleRepository.fetchParticipantsByGroupId(id);
       if (result.length < 1) {
-        throw "This group has no participants"
+        throw "This group has no participants";
       } else {
-        return result
+        return result;
       }
     } else {
       throw "Missing group id";
@@ -74,30 +51,10 @@ const ScheduleService = class {
     return await scheduleRepository.checkAttendance(attendance_report);
   }
 
-  async fetchGroupsByProgrammeAndTerm(programme, term, department) {
-    let groups = await scheduleRepository.fetchGroupsByProgrammeAndTermAndDepartment(programme, term, department);
-    groups.forEach((group) => {
-      group.programme = programme,
-        group.term = term,
-        group.department = department
-    })
-    return groups
-  }
-
-  async fetchAllGroups() {
-    return await courseRepository.fetchAllGroups();
-  }
-
-  async addGroup(data) {
-    return await courseRepository.addGroupBySemester(data);
-  }
-
   async validSchedule(date, room, user_id) {
     let slot = scheduleRepository.fetchScheduleByDateAndRoom(date, room, user_id);
     return slot.length === 0;
   }
-
-  async reserveSchedule() { }
 
   async fetchAllSchedules(campus) {
     const schedules = await fetchMatchingDataByField(constants.SCHEDULE_SLOTS_TABLE, "campus", campus);
@@ -130,6 +87,70 @@ const ScheduleService = class {
       throw "Schedule does not exist";
     }
     return schedule;
+  }
+
+  async fetchAllGroups() {
+    return await courseRepository.fetchAllGroups();
+  }
+
+  async fetchGroupsByProgrammeAndTerm(programme, term, department) {
+    let groups = await scheduleRepository.fetchGroupsByProgrammeAndTermAndDepartment(programme, term, department);
+    groups.forEach((group) => {
+      (group.programme = programme), (group.term = term), (group.department = department);
+    });
+    return groups;
+  }
+
+  async addGroupAndCreateSchedules(data) {
+    if (!data.programme || !data.term || !data.department || !data.name) {
+      throw "Missing parameter";
+    }
+
+    let d_id = data.programme + "-" + data.term + "-" + data.department + "-" + data.name;
+    data.id = d_id;
+    await courseRepository.addGroup(data);
+
+    if (data.slots > 0) {
+      let schedules = await this.createSchedulesUsingDayAndSlotAndStartAndEndDate(data.slot, data.startDate, data.endDate, data.slots);
+      schedules.forEach(async (schedule, index) => {
+        await scheduleRepository.setSchedule(d_id + "-index", {
+          session: index,
+          date: schedule.date,
+          slot: schedule.slot,
+          room: "N/A",
+          lecturer: data.lecturer,
+          course_id: d_id,
+        });
+      });
+    }
+    return true;
+  }
+
+  async createSchedulesUsingDayAndSlotAndStartAndEndDate(slot, startDate, endDate, maxSlots) {
+    let schedules = [];
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+    let schedule = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    while (schedule <= end) {
+      for (let s of slot) {
+        if (s.day === schedule.getDay()) {
+          if (schedules.length >= maxSlots) {
+            return schedules;
+          } else {
+            schedules.push({
+              date: schedule.getTime(),
+              slot: s.number,
+            });
+          }
+        }
+      }
+      schedule.setDate(schedule.getDate() + 1);
+    }
+    return schedules;
+  }
+
+  async fetchAllAttendancesByScheduleId(id) {
+    return scheduleRepository.fetchAllAttendancesByScheduleId(id);
   }
 };
 

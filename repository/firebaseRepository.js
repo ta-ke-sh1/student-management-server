@@ -55,7 +55,7 @@ const addData = async (collection, obj) => {
 
 const setData = async (collection, id, obj) => {
   // SET {} WHERE ID = ID
-  // 
+  //
   await db.collection(collection).doc(id).set(obj);
   return {
     msg: "Set data with ID: " + id,

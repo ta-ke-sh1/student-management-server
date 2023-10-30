@@ -1,13 +1,11 @@
 const constants = require("../utils/constants");
-const { db, addData, updateData, snapshotToArray } = require("./firebaseRepository");
+const { db, addData, updateData, snapshotToArray, setData, fetchAllData, fetchMatchingDataByField } = require("./firebaseRepository");
 
 module.exports = class ScheduleRepository {
-
   async fetchScheduleByGroupId(id) {
     let snapshot = await db.collection(constants.SCHEDULE_SLOTS_TABLE).where("group_id", "==", group_id).get();
     return snapshotToArray(snapshot);
   }
-
 
   async fetchScheduleByLecturerIdAndDateAndTermAndProgrammeAndDepartment(user_id, startDate, endDate, term, programme, department, group) {
     let snapshot = await db
@@ -58,7 +56,11 @@ module.exports = class ScheduleRepository {
     return await fetchDataById(constants.SCHEDULE_SLOTS_TABLE, id);
   }
 
-  async submitSchedule(document) {
+  async setSchedule(id, document) {
+    return await setData(constants.SCHEDULE_SLOTS_TABLE, id, document);
+  }
+
+  async addSchedule(document) {
     return await addData(constants.SCHEDULE_SLOTS_TABLE, document);
   }
 
@@ -72,6 +74,10 @@ module.exports = class ScheduleRepository {
 
   async deleteHardSchedule(id) {
     return await deleteData(constants.SCHEDULE_SLOTS_TABLE, id);
+  }
+
+  async fetchAllAttendancesByScheduleId(id) {
+    return await fetchMatchingDataByField(constants.ATTENDANCES_TABLE, "schedule_id", id);
   }
 
   async checkAttendance(report) {

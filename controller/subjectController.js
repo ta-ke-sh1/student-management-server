@@ -6,8 +6,8 @@ const subjectService = new SubjectService();
 
 router.get("/", async (req, res) => {
   try {
-    let data = []
-    console.log("Department is: " + req.query.department)
+    let data = [];
+    console.log("Department is: " + req.query.department);
     if (req.query.department) {
       data = await subjectService.fetchAllSubjectsByDepartment(req.query.department);
     } else {
@@ -15,8 +15,8 @@ router.get("/", async (req, res) => {
     }
     res.status(200).json({
       status: true,
-      data: data
-    })
+      data: data,
+    });
   } catch (e) {
     res.status(200).json({
       status: false,
@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
     let result = await subjectService.addSubject(req.body);
     res.status(200).json({
       status: true,
-      data: result
+      data: result,
     });
   } catch (e) {
     res.status(200).json({
@@ -43,11 +43,11 @@ router.post("/", async (req, res) => {
 router.delete("/", async (req, res) => {
   try {
     let id = req.query.id;
-    console.log(id)
+    console.log(id);
     let result = await subjectService.deleteSubject(id);
     res.status(200).json({
       status: true,
-      data: result
+      data: result,
     });
   } catch (e) {
     res.status(200).json({
@@ -63,10 +63,9 @@ router.put("/", async (req, res) => {
     let result = await subjectService.editSubject(id, req.body);
     res.status(200).json({
       status: true,
-      data: result
+      data: result,
     });
   } catch (e) {
-    console.log(e.toString())
     res.status(200).json({
       status: false,
       data: e.toString(),
