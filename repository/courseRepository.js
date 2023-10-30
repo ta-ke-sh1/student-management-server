@@ -2,7 +2,7 @@ const constants = require("../utils/constants");
 const { addData, deleteData, updateData, db, snapshotToArray } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
-  constructor() {}
+  constructor() { }
 
   async fetchAllGroups() {
     let data = await db.collection(constants.CLASS_TABLE).where("status", "==", true).get();
@@ -38,11 +38,13 @@ module.exports = class CourseRepostory {
   }
 
   async addGroup(data) {
+    console.log(data.id)
     let ref = db.collection(constants.CLASS_TABLE).doc(data.id);
     let g = await ref.get();
     if (g.exists) {
       throw "Group already exists!";
     } else {
+      delete data.slot;
       delete data.id;
       await ref.set(data);
       return true;

@@ -108,12 +108,16 @@ const ScheduleService = class {
 
     let d_id = data.programme + "-" + data.term + "-" + data.department + "-" + data.name;
     data.id = d_id;
+    console.log(data)
+    let slot = data.slot
+
     await courseRepository.addGroup(data);
 
     if (data.slots > 0) {
-      let schedules = await this.createSchedulesUsingDayAndSlotAndStartAndEndDate(data.slot, data.startDate, data.endDate, data.slots);
+      let schedules = await this.createSchedulesUsingDayAndSlotAndStartAndEndDate(slot, data.startDate * 1000, data.endDate * 1000, data.slots);
+      console.log(schedules)
       schedules.forEach(async (schedule, index) => {
-        await scheduleRepository.setSchedule(d_id + "-index", {
+        await scheduleRepository.setSchedule(d_id + "-" + index, {
           session: index,
           date: schedule.date,
           slot: schedule.slot,
@@ -133,13 +137,13 @@ const ScheduleService = class {
     let schedule = new Date(start.getFullYear(), start.getMonth(), start.getDate());
     while (schedule <= end) {
       for (let s of slot) {
-        if (s.day === schedule.getDay()) {
+        if (s.number === schedule.getDay()) {
           if (schedules.length >= maxSlots) {
             return schedules;
           } else {
             schedules.push({
               date: schedule.getTime(),
-              slot: s.number,
+              slot: s.slot,
             });
           }
         }
