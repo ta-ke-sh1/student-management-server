@@ -21,8 +21,9 @@ router.get("/groups", async (req, res) => {
 
 router.get("/schedules", async (req, res) => {
   try {
-    console.log(req.query);
-    let result = await scheduleService.fetchScheduleByGroupId(req.query.id, req.query.slots);
+    const id = req.query.id;
+    const result = await scheduleService.fetchScheduleByGroupId(id);
+    console.log(result)
     res.status(200).json({
       status: true,
       data: result

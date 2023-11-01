@@ -109,11 +109,11 @@ router.delete("/group", async (req, res) => {
   }
 });
 
-router.put("/restore", (req, res) => {});
+router.put("/restore", (req, res) => { });
 
-router.delete("/", (req, res) => {});
+router.delete("/", (req, res) => { });
 
-router.delete("/hard", containsRole(3), (req, res) => {});
+router.delete("/hard", containsRole(3), (req, res) => { });
 
 router.get("/info/schedule", async (req, res) => {
   let q = req.query;
@@ -148,8 +148,8 @@ router.get("/info/participants", async (req, res) => {
 });
 
 router.get("/student", async (req, res) => {
-  console.log(req.query);
   try {
+    console.log(req.query)
     let result = await scheduleService.fetchScheduleByStudentIdAndDate(req.query);
     res.status(200).json({
       status: true,

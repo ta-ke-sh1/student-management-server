@@ -1,7 +1,7 @@
 
 const TokenService = class {
 
-    constructor () { }
+    constructor() { }
 
     isValidUser() {
 

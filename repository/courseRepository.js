@@ -137,4 +137,12 @@ module.exports = class CourseRepostory {
         });
     }
   }
+
+  async fetchUserCourseById(id) {
+    let snapshots = await db.collection(constants.COURSES_REGISTRATION_TABLE)
+      .where('user_id', '==', id)
+      .get();
+
+    return await snapshotToArray(snapshots);
+  }
 };

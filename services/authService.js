@@ -1,13 +1,19 @@
 const { refreshToken } = require("firebase-admin/app");
 const { UserService } = require("./userService");
 const jwt = require("jsonwebtoken");
+const CourseService = require("./courseService");
 
 module.exports = class AuthService {
   constructor() {
+    this.courseService = new CourseService();
     this.userService = new UserService();
   }
 
   signToken = async (username, user) => {
+
+    let courses = await this.courseService.fetchUserCourseById(user.username);
+    console.log(courses)
+
     var access_token = jwt.sign(
       {
         id: user.id,
@@ -15,6 +21,7 @@ module.exports = class AuthService {
         user: username,
         email: user.email,
         role: user.role,
+        courses: courses,
       },
       process.env.JWT_SECRET_KEY,
       {
@@ -56,17 +63,14 @@ module.exports = class AuthService {
   };
 
   authenticate = async (username, password) => {
-    console.log("auth");
     let res = await this.userService.fetchUserByUsername(username);
 
     if (res.length === 0) {
       throw "User does not exists!";
     }
 
-    console.log("assign user");
     const user = res[0];
 
-    console.log(user);
     if (user.password !== password) {
       throw "Incorrect Password!";
     }

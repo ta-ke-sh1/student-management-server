@@ -77,8 +77,9 @@ const deleteData = async (collection, id) => {
   }
 };
 
-const snapshotToArray = async (snapshot) => {
+const snapshotToArray = (snapshot) => {
   let docs = [];
+
   snapshot.forEach((doc) => {
     docs.push({
       id: doc.id,
