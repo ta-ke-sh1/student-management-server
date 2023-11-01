@@ -1,7 +1,9 @@
 const express = require("express");
 const RequestService = require("../services/requestService");
 const router = express.Router();
+const multer = require("multer");
 
+const uploader = multer({ dest: "uploads/" });
 const requestSerivce = new RequestService();
 
 router.get("/", async (req, res) => {
@@ -19,9 +21,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", uploader.single("file"), async (req, res) => {
   try {
-    let result = await requestSerivce.addRequest(req.body);
+    let result = await requestSerivce.addRequest(req.body, req.file);
     res.status(200).json({
       status: true,
       data: result,

@@ -2,30 +2,16 @@ const express = require("express");
 const router = express.Router();
 
 const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
-const CourseService = require("../services/courseService");
 
-const uploader = multer({
-  storage: multer.diskStorage({
-    destination: function (req, file, cb) {
-      try {
-        var dir = path.resolve() + "\\asset\\submissions\\" + req.body.programme + "\\" + req.body.term + "\\" + req.body.subject + "\\" + req.body.group + "\\" + req.body.username + "\\" + req.body.assignment + "\\";
-        if (!fs.existsSync(dir)) {
-          fs.mkdirSync(dir, { recursive: true });
-        }
-        cb(null, dir);
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.filename);
-    },
-  }),
-});
+const CourseService = require("../services/courseService");
+const FileService = require("../services/fileService");
+const { GradingService } = require("../services/gradingService");
+
+const uploader = multer({ dest: "uploads/" });
 
 const courseService = new CourseService();
+const fileService = new FileService();
+const gradingService = new GradingService();
 
 router.get("/", async (req, res) => {
   try {
@@ -46,8 +32,24 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", uploader.array("file", 10), async (req, res) => {
+router.post("/", uploader.array("files", 10), async (req, res) => {
   try {
+    let data = await gradingService.addGrading(req.body, req.files);
+    res.status(200).json({
+      status: true,
+      data: data,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
+router.put("/", uploader.array("file", 10), async (req, res) => {
+  try {
+    fileService.removeFileByPath(req.query.path);
     res.status(200).json({
       status: true,
     });
@@ -59,21 +61,9 @@ router.post("/", uploader.array("file", 10), async (req, res) => {
   }
 });
 
-router.put("/", async (req, res) => {
+router.delete("/", async (req, res) => {
   try {
-    res.status(200).json({
-      status: true,
-    });
-  } catch (e) {
-    res.status(200).json({
-      status: false,
-      data: e.toString(),
-    });
-  }
-});
-
-router.get("/", async (req, res) => {
-  try {
+    fileService.removeFileByPath(req.query.path);
     res.status(200).json({
       status: true,
     });

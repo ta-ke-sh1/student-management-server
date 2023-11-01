@@ -22,17 +22,8 @@ module.exports = class ScheduleRepository {
     return snapshotToArray(snapshot);
   }
 
-  async fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(user_id, startDate, endDate, term, programme, department, group) {
-    let snapshot = await db
-      .collection(constants.SCHEDULE_SLOTS_TABLE)
-      .where("term", "==", term)
-      .where("programme", "==", programme)
-      .where("department", "==", department)
-      .where("group", "==", group)
-      .where("user_id", "==", user_id)
-      .where("date", ">=", startDate)
-      .where("date", "<=", endDate)
-      .get();
+  async fetchScheduleByStudentIdAndDate(user_id, startDate, endDate) {
+    let snapshot = await db.collection(constants.SCHEDULE_SLOTS_TABLE).where("user_id", "==", user_id).where("date", ">=", startDate).where("date", "<=", endDate).get();
 
     return snapshotToArray(snapshot);
   }

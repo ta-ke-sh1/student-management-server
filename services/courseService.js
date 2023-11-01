@@ -10,7 +10,7 @@ module.exports = class CourseService {
   courseRepository;
   userService;
   utils;
-  submissionRepository
+  submissionRepository;
 
   constructor() {
     this.courseRepository = new CourseRepostory();
@@ -28,15 +28,13 @@ module.exports = class CourseService {
   }
 
   async fetchCourseById(id) {
-    let course = await this.courseRepository.fetchCourseByProgrammeAndTermAndDepartmentAndId(id)
-    let assignments = await this.courseRepository.fetchAssignmentsByCourse(id)
-    course.assignments = assignments
+    let course = await this.courseRepository.fetchCourseByProgrammeAndTermAndDepartmentAndId(id);
+    let assignments = await this.courseRepository.fetchAssignmentsByCourse(id);
+    course.assignments = assignments;
     return course;
   }
 
-  async fetchCourseByClassAndId(course_id, class_id) {
-
-  }
+  async fetchCourseByClassAndId(course_id, class_id) {}
 
   async fetchCourseByUserIdAndCourseId(semester, user_id, course_id) {
     let course = await this.courseRepository.fetchCourseByUserIdAndCourseId(semester, user_id, course_id);
@@ -55,13 +53,13 @@ module.exports = class CourseService {
     return await this.utils.deleteFileByPath(dir);
   }
 
-  async fetchClassBySemester(semester, course_id, class_id) { }
+  async fetchClassBySemester(semester, course_id, class_id) {}
 
-  async addClass(class_obj) { }
+  async addClass(class_obj) {}
 
-  async editClass(class_id, class_obj) { }
+  async editClass(class_id, class_obj) {}
 
-  async deleteClass(class_id) { }
+  async deleteClass(class_id) {}
 
   async addCourse(course) {
     course.status = true;
@@ -85,10 +83,19 @@ module.exports = class CourseService {
   }
 
   async fetchSubmissionByCourseIdAndUserAndAssignmentId(id, user, asm) {
-    return this.submissionRepository.fetchSubmissionByCourseIdAndUserAndAssignmentId(id, user, asm)
+    if (!id) {
+      throw "Missing course id";
+    }
+    if (!user) {
+      throw "Missing user id";
+    }
+    if (!asm) {
+      throw "Missing assignment id!";
+    }
+    return this.submissionRepository.fetchSubmissionByCourseIdAndUserAndAssignmentId(id, user, asm);
   }
 
   async addCourseAssignment(assignment) {
-    return this.courseRepository.addCourseAssignment(assignment)
+    return this.courseRepository.addCourseAssignment(assignment);
   }
 };

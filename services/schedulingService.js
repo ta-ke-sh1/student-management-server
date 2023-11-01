@@ -16,9 +16,9 @@ const ScheduleService = class {
     }
   }
 
-  async fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(query) {
-    if (query.user_id && query.term && query.programme && query.department && query.startDate && query.endDate) {
-      let res = await scheduleRepository.fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(query.user_id, query.startDate, query.endDate, query.term, query.programme, query.department);
+  async fetchScheduleByStudentIdAndDate(query) {
+    if (query.user_id && query.startDate && query.endDate) {
+      let res = await scheduleRepository.fetchScheduleByStudentIdAndDate(query.user_id, query.startDate, query.endDate);
       return res;
     } else {
       throw "Missing parameters";
@@ -108,14 +108,14 @@ const ScheduleService = class {
 
     let d_id = data.programme + "-" + data.term + "-" + data.department + "-" + data.name;
     data.id = d_id;
-    console.log(data)
-    let slot = data.slot
+    console.log(data);
+    let slot = data.slot;
 
     await courseRepository.addGroup(data);
 
     if (data.slots > 0) {
       let schedules = await this.createSchedulesUsingDayAndSlotAndStartAndEndDate(slot, data.startDate * 1000, data.endDate * 1000, data.slots);
-      console.log(schedules)
+      console.log(schedules);
       schedules.forEach(async (schedule, index) => {
         await scheduleRepository.setSchedule(d_id + "-" + index, {
           session: index,

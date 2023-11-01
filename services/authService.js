@@ -56,14 +56,14 @@ module.exports = class AuthService {
   };
 
   authenticate = async (username, password) => {
-    console.log("auth")
+    console.log("auth");
     let res = await this.userService.fetchUserByUsername(username);
 
     if (res.length === 0) {
       throw "User does not exists!";
     }
 
-    console.log("assign user")
+    console.log("assign user");
     const user = res[0];
 
     console.log(user);

@@ -150,7 +150,7 @@ router.get("/info/participants", async (req, res) => {
 router.get("/student", async (req, res) => {
   console.log(req.query);
   try {
-    let result = await scheduleService.fetchScheduleByStudentIdAndDateAndTermAndProgrammeAndDepartment(req.query);
+    let result = await scheduleService.fetchScheduleByStudentIdAndDate(req.query);
     res.status(200).json({
       status: true,
       data: result,
