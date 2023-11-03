@@ -109,11 +109,11 @@ router.delete("/group", async (req, res) => {
   }
 });
 
-router.put("/restore", (req, res) => { });
+router.put("/restore", (req, res) => {});
 
-router.delete("/", (req, res) => { });
+router.delete("/", (req, res) => {});
 
-router.delete("/hard", containsRole(3), (req, res) => { });
+router.delete("/hard", containsRole(3), (req, res) => {});
 
 router.get("/info/schedule", async (req, res) => {
   let q = req.query;
@@ -149,7 +149,7 @@ router.get("/info/participants", async (req, res) => {
 
 router.get("/student", async (req, res) => {
   try {
-    console.log(req.query)
+    console.log(req.query);
     let result = await scheduleService.fetchScheduleByStudentIdAndDate(req.query);
     res.status(200).json({
       status: true,
@@ -195,9 +195,10 @@ router.get("/attendances", async (req, res) => {
 });
 
 router.post("/attendance", async (req, res) => {
-  const attendace = req.body;
+  const attendance = req.body;
   try {
-    let result = await scheduleService.checkAttendance(attendace);
+    console.log(attendance);
+    let result = await scheduleService.checkAttendance(attendance);
     res.status(200).json({
       status: true,
       data: result,

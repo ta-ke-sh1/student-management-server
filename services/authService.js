@@ -10,9 +10,8 @@ module.exports = class AuthService {
   }
 
   signToken = async (username, user) => {
-
     let courses = await this.courseService.fetchUserCourseById(user.username);
-    console.log(courses)
+    console.log(courses);
 
     var access_token = jwt.sign(
       {

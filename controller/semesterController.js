@@ -9,7 +9,7 @@ router.get("/groups", async (req, res) => {
     let result = await scheduleService.fetchAllGroups();
     res.status(200).json({
       status: true,
-      data: result
+      data: result,
     });
   } catch (e) {
     res.status(200).json({
@@ -23,10 +23,10 @@ router.get("/schedules", async (req, res) => {
   try {
     const id = req.query.id;
     const result = await scheduleService.fetchScheduleByGroupId(id);
-    console.log(result)
+    console.log(result);
     res.status(200).json({
       status: true,
-      data: result
+      data: result,
     });
   } catch (e) {
     res.status(200).json({
@@ -41,7 +41,7 @@ router.get("/participants", async (req, res) => {
     let result = await scheduleService.fetchParticipantsByGroupId(req.query.id);
     res.status(200).json({
       status: true,
-      data: result
+      data: result,
     });
   } catch (e) {
     res.status(200).json({
@@ -81,6 +81,21 @@ router.put("/", async (req, res) => {
   try {
     res.status(200).json({
       status: true,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
+router.get("/courses", async (req, res) => {
+  try {
+    let data = [];
+    res.status(200).json({
+      status: true,
+      data: data,
     });
   } catch (e) {
     res.status(200).json({
