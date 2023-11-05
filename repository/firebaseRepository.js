@@ -23,7 +23,7 @@ initializeApp({
 const db = getFirestore();
 
 const fetchAllData = async (collection) => {
-  const snapshot = await db.collection(collection).get();
+  const snapshot = await db.collection(collection).where("status", "==", true).get();
   return snapshotToArray(snapshot);
 };
 
@@ -39,7 +39,7 @@ const fetchDataById = async (collection, id) => {
 };
 
 const fetchMatchingDataByField = async (collection, field, keyword) => {
-  const snapshot = await db.collection(collection).where(field, "==", keyword).get();
+  const snapshot = await db.collection(collection).where(field, "==", keyword).where("status", "==", true).get();
   if (snapshot.empty) {
     return -1;
   }

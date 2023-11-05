@@ -7,7 +7,7 @@ const db = getFirestore();
 
 module.exports = class RoomRepository {
   async fetchAllRooms() {
-    const snapshots = await db.collection(constants.ROOMS_TABLE).get();
+    const snapshots = await db.collection(constants.ROOMS_TABLE).where("status", "==", true).get();
     return snapshotToArray(snapshots);
   }
 

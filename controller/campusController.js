@@ -55,11 +55,12 @@ router.put("/", async (req, res) => { });
 
 router.get("/rooms", async (req, res) => {
   try {
-    console.log("Rooms")
     let rooms = await roomService.fetchAllRooms();
+    console.log("rooms: ")
+    console.log(rooms)
     res.status(200).json({
       status: true,
-      data: rooms,
+      data: rooms ?? [],
     });
   } catch (e) {
     res.status(200).json({
@@ -118,12 +119,17 @@ router.delete("/room", async (req, res) => {
     query.forEach(async (e) => {
       console.log(e);
       flag = await roomService.editRoom(e, { status: false });
+      console.log(flag)
     });
-    res.status(200).json({ status: flag });
+    res.status(200).json({
+      status: true,
+      data: flag
+    });
   } catch (e) {
+    console.log(e.toString())
     res.status(200).json({
       status: false,
-      error: e.toString(),
+      data: e.toString(),
     });
   }
 });

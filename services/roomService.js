@@ -23,6 +23,7 @@ const RoomService = class {
 
   async fetchAllRooms() {
     const rooms = await roomRepository.fetchAllRooms();
+    console.log(rooms)
     return rooms;
   }
 

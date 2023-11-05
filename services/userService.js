@@ -38,9 +38,48 @@ const UserService = class {
     return res;
   }
 
-  async addUser(User_obj) {
-    const res = await addData(constants.USERS_TABLE, User_obj);
-    return res;
+  async addUser(userData) {
+    let user = {
+      ...userData,
+      avatar: "/avatar/default.jpg",
+      status: true,
+      password: "default",
+    };
+
+    let username = user.firstName.toLowerCase()
+    let lastnames = user.lastName.split(" ")
+    lastnames.forEach((name) => {
+      username += name[0].toLowerCase();
+    })
+
+    switch (user.role) {
+      case 1:
+        this.checkUsernameValidityThenSetData(user, username, constants.STUDENTS_TABLE)
+        break;
+      case 2:
+        this.checkUsernameValidityThenSetData(user, username, constants.LECTURERS_TABLE)
+        break;
+      case 3:
+        this.checkUsernameValidityThenSetData(user, username, constants.ADMINS_TABLE)
+        break;
+      default:
+        throw ("Invalid role")
+    }
+  }
+
+  async checkUsernameValidityThenSetData(user, username, table) {
+    let index = 1;
+    let temp = String(username)
+    while (true) {
+      let user = await fetchDataById(table, temp);
+      if (user === -1) {
+        break;
+      } else {
+        temp = username + index.toString();
+        index++;
+      }
+    }
+    await setData(table, temp, user)
   }
 
   async fetchUserById(username) {

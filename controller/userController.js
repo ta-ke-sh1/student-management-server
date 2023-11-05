@@ -67,7 +67,6 @@ router.get("/lecturers", async (req, res) => {
   try {
     let users = []
     let dept = req.query.department;
-    console.log(dept)
     if (dept) {
       users = await userService.fetchAllLecturersByDepartment(dept);
     } else {
@@ -128,17 +127,8 @@ router.put("/avatar", uploader.single("avatar"), async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    let user = {
-      ...req.body,
-      avatar: "/avatar/default.jpg",
-      status: "activated",
-      password: AES.encrypt("123456", process.env.ENCRYPT_KEY).toString(),
-    };
-
-    console.log(user);
-
-    let response = await userService.addUser(user);
-    res.status(200).json({ result: response.msg });
+    await userService.addUser(req.body);
+    res.status(200).json({ status: true });
   } catch (e) {
     res.status(200).json({
       status: false,
