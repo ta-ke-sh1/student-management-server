@@ -13,6 +13,7 @@ router.get("/", async (req, res) => {
     } else {
       data = await subjectService.fetchAllSubjects();
     }
+    console.log(data)
     res.status(200).json({
       status: true,
       data: data,

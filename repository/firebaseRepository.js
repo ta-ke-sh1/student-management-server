@@ -39,11 +39,14 @@ const fetchDataById = async (collection, id) => {
 };
 
 const fetchMatchingDataByField = async (collection, field, keyword) => {
-  const snapshot = await db.collection(collection).where(field, "==", keyword).where("status", "==", true).get();
+  const snapshot = await db.collection(collection).where(field, "==", keyword).get();
   if (snapshot.empty) {
     return -1;
   }
-  return snapshotToArray(snapshot);
+  let data = snapshotToArray(snapshot);
+  return data.filter(function (d) {
+    return d.status !== false
+  })
 };
 
 const addData = async (collection, obj) => {

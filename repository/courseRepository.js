@@ -4,6 +4,10 @@ const { addData, deleteData, updateData, db, snapshotToArray } = require("./fire
 module.exports = class CourseRepostory {
   constructor() { }
 
+  async updateGroup(id, data) {
+    return await db.collection(constants.CLASS_TABLE).doc(id).update(data)
+  }
+
   async fetchAllGroups() {
     let data = await db.collection(constants.CLASS_TABLE).where("status", "==", true).get();
 

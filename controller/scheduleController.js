@@ -38,7 +38,6 @@ router.post("/", async (req, res) => {
 
 router.post("/participant", async (req, res) => {
   try {
-    console.log(req.body);
     const result = await scheduleService.addParticipantToGroup(req.body);
     res.status(200).json({
       status: true,
@@ -81,7 +80,7 @@ router.post("/group", async (req, res) => {
 
 router.put("/group", async (req, res) => {
   try {
-    let result = true;
+    let result = await scheduleService.updateGroup(req.query.id, req.body)
     res.status(200).json({
       status: true,
       data: result,
@@ -109,11 +108,11 @@ router.delete("/group", async (req, res) => {
   }
 });
 
-router.put("/restore", (req, res) => {});
+router.put("/restore", (req, res) => { });
 
-router.delete("/", (req, res) => {});
+router.delete("/", (req, res) => { });
 
-router.delete("/hard", containsRole(3), (req, res) => {});
+router.delete("/hard", containsRole(3), (req, res) => { });
 
 router.get("/info/schedule", async (req, res) => {
   let q = req.query;
@@ -181,10 +180,11 @@ router.get("/lecturer", async (req, res) => {
 
 router.get("/attendances", async (req, res) => {
   try {
+    console.log("Fetch attendances " + req.query.id)
     let result = await scheduleService.fetchAllAttendancesByScheduleId(req.query.id);
     res.status(200).json({
       status: true,
-      data: result,
+      data: result === -1 ? [] : result,
     });
   } catch (e) {
     res.status(200).json({

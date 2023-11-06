@@ -35,17 +35,21 @@ module.exports = class UserRepository {
     switch (type) {
       case "student":
         table = constants.STUDENTS_TABLE;
-        break;
+        return await fetchAllData(table);
       case "lecturer":
         table = constants.LECTURERS_TABLE;
-        break;
+        return await fetchAllData(table);
       case "admin":
         table = constants.ADMINS_TABLE;
-        break;
+        return await fetchAllData(table);
+      case "all":
+        let admins = await fetchAllData(constants.ADMINS_TABLE)
+        let lecturers = await fetchAllData(constants.LECTURERS_TABLE)
+        let students = await fetchAllData(constants.STUDENTS_TABLE)
+        return [...admins, ...lecturers, ...students]
       default:
-        break;
+        return [];
     }
-    return await fetchAllData(table);
   }
 
   async updateUserStatus(user_id, type, status) {

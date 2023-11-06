@@ -79,7 +79,7 @@ module.exports = class ScheduleRepository {
   }
 
   async fetchParticipantsByGroupId(group_id) {
-    let snapshot = await db.collection(constants.PARTICIPANTS_TABLE).where("group_id", "==", group_id).get();
+    let snapshot = await db.collection(constants.COURSES_REGISTRATION_TABLE).where("group_id", "==", group_id).get();
     return snapshotToArray(snapshot);
   }
 
@@ -112,7 +112,16 @@ module.exports = class ScheduleRepository {
   }
 
   async fetchAllAttendancesByScheduleId(id) {
-    return await fetchMatchingDataByField(constants.ATTENDANCES_TABLE, "schedule_id", id);
+    let splitted = id.split("-")
+
+    const session = splitted[splitted.length - 1];
+    const group_id = splitted.slice(0, -1).join("-")
+
+    console.log(session)
+    console.log(splitted)
+
+    let result = await db.collection(constants.ATTENDANCES_TABLE).where("group_id", "==", group_id).where("session", "==", parseInt(session)).get();
+    return snapshotToArray(result)
   }
 
   async checkAttendance(report) {

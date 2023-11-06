@@ -27,9 +27,29 @@ const UserService = class {
     return await this.userRepository.deactivateUser(id);
   }
 
+  fetchRole(role) {
+    switch (role) {
+      case 1:
+        return constants.STUDENTS_TABLE
+      case 2:
+        return constants.LECTURERS_TABLE;
+      case 3:
+        return constants.ADMINS_TABLE;
+      case "1":
+        return constants.STUDENTS_TABLE
+      case "2":
+        return constants.LECTURERS_TABLE;
+      case "3":
+        return constants.ADMINS_TABLE;
+      default:
+        throw "Invalid role!"
+    }
+  }
 
-  async editUser(User_id, User_obj) {
-    const res = await updateData(constants.USERS_TABLE, User_id, User_obj);
+  async editUser(user_id, user_obj) {
+    table = this.fetchRole(user_obj.role)
+
+    const res = await updateData(table, user_id, user_obj);
     return res;
   }
 
@@ -172,6 +192,34 @@ const UserService = class {
       }
     });
 
+    return res;
+  }
+
+  async resetPassword(id, role) {
+    let table;
+    switch (role) {
+      case 1:
+        table = constants.STUDENTS_TABLE;
+        break;
+      case 2:
+        table = constants.LECTURERS_TABLE;
+        break;
+      case 3:
+        table = constants.ADMINS_TABLE;
+        break;
+      case "1":
+        table = constants.STUDENTS_TABLE;
+        break;
+      case "2":
+        table = constants.LECTURERS_TABLE;
+        break;
+      case "3":
+        table = constants.ADMINS_TABLE;
+        break;
+      default:
+        throw "Invalid role!"
+    }
+    const res = await updateData(table, id, { password: '123456' });
     return res;
   }
 };

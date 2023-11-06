@@ -1,5 +1,5 @@
 const CourseRepostory = require("../repository/courseRepository");
-const { fetchDataById, deleteData, updateData, fetchMatchingDataByField } = require("../repository/firebaseRepository");
+const { fetchDataById, deleteData, updateData, fetchMatchingDataByField, db } = require("../repository/firebaseRepository");
 const ScheduleRepository = require("../repository/scheduleRepository");
 const constants = require("../utils/constants");
 
@@ -110,6 +110,34 @@ const ScheduleService = class {
     return schedule;
   }
 
+  async addParticipantToGroup(data) {
+    const group = data.group
+    const participants = data.participants
+
+    const schedules = await this.fetchScheduleByGroupId(group.id);
+    console.log(schedules)
+
+    for (const j in participants) {
+      await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(group.id + "-" + participants[j].id).set({
+        status: true,
+        group_id: group.id,
+        student_id: participants[j].id,
+      })
+
+      for (let i = 0; i < schedules.length; i++) {
+        await db.collection(constants.ATTENDANCES_TABLE).doc(group.id + "-" + participants[j].id + "-session" + schedules[i].session).set({
+          group_id: group.id,
+          dob: participants[j].dob,
+          student_id: participants[j].id,
+          session: schedules[i].session,
+          date: schedules[i].date,
+          status: true,
+          remark: -1,
+        });
+      }
+    }
+  }
+
   async fetchAllGroups() {
     return await this.courseRepository.fetchAllGroups();
   }
@@ -145,7 +173,7 @@ const ScheduleService = class {
           lecturer: data.lecturer,
           course_id: d_id,
           subject: data.subject,
-
+          status: true,
         });
       });
     }
@@ -177,6 +205,12 @@ const ScheduleService = class {
 
   async fetchAllAttendancesByScheduleId(id) {
     return this.scheduleRepository.fetchAllAttendancesByScheduleId(id);
+  }
+
+  async updateGroup(id, data) {
+    delete data.slot
+    delete data.dayOfTheWeek
+    return this.courseRepository.updateGroup(id, data)
   }
 };
 

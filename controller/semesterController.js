@@ -26,7 +26,7 @@ router.get("/schedules", async (req, res) => {
     console.log(result);
     res.status(200).json({
       status: true,
-      data: result,
+      data: result !== -1 ? result : [],
     });
   } catch (e) {
     res.status(200).json({
@@ -41,7 +41,7 @@ router.get("/participants", async (req, res) => {
     let result = await scheduleService.fetchParticipantsByGroupId(req.query.id);
     res.status(200).json({
       status: true,
-      data: result,
+      data: result !== -1 ? result : [],
     });
   } catch (e) {
     res.status(200).json({

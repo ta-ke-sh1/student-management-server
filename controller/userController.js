@@ -48,6 +48,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+
+router.get("/all", async (req, res) => {
+  try {
+    const users = await userService.fetchAllUsers("all");
+    console.log(users.length)
+    res.status(200).json({
+      status: true,
+      data: users ?? [],
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+})
+
 router.get("/admins", async (req, res) => {
   try {
     const users = await userService.fetchAllUsers("admin");
@@ -147,12 +164,28 @@ router.delete("/", (req, res) => {
   }
 });
 
+router.put("/password", async (req, res) => {
+  try {
+    const id = req.query.id;
+    const role = req.query.role
+    console.log(id + "-" + role)
+    console.log("Role is: " + role)
+    await userService.resetPassword(id, role)
+    res.status(200).json({ status: true })
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString()
+    })
+  }
+})
+
 router.put("/", async (req, res) => {
   try {
     const id = req.query.id;
     const update_obj = req.body;
-    let response = await userService.editUser(id, update_obj);
-    res.status(200).json({ result: response.msg });
+    await userService.editUser(id, update_obj);
+    res.status(200).json({ status: true });
   } catch (e) {
     res.status(200).json({
       status: false,
