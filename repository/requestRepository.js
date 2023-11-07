@@ -18,7 +18,7 @@ module.exports = class RequestRepository {
     return await updateData(constants.REQUEST_TABLE, id, request);
   }
 
-  async deleteRequest(id) {}
+  async deleteRequest(id) { }
 
   async deleteHardRequest(id) {
     return await deleteDataData(constants.REQUEST_TABLE, id);

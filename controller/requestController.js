@@ -9,8 +9,9 @@ const requestSerivce = new RequestService();
 router.get("/", async (req, res) => {
   try {
     let result = await requestSerivce.fetchRequests();
+    console.log(result)
     res.status(200).json({
-      status: 200,
+      status: true,
       data: result,
     });
   } catch (e) {

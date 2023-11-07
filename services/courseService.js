@@ -1,5 +1,7 @@
 const CourseRepostory = require("../repository/courseRepository");
+const { db, snapshotToArray } = require("../repository/firebaseRepository");
 const SubmissionRepository = require("../repository/submissionRepository");
+const constants = require("../utils/constants");
 const Utils = require("../utils/utils");
 const ClassService = require("./classService");
 const { UserService } = require("./userService");
@@ -20,11 +22,23 @@ module.exports = class CourseService {
     this.submissionRepository = new SubmissionRepository();
   }
 
-  async fetchCourseByCampus(campus_id) {
-    return [];
-    // return await this.courseRepository.fetchCourseRegistrationByStudentIdAndSemester(
-    // campus_id
-    // );
+  async fetchCourseByUserId(id) {
+    let snapshots = await db.collection(constants.COURSES_REGISTRATION_TABLE).where("student_id", "==", id).get()
+    let courses = snapshotToArray(snapshots);
+    let results = [];
+    for (const i in courses) {
+      let snapshot = await db.collection(constants.CLASS_TABLE).doc(courses[i].group_id).get();
+      const group = {
+        id: snapshot.id,
+        ...snapshot.data(),
+      }
+      const data = {
+        ...courses[i],
+        ...group
+      }
+      results.push(data)
+    }
+    return results;
   }
 
   async fetchCourseById(id) {

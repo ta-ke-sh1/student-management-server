@@ -13,7 +13,6 @@ router.get("/", async (req, res) => {
     } else {
       data = await subjectService.fetchAllSubjects();
     }
-    console.log(data)
     res.status(200).json({
       status: true,
       data: data,
@@ -61,6 +60,8 @@ router.delete("/", async (req, res) => {
 router.put("/", async (req, res) => {
   try {
     let id = req.query.id;
+    console.log(id)
+    console.log(req.body)
     let result = await subjectService.editSubject(id, req.body);
     res.status(200).json({
       status: true,

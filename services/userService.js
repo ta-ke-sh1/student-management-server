@@ -126,6 +126,7 @@ const UserService = class {
   }
 
   async fetchUserByUsername(username) {
+    console.log("Fetch user")
     if (!username) {
       throw "Missing username!";
     }

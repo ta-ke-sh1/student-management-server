@@ -62,13 +62,16 @@ module.exports = class AuthService {
   };
 
   authenticate = async (username, password) => {
-    let res = await this.userService.fetchUserByUsername(username);
+    let userService = new UserService();
+    let _user = await userService.fetchUserByUsername(username);
 
-    if (res.length === 0) {
+    if (_user.length === 0) {
       throw "User does not exists!";
     }
 
-    const user = res[0];
+    console.log(_user)
+
+    const user = _user[0];
 
     if (user.password !== password) {
       throw "Incorrect Password!";

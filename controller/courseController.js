@@ -187,7 +187,9 @@ router.get("/submissions", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    let courses = await courseService.fetchCourseByCampus(req.query.campus);
+    console.log(req.query.id)
+    let courses = await courseService.fetchCourseByUserId(req.query.id);
+    console.log(courses)
     res.status(200).json({
       status: true,
       data: [...courses],
@@ -203,6 +205,7 @@ router.get("/", async (req, res) => {
 router.get("/details", async (req, res) => {
   try {
     let course = await courseService.fetchCourseById(req.query.id);
+    console.log(course);
     res.status(200).json({
       status: true,
       data: course,

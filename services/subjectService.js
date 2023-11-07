@@ -16,16 +16,18 @@ const SubjectService = class {
 
   async editSubject(id, data) {
     if (!id) throw "Invalid id!";
-    return await updateData(constants.SUBJECTS_TABLE, id, data);
+    return await updateData(constants.SUBJECTS_TABLE, id.toString(), data);
   }
 
   async addSubject(data) {
-    let subject = await fetchDataById(constants.SUBJECTS_TABLE, data.id);
-    console.log(subject)
-    if (subject !== -1) {
-      throw "Already exists subject with this code!"
+    data.status = true;
+    let subject = await fetchDataById(constants.SUBJECTS_TABLE, data.subjectId);
+    if (subject !== -1 && subject.department === data.department) {
+      throw "Already exists subject with this code in " + data.department + " department!"
     }
-    // return await setData(constants.SUBJECTS_TABLE, data.id, data);
+    let id = String(data.subjectId)
+    delete data.subjectId
+    return await setData(constants.SUBJECTS_TABLE, id, data);
   }
 
   async deleteSubject(id) {
