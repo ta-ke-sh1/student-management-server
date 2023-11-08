@@ -23,4 +23,5 @@ module.exports = Object.freeze({
   SUPPORT_DOCUMENTS_TABLE: "Support_Documents",
   TERM_COURSES_TABLE: "Term_Courses",
   TERMS_TABLE: "Terms",
+  MATERIALS_TABLE: "Materials",
 });

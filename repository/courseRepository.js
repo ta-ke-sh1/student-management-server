@@ -61,15 +61,31 @@ module.exports = class CourseRepostory {
   }
 
   async fetchCourseByProgrammeAndTermAndDepartmentAndId(id) {
-    let snapshot = await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(id).get();
-    if (snapshot.exists) {
-      return {
-        id: snapshot.id,
-        ...snapshot.data(),
-      };
-    } else {
+    let snapshot = await db.collection(constants.CLASS_TABLE).doc(id).get();
+    if (!snapshot.exists) {
       throw "Course does not exist!";
     }
+
+    let group = {
+      id: snapshot.id,
+      ...snapshot.data(),
+    }
+
+    let subject = await db.collection(constants.SUBJECTS_TABLE).doc(group.subject).get();
+    if (!subject.exists) {
+      throw "Invalid Subject code!"
+    }
+
+
+    let s = {
+      id: subject.id,
+      ...subject.data()
+    }
+
+    group.title = s.name;
+    group.description = s.description;
+
+    return group;
   }
 
   async fetchAssignmentsByCourse(id) {
@@ -120,25 +136,21 @@ module.exports = class CourseRepostory {
   }
 
   async addCourseAssignment(assignment) {
-    let doc = await db.collection(constants.SUBMISSIONS_TABLE).doc(assignment.id).get();
-    if (doc.exists) {
+    console.log(assignment)
+    let doc = await db
+      .collection(constants.CLASS_TABLE)
+      .doc(assignment.id)
+      .collection(constants.COURSEWORK_DETAILS_TABLE)
+      .where("name", "==", assignment.name).get();
+
+    if (doc.length > 0) {
       throw "Already exists assignment with this name!";
     } else {
-      let asm = assignment;
-      let name = asm.name;
-
-      delete asm.name;
-      delete asm.id;
-
+      assignment.status = true;
       return await db
-        .collection(constants.COURSES_REGISTRATION_TABLE)
+        .collection(constants.CLASS_TABLE)
         .doc(assignment.id)
-        .collection(constants.SUBMISSIONS_TABLE)
-        .doc(name)
-        .set({
-          ...assignment,
-          status: true,
-        });
+        .collection(constants.COURSEWORK_DETAILS_TABLE).add(assignment);
     }
   }
 
@@ -147,6 +159,24 @@ module.exports = class CourseRepostory {
       .where('user_id', '==', id)
       .get();
 
-    return await snapshotToArray(snapshots);
+    return snapshotToArray(snapshots);
+  }
+
+  async fetchCourseworksByCourseId(id) {
+    let snapshots = await db
+      .collection(constants.CLASS_TABLE)
+      .doc(id)
+      .collection(constants.COURSEWORK_DETAILS_TABLE).get();
+
+    return snapshotToArray(snapshots)
+  }
+
+  async fetchMaterialsByCourseId(id) {
+    let snapshots = await db
+      .collection(constants.CLASS_TABLE)
+      .doc(id)
+      .collection(constants.MATERIALS_TABLE).get();
+
+    return snapshotToArray(snapshots)
   }
 };

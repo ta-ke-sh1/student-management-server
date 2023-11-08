@@ -116,4 +116,12 @@ module.exports = class CourseService {
   async fetchUserCourseById(id) {
     return this.courseRepository.fetchUserCourseById(id);
   }
+
+  async fetchCourseworksByCourseId(id) {
+    return this.courseRepository.fetchCourseworksByCourseId(id);
+  }
+
+  async fetchMaterialsByCourseId(id) {
+    return this.courseRepository.fetchMaterialsByCourseId(id);
+  }
 };

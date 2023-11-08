@@ -145,6 +145,7 @@ router.put("/avatar", uploader.single("avatar"), async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     await userService.addUser(req.body);
+    console.log(req.body)
     res.status(200).json({ status: true });
   } catch (e) {
     res.status(200).json({

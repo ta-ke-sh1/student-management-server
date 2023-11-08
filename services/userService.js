@@ -99,6 +99,7 @@ const UserService = class {
         index++;
       }
     }
+    user.email = temp.toLowerCase() + user.department_id.toLowerCase() + "@fpt.edu.vn"
     await setData(table, temp, user)
   }
 

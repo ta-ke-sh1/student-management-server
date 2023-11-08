@@ -205,7 +205,6 @@ router.get("/", async (req, res) => {
 router.get("/details", async (req, res) => {
   try {
     let course = await courseService.fetchCourseById(req.query.id);
-    console.log(course);
     res.status(200).json({
       status: true,
       data: course,
@@ -317,7 +316,41 @@ router.post("/grade", async (req, res) => {
 
 router.post("/coursework", async (req, res) => {
   try {
-    let result = courseService.addCourseAssignment(req.body);
+    let result = await courseService.addCourseAssignment(req.body);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
+
+router.get("/courseworks", async (req, res) => {
+  try {
+    console.log("Fetch courseworks")
+    let result = await courseService.fetchCourseworksByCourseId(req.query.id)
+    console.log(result)
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e,
+    });
+  }
+});
+
+router.get("/materials", async (req, res) => {
+  try {
+    console.log("Fetch materials")
+    let result = await courseService.fetchMaterialsByCourseId(req.query.id)
+    console.log(result)
     res.status(200).json({
       status: true,
       data: result,
