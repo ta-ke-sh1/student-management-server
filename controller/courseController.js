@@ -24,62 +24,7 @@ const uploader = multer({
   }),
 });
 
-router.post("/submit", uploader.array("items", 10), async (req, res) => {
-  try {
-    var fileNames = [];
-    for (let i = 0; i < req.files.length; i++) {
-      let filename = req.files[i].filename;
-      let timestamp = parseInt(filename.split("&")[0]);
-      fileNames.push({ name: filename, timestamp: timestamp });
-    }
 
-    let assignment = req.body;
-    delete assignment.fileNames;
-    assignment.submissions = fileNames;
-    assignment.status = true;
-
-    let result = "";
-    // let result = await courseService.submitAssignment(assignment);
-
-    res.status(200).send({
-      success: true,
-      data: result,
-    });
-  } catch (e) {
-    res.status(200).send({
-      success: false,
-      data: e.toString(),
-    });
-  }
-});
-
-router.put("/submit", uploader.array("items", 10), async (req, res) => {
-  try {
-    var fileNames = [];
-    for (let i = 0; i < req.files.length; i++) {
-      let filename = req.files[i].filename;
-      let timestamp = parseInt(filename.split("&")[0]);
-      fileNames.push({ name: filename, timestamp: timestamp });
-    }
-
-    let assignment = req.body;
-    delete assignment.fileNames;
-    assignment.submissions = fileNames;
-
-    let result = "";
-    // let result = await courseService.submitAssignment(assignment);
-
-    res.status(200).send({
-      success: true,
-      data: result,
-    });
-  } catch (e) {
-    res.status(200).send({
-      success: false,
-      data: e.toString(),
-    });
-  }
-});
 
 router.get("/resources", async (req, res) => {
   try {
@@ -187,9 +132,7 @@ router.get("/submissions", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    console.log(req.query.id)
     let courses = await courseService.fetchCourseByUserId(req.query.id);
-    console.log(courses)
     res.status(200).json({
       status: true,
       data: [...courses],
@@ -331,9 +274,7 @@ router.post("/coursework", async (req, res) => {
 
 router.get("/courseworks", async (req, res) => {
   try {
-    console.log("Fetch courseworks")
     let result = await courseService.fetchCourseworksByCourseId(req.query.id)
-    console.log(result)
     res.status(200).json({
       status: true,
       data: result,
@@ -348,9 +289,7 @@ router.get("/courseworks", async (req, res) => {
 
 router.get("/materials", async (req, res) => {
   try {
-    console.log("Fetch materials")
     let result = await courseService.fetchMaterialsByCourseId(req.query.id)
-    console.log(result)
     res.status(200).json({
       status: true,
       data: result,

@@ -1,4 +1,4 @@
-const { fetchDataById, addData, deleteData, updateData, fetchMatchingDataByField } = require("../repository/firebaseRepository");
+const { fetchDataById, addData, deleteData, updateData, fetchMatchingDataByField, setData } = require("../repository/firebaseRepository");
 const GradeRepository = require("../repository/gradeRepository");
 const constants = require("../utils/constants");
 const path = require("path");
@@ -13,9 +13,9 @@ const GradingService = class {
     this.fileService = new FileService();
   }
 
-  async validGrading() {}
+  async validGrading() { }
 
-  async reserveGrading() {}
+  async reserveGrading() { }
 
   async fetchAllGrades() {
     return await this.gradeRepository.fetchAllGrades();
@@ -53,16 +53,28 @@ const GradingService = class {
   }
 
   async addGrading(grading_obj, files) {
-    const folder = path.resolve() + "\\asset\\submissions\\" + grading_obj.programme + "\\" + grading_obj.term + "\\" + grading_obj.subject + "\\" + grading_obj.group + "\\" + grading_obj.assignment + "\\" + grading_obj.username + "\\";
+    const p = "\\submissions\\"
+      + grading_obj.programme
+      + "\\" + grading_obj.course_id
+      + "\\" + grading_obj.assignment_id
+      + "\\" + grading_obj.user_id
+      + "\\";
+    const folder = path.resolve() + "\\asset" + p;
     this.fileService.addMultipleFilesByPath(files, folder);
+
+    let fileNames = [];
+    files.forEach((file) => {
+      fileNames.push(file.originalname);
+    })
+
     delete grading_obj.files;
-
-    grading_obj.path = folder;
-    console.log(grading_obj);
-
+    grading_obj.path = p;
     grading_obj.grade = 0;
     grading_obj.date = new Date().getTime();
-    return await addData(constants.SUBMISSIONS_TABLE, grading_obj);
+    grading_obj.fileNames = fileNames
+
+    const id = grading_obj.course_id + "-" + grading_obj.assignment_id + "-" + grading_obj.user_id
+    return await setData(constants.SUBMISSIONS_TABLE, id, grading_obj);
   }
 
   async fetchGradingById(Grading_id) {

@@ -1,5 +1,5 @@
 const constants = require("../utils/constants");
-const { addData, deleteData, updateData, fetchAllData, db } = require("./firebaseRepository");
+const { addData, deleteData, updateData, fetchAllData, db, fetchDataById } = require("./firebaseRepository");
 
 module.exports = class SubmissionRepository {
   async fetchSubmissions() {
@@ -24,6 +24,10 @@ module.exports = class SubmissionRepository {
     };
   }
 
+  async fetchSubmissionById(id) {
+    return await fetchDataById(constants.SUBMISSIONS_TABLE, id);
+  }
+
   async submitSubmission(document) {
     return await addData(constants.SUBMISSIONS_TABLE, document);
   }
@@ -40,5 +44,5 @@ module.exports = class SubmissionRepository {
     return await deleteData(constants.SUBMISSIONS_TABLE, id);
   }
 
-  async uploadSubmission(course, submissionFile) {}
+  async uploadSubmission(course, submissionFile) { }
 };

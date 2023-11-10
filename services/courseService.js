@@ -67,13 +67,6 @@ module.exports = class CourseService {
     return await this.utils.deleteFileByPath(dir);
   }
 
-  async fetchClassBySemester(semester, course_id, class_id) { }
-
-  async addClass(class_obj) { }
-
-  async editClass(class_id, class_obj) { }
-
-  async deleteClass(class_id) { }
 
   async addCourse(course) {
     course.status = true;
@@ -123,5 +116,9 @@ module.exports = class CourseService {
 
   async fetchMaterialsByCourseId(id) {
     return this.courseRepository.fetchMaterialsByCourseId(id);
+  }
+
+  async fetchSubmissionById(id) {
+    return await this.submissionRepository.fetchSubmissionById(id);
   }
 };

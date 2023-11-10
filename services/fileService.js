@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 module.exports = class FileService {
-  constructor() {}
+  constructor() { }
 
   addMultipleFilesByPath(files, file_path) {
     try {
@@ -12,7 +12,7 @@ module.exports = class FileService {
         });
       }
 
-      files.forEach((file, index) => {
+      files.forEach((file) => {
         fs.renameSync(file.path, path.join(file_path, file.originalname), (err) => {
           if (err) {
             throw err;

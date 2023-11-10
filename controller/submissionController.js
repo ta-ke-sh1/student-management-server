@@ -16,10 +16,8 @@ const gradingService = new GradingService();
 router.get("/", async (req, res) => {
   try {
     const id = req.query.id;
-    const user = req.query.user;
-    const asm = req.query.assignment;
     console.log(req.query);
-    let result = await courseService.fetchSubmissionByCourseIdAndUserAndAssignmentId(id, user, asm);
+    let result = await courseService.fetchSubmissionById(id);
     res.status(200).json({
       status: true,
       data: result,
@@ -69,6 +67,51 @@ router.delete("/", async (req, res) => {
     });
   } catch (e) {
     res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
+router.post("/submit", uploader.array("files", 10), async (req, res) => {
+  try {
+    let result = await gradingService.addGrading(req.body, req.files);
+
+    res.status(200).send({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).send({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
+router.put("/submit", uploader.array("items", 10), async (req, res) => {
+  try {
+    var fileNames = [];
+    console.log(req.files)
+    for (let i = 0; i < req.files.length; i++) {
+      let filename = req.files[i].filename;
+      let timestamp = parseInt(filename.split("&")[0]);
+      fileNames.push({ name: filename, timestamp: timestamp });
+    }
+
+    let assignment = req.body;
+    delete assignment.fileNames;
+    assignment.submissions = fileNames;
+
+    let result = "";
+    // let result = await courseService.submitAssignment(assignment);
+
+    res.status(200).send({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).send({
       status: false,
       data: e.toString(),
     });

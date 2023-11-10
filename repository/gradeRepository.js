@@ -20,6 +20,8 @@ module.exports = class GradeRepository {
     return snapshotToArray(snapshots);
   }
 
+
+
   async submitGrade(document) {
     return await addData(constants.GRADE_TABLE, document);
   }
