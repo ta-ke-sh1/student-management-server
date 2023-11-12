@@ -87,8 +87,9 @@ router.get("resolve", async (req, res) => {
     const id = req.query.id;
     const option = req.query.option;
     let result = await requestSerivce.handleRequest(id, option);
-    result = res.status(200).json({
+    res.status(200).json({
       status: true,
+      data: result
     });
   } catch (e) {
     res.status(200).json({
@@ -97,5 +98,22 @@ router.get("resolve", async (req, res) => {
     });
   }
 });
+
+router.get("/user", async (req, res) => {
+  try {
+    const id = req.query.id;
+    let result = await requestSerivce.fetchUserRequests(id);
+    res.status(200).json({
+      status: true,
+      data: result
+    });
+
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+})
 
 module.exports = router;

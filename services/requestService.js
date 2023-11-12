@@ -15,6 +15,10 @@ module.exports = class RequestService {
     return this.requestRepository.fetchRequest();
   }
 
+  async fetchUserRequests(id) {
+    return this.requestRepository.fetchUserRequests(id);
+  }
+
   async addRequest(request, file) {
     const folder = path.join(path.resolve(), "asset", "requests");
     this.fileService.addFileByPath(file, folder);

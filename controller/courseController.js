@@ -132,7 +132,8 @@ router.get("/submissions", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    let courses = await courseService.fetchCourseByUserId(req.query.id);
+    console.log(req.query)
+    let courses = await courseService.fetchCourseByUserId(req.query.id, parseInt(req.query.role));
     res.status(200).json({
       status: true,
       data: [...courses],
@@ -267,13 +268,14 @@ router.post("/coursework", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
 
 router.get("/courseworks", async (req, res) => {
   try {
+    console.log(req.query.id)
     let result = await courseService.fetchCourseworksByCourseId(req.query.id)
     res.status(200).json({
       status: true,
@@ -282,7 +284,7 @@ router.get("/courseworks", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
     });
   }
 });
@@ -297,7 +299,25 @@ router.get("/materials", async (req, res) => {
   } catch (e) {
     res.status(200).json({
       status: false,
-      data: e,
+      data: e.toString(),
+    });
+  }
+});
+
+router.get("/courseworks/submissions", async (req, res) => {
+  try {
+    console.log(req.query)
+    let result = await courseService.fetchAssignmentsByCourseIdAndAssignmentId(req.query.course_id, req.query.assignment_id)
+    console.log(result)
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    console.log(e.toString())
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
     });
   }
 });

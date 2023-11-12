@@ -1,9 +1,14 @@
 const constants = require("../utils/constants");
-const { addData, deleteData, updateData, fetchAllData } = require("./firebaseRepository");
+const { addData, deleteData, updateData, fetchAllData, db, snapshotToArray } = require("./firebaseRepository");
 
 module.exports = class RequestRepository {
   async fetchRequest() {
     return await fetchAllData(constants.REQUEST_TABLE);
+  }
+
+  async fetchUserRequests(id) {
+    let snapshots = await db.collection(constants.REQUEST_TABLE).where("user_id", "==", id).get();
+    return snapshotToArray(snapshots)
   }
 
   async updateRequest(id, request) {

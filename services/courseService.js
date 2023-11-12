@@ -22,21 +22,34 @@ module.exports = class CourseService {
     this.submissionRepository = new SubmissionRepository();
   }
 
-  async fetchCourseByUserId(id) {
-    let snapshots = await db.collection(constants.COURSES_REGISTRATION_TABLE).where("student_id", "==", id).get()
-    let courses = snapshotToArray(snapshots);
+  async fetchCourseByUserId(id, role) {
+    let snapshots;
     let results = [];
-    for (const i in courses) {
-      let snapshot = await db.collection(constants.CLASS_TABLE).doc(courses[i].group_id).get();
-      const group = {
-        id: snapshot.id,
-        ...snapshot.data(),
+
+    if (role === 1) {
+      snapshots = await db.collection(constants.COURSES_REGISTRATION_TABLE).where("student_id", "==", id).get()
+
+      let courses = snapshotToArray(snapshots);
+
+      for (const i in courses) {
+        let snapshot = await db.collection(constants.CLASS_TABLE).doc(courses[i].group_id).get();
+        const group = {
+          id: snapshot.id,
+          ...snapshot.data(),
+        }
+        const data = {
+          ...courses[i],
+          ...group
+        }
+        results.push(data)
       }
-      const data = {
-        ...courses[i],
-        ...group
-      }
-      results.push(data)
+    }
+    else if (role === 2) {
+      snapshots = await db.collection(constants.CLASS_TABLE).where("lecturer", "==", id).get()
+      results = snapshotToArray(snapshots);
+    }
+    else {
+      throw "Invalid role";
     }
     return results;
   }
@@ -120,5 +133,9 @@ module.exports = class CourseService {
 
   async fetchSubmissionById(id) {
     return await this.submissionRepository.fetchSubmissionById(id);
+  }
+
+  async fetchAssignmentsByCourseIdAndAssignmentId(course_id, assignment_id) {
+    return this.submissionRepository.fetchAssignmentsByCourseIdAndAssignmentId(course_id, assignment_id);
   }
 };
