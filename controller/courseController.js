@@ -101,7 +101,6 @@ router.put("/resources", uploader.array("items", 10), async (req, res) => {
 
 router.delete("/resources", async (req, res) => {
   try {
-    console.log(req.query);
     let result = await courseService.deleteLocalResourceByQuery(req.query);
     console.log(result);
     res.status(200).json({
@@ -132,7 +131,6 @@ router.get("/submissions", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    console.log(req.query)
     let courses = await courseService.fetchCourseByUserId(req.query.id, parseInt(req.query.role));
     res.status(200).json({
       status: true,
@@ -275,7 +273,6 @@ router.post("/coursework", async (req, res) => {
 
 router.get("/courseworks", async (req, res) => {
   try {
-    console.log(req.query.id)
     let result = await courseService.fetchCourseworksByCourseId(req.query.id)
     res.status(200).json({
       status: true,
@@ -306,9 +303,7 @@ router.get("/materials", async (req, res) => {
 
 router.get("/courseworks/submissions", async (req, res) => {
   try {
-    console.log(req.query)
     let result = await courseService.fetchAssignmentsByCourseIdAndAssignmentId(req.query.course_id, req.query.assignment_id)
-    console.log(result)
     res.status(200).json({
       status: true,
       data: result,
@@ -321,5 +316,52 @@ router.get("/courseworks/submissions", async (req, res) => {
     });
   }
 });
+
+router.get("/schedules", async (req, res) => {
+  try {
+    let result = await courseService.fetchSchedulesByCourseId(req.query.id)
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
+router.get("/participants", async (req, res) => {
+  try {
+    let result = await courseService.fetchParticipantsByCourseId(req.query.id)
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
+router.get("/attendances", async (req, res) => {
+  try {
+    console.log(req.query)
+    let result = await courseService.fetchAttendancesByCourseId(req.query.id, parseInt(req.query.session))
+    console.log(result);
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+})
 
 module.exports = router;

@@ -179,4 +179,19 @@ module.exports = class CourseRepostory {
 
     return snapshotToArray(snapshots)
   }
+
+  async fetchSchedulesByCourseId(id) {
+    let snapshots = await db.collection(constants.SCHEDULE_SLOTS_TABLE).where("course_id", "==", id).get();
+    return snapshotToArray(snapshots);
+  }
+
+  async fetchParticipantsByCourseId(id) {
+    let snapshots = await db.collection(constants.COURSES_REGISTRATION_TABLE).where("group_id", "==", id).get();
+    return snapshotToArray(snapshots);
+  }
+
+  async fetchAttendancesByCourseId(id, session) {
+    let snapshots = await db.collection(constants.ATTENDANCES_TABLE).where("group_id", "==", id).where("session", "==", session).get();
+    return snapshotToArray(snapshots);
+  }
 };

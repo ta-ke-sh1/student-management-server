@@ -138,4 +138,16 @@ module.exports = class CourseService {
   async fetchAssignmentsByCourseIdAndAssignmentId(course_id, assignment_id) {
     return this.submissionRepository.fetchAssignmentsByCourseIdAndAssignmentId(course_id, assignment_id);
   }
+
+  async fetchSchedulesByCourseId(id) {
+    return this.courseRepository.fetchSchedulesByCourseId(id)
+  }
+
+  async fetchParticipantsByCourseId(id) {
+    return this.courseRepository.fetchParticipantsByCourseId(id)
+  }
+
+  async fetchAttendancesByCourseId(id, session) {
+    return this.courseRepository.fetchAttendancesByCourseId(id, session)
+  }
 };

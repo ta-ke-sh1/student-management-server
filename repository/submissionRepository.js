@@ -49,5 +49,7 @@ module.exports = class SubmissionRepository {
     return await deleteData(constants.SUBMISSIONS_TABLE, id);
   }
 
+
+
   async uploadSubmission(course, submissionFile) { }
 };
