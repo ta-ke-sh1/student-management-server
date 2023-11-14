@@ -110,7 +110,21 @@ router.delete("/group", async (req, res) => {
 
 router.put("/restore", (req, res) => { });
 
-router.delete("/", (req, res) => { });
+router.delete("/", async (req, res) => {
+  try {
+    let query = req.query.queue.split("%");
+    await scheduleService.deleteSchedules(query);
+    console.log(query)
+    res.status(200).json({
+      status: false,
+    })
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    })
+  }
+});
 
 router.delete("/hard", containsRole(3), (req, res) => { });
 

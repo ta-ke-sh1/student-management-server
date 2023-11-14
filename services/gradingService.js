@@ -20,9 +20,9 @@ const GradingService = class {
         this.fileService = new FileService();
     }
 
-    async validGrading() {}
+    async validGrading() { }
 
-    async reserveGrading() {}
+    async reserveGrading() { }
 
     async fetchAllGrades() {
         return await this.gradeRepository.fetchAllGrades();
@@ -126,6 +126,10 @@ const GradingService = class {
             throw "Grading does not exist";
         }
         return grading;
+    }
+
+    async submitGrade(grade) {
+        await this.gradeRepository.submitGrade(grade)
     }
 };
 

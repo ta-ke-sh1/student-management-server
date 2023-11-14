@@ -2,7 +2,7 @@ const CourseRepostory = require("../repository/courseRepository");
 const { fetchDataById, deleteData, updateData, fetchMatchingDataByField, db } = require("../repository/firebaseRepository");
 const ScheduleRepository = require("../repository/scheduleRepository");
 const constants = require("../utils/constants");
-
+const moment = require("moment")
 
 const ScheduleService = class {
 
@@ -124,8 +124,10 @@ const ScheduleService = class {
         student_id: participants[j].id,
       })
 
+      var batch = db.batch();
+
       for (let i = 0; i < schedules.length; i++) {
-        await db.collection(constants.ATTENDANCES_TABLE).doc(group.id + "-" + participants[j].id + "-session" + schedules[i].session).set({
+        let obj = {
           group_id: group.id,
           dob: participants[j].dob,
           student_id: participants[j].id,
@@ -133,9 +135,26 @@ const ScheduleService = class {
           date: schedules[i].date,
           status: true,
           remark: -1,
-        });
+        }
+        console.log(schedules[i].date)
+        let ref = db.collection(constants.ATTENDANCES_TABLE).doc(group.id + "-" + participants[j].id + "-session" + schedules[i].session);
+        batch.set(ref, obj);
       }
+
+      batch.commit().then(function () {
+        console.log('Batch committed successfully');
+      }).catch(function (error) {
+        console.error('Error committing batch:', error);
+      });
     }
+  }
+
+  async milisecondsToString(milliseconds) {
+    let date = new Date(milliseconds);
+    let year = date.getFullYear();
+    let month = ("0" + (date.getMonth() + 1)).slice(-2); // Months are zero based
+    let day = ("0" + date.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
   }
 
   async fetchAllGroups() {
@@ -163,10 +182,11 @@ const ScheduleService = class {
     await this.courseRepository.addGroup(data);
 
     if (data.slots > 0) {
-      let schedules = await this.createSchedulesUsingDayAndSlotAndStartAndEndDate(slot, data.startDate * 1000, data.endDate * 1000, data.slots);
+      let schedules = await this.createSchedulesUsingDayAndSlotAndStartAndEndDate(slot, data.startDate, data.endDate, data.slots);
       schedules.forEach(async (schedule, index) => {
-        await this.scheduleRepository.setSchedule(d_id + "-" + index, {
+        let obj = {
           session: index,
+          dateString: schedule.dateString,
           date: schedule.date,
           slot: schedule.slot,
           room: "N/A",
@@ -174,7 +194,8 @@ const ScheduleService = class {
           course_id: d_id,
           subject: data.subject,
           status: true,
-        });
+        }
+        await this.scheduleRepository.setSchedule(d_id + "-" + index, obj);
       });
     }
     return true;
@@ -184,14 +205,16 @@ const ScheduleService = class {
     let schedules = [];
     let start = new Date(startDate);
     let end = new Date(endDate);
-    let schedule = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    let schedule = new Date(start.getTime());
     while (schedule <= end) {
       for (let s of slot) {
         if (s.number === schedule.getDay()) {
           if (schedules.length >= maxSlots) {
             return schedules;
           } else {
+            let d = moment(schedule).format("YYYY-MM-DD");
             schedules.push({
+              dateString: d,
               date: schedule.getTime(),
               slot: s.slot,
             });
@@ -211,6 +234,10 @@ const ScheduleService = class {
     delete data.slot
     delete data.dayOfTheWeek
     return this.courseRepository.updateGroup(id, data)
+  }
+
+  async deleteSchedules(query) {
+    await this.scheduleRepository.deleteSchedules(query);
   }
 };
 

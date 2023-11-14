@@ -125,15 +125,15 @@ module.exports = class ScheduleRepository {
   }
 
   async checkAttendance(report) {
-    if (!report.attendance || Array.isArray(report.attendance)) {
+    if (!report.attendance || !Array.isArray(report.attendance)) {
       throw "Invalid attendance report format!";
     }
     for (let i = 0; i < report.attendance.length; i++) {
       try {
-        let ref = db.collection(constants.SCHEDULE_SLOTS_TABLE).doc(report.attendance[i].student_id).where("group_id", "==", report.id);
+        let ref = db.collection(constants.ATTENDANCES_TABLE).doc(report.attendance[i].id);
 
         await ref.update({
-          attendance_status: report.attendance[i].attendance_status,
+          remark: parseInt(report.attendance[i].remark),
         });
       } catch (e) {
         throw e;
@@ -149,5 +149,11 @@ module.exports = class ScheduleRepository {
     await ref.update({
       attendance_status: status,
     });
+  }
+
+  async deleteSchedules(schedules) {
+    for (const i in schedules) {
+      await db.collection(constants.SCHEDULE_SLOTS_TABLE).doc(schedules[i]).delete()
+    }
   }
 };

@@ -119,4 +119,20 @@ router.put("/submit", uploader.array("items", 10), async (req, res) => {
     }
 });
 
+router.post("/grade", async (req, res) => {
+    try {
+        console.log(req.body)
+        await gradingService.submitGrade(req.body);
+        res.status(200).send({
+            status: true,
+            data: "Grade submitted successfully!",
+        })
+    } catch (e) {
+        res.status(200).send({
+            status: false,
+            data: e.toString(),
+        })
+    }
+})
+
 module.exports = router;

@@ -23,7 +23,11 @@ module.exports = class GradeRepository {
 
 
   async submitGrade(document) {
-    return await addData(constants.GRADE_TABLE, document);
+    return await db.collection(constants.SUBMISSIONS_TABLE).doc(document.id).update({
+      grade: parseInt(document.grade),
+      gradeText: document.gradeText,
+      comments: document.comments,
+    })
   }
 
   async updateGrade(id, update_grade_obj) {
