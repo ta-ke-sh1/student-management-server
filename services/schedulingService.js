@@ -27,14 +27,16 @@ const ScheduleService = class {
       let courses = query.course_id.split("%")
 
       let results = [];
-      for (const course of courses) {
-        if (course != "") {
-          const data = await this.scheduleRepository.fetchScheduleByStudentIdAndCourseIdAndDate(query.user_id, course, query.startDate, query.endDate);
+      for (let index = 0; index < courses.length; index++) {
+        console.log(courses[index])
+        if (courses[index] != "") {
+          const data = await this.scheduleRepository.fetchScheduleByStudentIdAndCourseIdAndDate(query.user_id, courses[index], query.startDate, query.endDate);
 
-          for (const d of data) {
-            results.push(d)
+          for (let j = 0; j < data.length; j++) {
+            results.push(data[j])
           }
         }
+
       }
 
       console.log(results)

@@ -30,6 +30,48 @@ module.exports = class ScheduleRepository {
     return await snapshotToArray(snapshot);
   }
 
+  async fetchScheduleByStudentIdAndDate(student_id, startDate, endDate) {
+    let snapshots = await db
+      .collection(constants.SCHEDULE_SLOTS_TABLE)
+      .where("course_id", "==", course_id)
+      .get();
+
+    let data = await snapshotToArray(snapshots)
+
+    let schedules = data.filter(s => s.date >= parseInt(startDate) && s.date <= parseInt(endDate));
+
+    const slots = [];
+
+    for (const schedule of schedules) {
+      let schedule_slot = await fetchDataById(constants.ATTENDANCES_TABLE, schedule.id + "-" + student_id);
+      const group = schedule.course_id.split("-");
+      const _class = group[group.length - 1]
+
+      if (schedule_slot === -1) {
+        slots.push({
+          slot_id: schedule.id,
+          student_id: student_id,
+          status: -1,
+          slot: schedule.slot,
+          date: schedule.date,
+          room: schedule.room,
+          lecturer: schedule.lecturer,
+          course_id: schedule.course_id,
+          class: _class,
+          subject: schedule.subject
+        })
+      } else {
+        schedule.student_id = student_id
+        schedule.status = schedule_slot.status
+        schedule.class = _class
+        schedule.group = group[group.length - 1]
+        slots.push(schedule)
+      }
+    };
+
+    return slots;
+  }
+
   async fetchScheduleByStudentIdAndCourseIdAndDate(student_id, course_id, startDate, endDate) {
     let snapshots = await db
       .collection(constants.SCHEDULE_SLOTS_TABLE)
@@ -37,6 +79,8 @@ module.exports = class ScheduleRepository {
       .get();
 
     let data = await snapshotToArray(snapshots)
+
+    console.log(data)
 
     let schedules = data.filter(s => s.date >= parseInt(startDate) && s.date <= parseInt(endDate));
 
