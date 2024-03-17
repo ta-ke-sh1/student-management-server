@@ -208,7 +208,6 @@ module.exports = class ScheduleRepository {
     const docs = await db.collection(constants.ATTENDANCES_TABLE).where("student_id", "==", studentId).get()
     docs.forEach(element => {
       element.ref.delete();
-      console.log(`deleted: ${element.id}`);
     });
   }
 };
