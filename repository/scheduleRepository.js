@@ -200,4 +200,15 @@ module.exports = class ScheduleRepository {
       await db.collection(constants.SCHEDULE_SLOTS_TABLE).doc(schedules[i]).delete()
     }
   }
+
+  async deleteParticipantFromGroup(groupId, studentId) {
+    const groupRef = db.collection(constants.COURSES_REGISTRATION_TABLE).doc(groupId)
+    await groupRef.delete()
+
+    const docs = await db.collection(constants.ATTENDANCES_TABLE).where("student_id", "==", studentId).get()
+    docs.forEach(element => {
+      element.ref.delete();
+      console.log(`deleted: ${element.id}`);
+    });
+  }
 };

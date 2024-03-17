@@ -51,6 +51,21 @@ router.get("/participants", async (req, res) => {
   }
 });
 
+router.delete("/participants", async (req, res) => {
+  try {
+    let result = await scheduleService.deleteParticipantFromGroup(req.query.groupId, req.query.studentId)
+    res.status(200).json({
+      status: true,
+      data: result !== -1 ? result : [],
+    });
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString(),
+    });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     res.status(200).json({

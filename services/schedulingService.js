@@ -241,6 +241,10 @@ const ScheduleService = class {
   async deleteSchedules(query) {
     await this.scheduleRepository.deleteSchedules(query);
   }
+
+  async deleteParticipantFromGroup(groupId, studentId) {
+    return this.scheduleRepository.deleteParticipantFromGroup(groupId, studentId)
+  }
 };
 
 module.exports = { ScheduleService };
