@@ -5,10 +5,10 @@ require("dotenv").config();
 const cors = require("cors");
 
 app.use(
-  cors({
-    origin: process.env.CLIENT_URL,
-    methods: ["GET", "POST", "UPDATE", "DELETE", "PUT"],
-  })
+    cors({
+        origin: process.env.CLIENT_URL,
+        methods: ["GET", "POST", "UPDATE", "DELETE", "PUT"],
+    })
 );
 
 app.use(json());
@@ -46,17 +46,20 @@ app.use("/request", requestController);
 const documentController = require("./controller/documentsController");
 app.use("/document", documentController);
 
+const feedbackController = require("./controller/feedbackController");
+app.use("/feedback", feedbackController);
+
 // Homepage
 app.get("/", async (req, res) => {
-  res.status(200).json({ msg: "Hello world!" });
+    res.status(200).json({ msg: "Hello world!" });
 });
 
 const MockService = require("./services/mockService");
 
 app.get("/mock", async (req, res) => {
-  const mockService = new MockService();
-  await mockService.AddUser();
-  res.status(200).json({});
+    const mockService = new MockService();
+    await mockService.AddUser();
+    res.status(200).json({});
 });
 
 const PORT = process.env.PORT || 5000;
