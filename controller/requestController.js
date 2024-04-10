@@ -69,6 +69,7 @@ router.delete("/hard/", async (req, res) => {
 
 router.put("/", async (req, res) => {
   try {
+    console.log(req)
     const id = req.query.id;
     let result = await requestSerivce.editRequest(id, req.body);
     result = res.status(200).json({
