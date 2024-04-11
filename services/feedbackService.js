@@ -3,6 +3,7 @@ const {
     fetchDataById,
     addData,
     updateData,
+    setData,
 } = require("../repository/firebaseRepository");
 const constants = require("../utils/constants");
 const Utils = require("../utils/utils");
@@ -45,14 +46,11 @@ const FeedbackService = class {
     }
 
     async addFeedback(data) {
-        let feedback = {
-            address: data.address,
-            city: data.city,
-            country: data.country,
-            name: data.name,
-        };
-        if (utils.isNonEmptyObject(feedback)) return -1;
-        const res = await addData(constants.FEEDBACK_TABLE, feedback);
+        const res = await setData(
+            constants.FEEDBACK_TABLE,
+            "Feedback-" + data.course_id + "-" + data.student_id,
+            data
+        );
         return res;
     }
 

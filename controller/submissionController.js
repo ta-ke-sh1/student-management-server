@@ -30,6 +30,22 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.get("/course", async (req, res) => {
+    try {
+        const id = req.query.id;
+        let result = await courseService.fetchAssignmentsById(id);
+        res.status(200).json({
+            status: true,
+            data: result,
+        });
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e.toString(),
+        });
+    }
+});
+
 router.post("/", uploader.array("files", 10), async (req, res) => {
     try {
         let data = await gradingService.addGrading(req.body, req.files);
@@ -121,18 +137,18 @@ router.put("/submit", uploader.array("items", 10), async (req, res) => {
 
 router.post("/grade", async (req, res) => {
     try {
-        console.log(req.body)
+        console.log(req.body);
         await gradingService.submitGrade(req.body);
         res.status(200).send({
             status: true,
             data: "Grade submitted successfully!",
-        })
+        });
     } catch (e) {
         res.status(200).send({
             status: false,
             data: e.toString(),
-        })
+        });
     }
-})
+});
 
 module.exports = router;
