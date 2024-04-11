@@ -32,8 +32,10 @@ router.get("/", async (req, res) => {
 
 router.get("/course", async (req, res) => {
     try {
-        const id = req.query.id;
-        let result = await courseService.fetchAssignmentsById(id);
+        let result = await courseService.fetchSubmissionsByAssignmentId(
+            req.query.id
+        );
+        console.log(result);
         res.status(200).json({
             status: true,
             data: result,

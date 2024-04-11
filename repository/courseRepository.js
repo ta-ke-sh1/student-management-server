@@ -85,8 +85,15 @@ module.exports = class CourseRepostory {
         return result;
     }
 
-    async fetchCourseByProgrammeAndTermAndDepartmentAndId(id) {
+    async fetchCourseById(id) {
         let snapshot = await db.collection(constants.CLASS_TABLE).doc(id).get();
+
+        let assignments = await db
+            .collection(constants.CLASS_TABLE)
+            .doc(id)
+            .collection(constants.COURSEWORK_DETAILS_TABLE)
+            .get();
+
         if (!snapshot.exists) {
             throw "Course does not exist!";
         }
@@ -94,6 +101,7 @@ module.exports = class CourseRepostory {
         let group = {
             id: snapshot.id,
             ...snapshot.data(),
+            assignments: snapshotToArray(assignments),
         };
 
         let subject = await db

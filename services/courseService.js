@@ -62,14 +62,7 @@ module.exports = class CourseService {
     }
 
     async fetchCourseById(id) {
-        let course =
-            await this.courseRepository.fetchCourseByProgrammeAndTermAndDepartmentAndId(
-                id
-            );
-        let assignments = await this.courseRepository.fetchAssignmentsByCourse(
-            id
-        );
-        course.assignments = assignments;
+        let course = await this.courseRepository.fetchCourseById(id);
         return course;
     }
 
@@ -162,6 +155,16 @@ module.exports = class CourseService {
 
     async fetchSubmissionById(id) {
         return await this.submissionRepository.fetchSubmissionById(id);
+    }
+
+    async fetchSubmissionsByAssignmentId(id) {
+        return await this.submissionRepository.fetchSubmissionByAssignmentId(
+            id
+        );
+    }
+
+    async fetchSubmissionByCourseId(id) {
+        return await this.submissionRepository.fetchSubmissionByCourseId(id);
     }
 
     async fetchAssignmentsByCourseIdAndAssignmentId(course_id, assignment_id) {
