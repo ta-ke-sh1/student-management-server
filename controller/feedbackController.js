@@ -29,6 +29,27 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.get("/course", async (req, res) => {
+    try {
+        let { course_id } = req.query;
+        if (course_id) {
+            data = await feedbackService.fetchFeedbackBydCourse(course_id);
+
+            res.status(200).json({
+                status: true,
+                data: data,
+            });
+        } else {
+            throw "Missing parameter";
+        }
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            error: e.toString(),
+        });
+    }
+});
+
 router.post("/", async (req, res) => {
     try {
         let payload = req.body;

@@ -1,10 +1,8 @@
+const FeedbackRepository = require("../repository/feedbackRepository");
 const {
     fetchDataById,
     addData,
-    deleteData,
-    setData,
     updateData,
-    fetchAllData,
 } = require("../repository/firebaseRepository");
 const constants = require("../utils/constants");
 const Utils = require("../utils/utils");
@@ -12,8 +10,14 @@ const Utils = require("../utils/utils");
 const utils = new Utils();
 
 const FeedbackService = class {
+    feedbackRepository;
+
+    constructor() {
+        this.feedbackRepository = new FeedbackRepository();
+    }
+
     async fetchAllFeedback() {
-        const feedbackes = await fetchAllData(constants.FEEDBACK_TABLE);
+        const feedbackes = await this.feedbackRepository.fetchFeedbacks();
         return feedbackes;
     }
 
@@ -26,9 +30,18 @@ const FeedbackService = class {
         return res;
     }
 
-    async deleteFeedback(Feedback_id) {
-        const res = await deleteData(constants.FEEDBACK_TABLE, Feedback_id);
+    async deleteFeedback(feedback_id) {
+        const res = await this.feedbackRepository.deleteHardFeedback(
+            feedback_id
+        );
         return res;
+    }
+
+    async fetchFeedbackByCourse(course_id, lecturer_id) {
+        return await this.feedbackRepository.fetchFeedbackByCourse(
+            course_id,
+            lecturer_id
+        );
     }
 
     async addFeedback(data) {
