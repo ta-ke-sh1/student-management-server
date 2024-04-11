@@ -54,10 +54,9 @@ router.delete("/", async (req, res) => {
 router.put("/", async (req, res) => { });
 
 router.get("/rooms", async (req, res) => {
+  console.log(req.query)
   try {
     let rooms = await roomService.fetchAllRooms();
-    console.log("rooms: ")
-    console.log(rooms)
     res.status(200).json({
       status: true,
       data: rooms ?? [],
