@@ -50,9 +50,7 @@ const fetchMatchingDataByField = async (collection, field, keyword) => {
         return -1;
     }
     let data = snapshotToArray(snapshot);
-    return data.filter(function (d) {
-        return d.status !== false;
-    });
+    return data;
 };
 
 // Add data to collection
