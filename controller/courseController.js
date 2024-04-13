@@ -345,6 +345,7 @@ router.get("/schedules", async (req, res) => {
 
 router.get("/participants", async (req, res) => {
     try {
+        console.log(req.query);
         let result = await courseService.fetchParticipantsByCourseId(
             req.query.id
         );
