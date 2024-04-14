@@ -396,4 +396,19 @@ router.get("/lecturer/all", async (req, res) => {
     }
 });
 
+router.get("/registration/all", async (req, res) => {
+    try {
+        let result = await courseService.fetchAllRegistrations();
+        res.status(200).json({
+            status: true,
+            data: result,
+        });
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e.toString(),
+        });
+    }
+});
+
 module.exports = router;

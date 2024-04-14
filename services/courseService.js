@@ -189,4 +189,8 @@ module.exports = class CourseService {
     async fetchCourseByLecturerId(id) {
         return this.courseRepository.fetchCourseByLecturerId(id);
     }
+
+    async fetchAllRegistrations() {
+        return this.courseRepository.fetchAllRegistrations();
+    }
 };

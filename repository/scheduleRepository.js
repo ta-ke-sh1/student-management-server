@@ -157,6 +157,10 @@ module.exports = class ScheduleRepository {
         return snapshotToArray(snapshot);
     }
 
+    async fetchAttendances() {
+        return await fetchAllData(constants.ATTENDANCES_TABLE);
+    }
+
     async fetchSchedules() {
         return await fetchAllData(constants.SCHEDULE_SLOTS_TABLE);
     }

@@ -170,6 +170,9 @@ const ScheduleService = class {
                     status: true,
                     group_id: group.id,
                     student_id: participants[j].id,
+                    dob: participants[j].dob,
+                    firstName: participants[j].firstName,
+                    lastName: participants[j].lastName,
                 });
 
             var batch = db.batch();
@@ -281,6 +284,14 @@ const ScheduleService = class {
             });
         }
         return true;
+    }
+
+    async fetchAttendances() {
+        return this.scheduleRepository.fetchAttendances();
+    }
+
+    async fetchSchedules() {
+        return this.scheduleRepository.fetchSchedules();
     }
 
     async createSchedulesUsingDayAndSlotAndStartAndEndDate(

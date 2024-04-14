@@ -5,6 +5,7 @@ const {
     updateData,
     db,
     snapshotToArray,
+    fetchAllData,
 } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
@@ -254,5 +255,9 @@ module.exports = class CourseRepostory {
             .where("lecturer", "==", id)
             .get();
         return snapshotToArray(snapshots);
+    }
+
+    async fetchAllRegistrations() {
+        return await fetchAllData(constants.COURSES_REGISTRATION_TABLE);
     }
 };

@@ -5,6 +5,36 @@ const { containsRole } = require("../middleware/tokenCheck");
 
 const scheduleService = new ScheduleService();
 
+router.get("/attendance/all", async (req, res) => {
+    try {
+        const schedules = await scheduleService.fetchAttendances();
+        res.status(200).json({
+            status: true,
+            data: schedules,
+        });
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e.toString(),
+        });
+    }
+});
+
+router.get("/all", async (req, res) => {
+    try {
+        const schedules = await scheduleService.fetchSchedules();
+        res.status(200).json({
+            status: true,
+            data: schedules,
+        });
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e.toString(),
+        });
+    }
+});
+
 router.get("/", async (req, res) => {
     try {
         console.log(req.query);
