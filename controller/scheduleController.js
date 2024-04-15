@@ -70,13 +70,13 @@ router.post("/", async (req, res) => {
     }
 });
 
-router.post("/participant", async (req, res) => {
+router.put("/", async (req, res) => {
     try {
-        const result = await scheduleService.addParticipantToGroup(req.body);
-        res.status(200).json({
-            status: true,
-            data: result,
-        });
+        const result = await scheduleService.editSchedule(
+            req.query.id,
+            req.body
+        );
+        res.status(200).json(result);
     } catch (e) {
         res.status(200).json({
             status: false,
@@ -85,13 +85,13 @@ router.post("/participant", async (req, res) => {
     }
 });
 
-router.put("/", async (req, res) => {
+router.post("/participant", async (req, res) => {
     try {
-        const result = await scheduleService.editSchedule(
-            req.query.id,
-            req.body
-        );
-        res.status(200).json(result);
+        const result = await scheduleService.addParticipantToGroup(req.body);
+        res.status(200).json({
+            status: true,
+            data: result,
+        });
     } catch (e) {
         res.status(200).json({
             status: false,
@@ -145,7 +145,7 @@ router.delete("/group", async (req, res) => {
     }
 });
 
-router.put("/restore", (req, res) => {});
+router.put("/restore", (req, res) => { });
 
 router.delete("/", async (req, res) => {
     try {
@@ -163,7 +163,7 @@ router.delete("/", async (req, res) => {
     }
 });
 
-router.delete("/hard", containsRole(3), (req, res) => {});
+router.delete("/hard", containsRole(3), (req, res) => { });
 
 router.get("/info/schedule", async (req, res) => {
     let q = req.query;

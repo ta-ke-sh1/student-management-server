@@ -11,7 +11,7 @@ const {
 } = require("./firebaseRepository");
 
 module.exports = class ScheduleRepository {
-    constructor() {}
+    constructor() { }
 
     async fetchScheduleByGroupId(id) {
         console.log("Repository");
@@ -259,5 +259,26 @@ module.exports = class ScheduleRepository {
         docs.forEach((element) => {
             element.ref.delete();
         });
+    }
+
+    async fetchScheduleBySlotAndDateAndRoom(date, slot, room) {
+        let result = await db
+            .collection(constants.ATTENDANCES_TABLE)
+            .where("dateString", "==", date)
+            .where("slot", "==", slot)
+            .where("session", "==", room)
+            .get();
+        return snapshotToArray(result);
+    }
+
+    async fetchScheduleBySlotAndDateAndRoom(date, slot, lecturer) {
+        let result = await db
+            .collection(constants.ATTENDANCES_TABLE)
+            .where("dateString", "==", date)
+            .where("slot", "==", slot)
+            .where("lecturer", "==", lecturer)
+            .get();
+        return snapshotToArray(result);
+
     }
 };

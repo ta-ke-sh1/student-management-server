@@ -117,11 +117,14 @@ const ScheduleService = class {
         return schedules;
     }
 
-    async editSchedule(Schedule_id, Schedule_obj) {
+    async editSchedule(Schedule_id, data) {
+        const dateString = moment(data.date).format("YYYY-MM-DD")
+        this.checkScheduleAvailability(data, dateString)
+
         const res = await updateData(
             constants.SCHEDULE_SLOTS_TABLE,
             Schedule_id,
-            Schedule_obj
+            data
         );
         return res;
     }
@@ -134,10 +137,27 @@ const ScheduleService = class {
         return res;
     }
 
+    async checkScheduleAvailability(data, dateString) {
+        // check availablity by room + slot + date
+        const roomAvailable = await this.scheduleRepository.fetchScheduleBySlotAndDateAndRoom(dateString, data.slot, data.room)
+        if (roomAvailable.length > 0) {
+            throw "Room is booked by course " + roomAvailable[0].course_id
+        }
+        console.log(roomAvailable)
+
+        // check availability by lecturer + slot + date
+        const lecturerAvailable = await this.scheduleRepository.fetchScheduleBySlotAndDateAndRoom(dateString, data.slot, data.lecturer)
+        if (lecturerAvailable.length > 0) {
+            throw "Lecturer will be teaching course " + lecturerAvailable[0].course_id
+        }
+    }
+
     async addSchedule(data) {
-        const res = await this.courseRepository.addGroupBySemester(data);
-        console.log("Schedule service: add schedule");
-        console.log(res);
+        const dateString = moment(data.date).format("YYYY-MM-DD")
+        this.checkScheduleAvailability(data, dateString)
+
+        data.dateString = dateString;
+        const res = await this.scheduleRepository.setSchedule(data.course_id + "-" + slot, data)
         return res;
     }
 
@@ -192,10 +212,10 @@ const ScheduleService = class {
                     .collection(constants.ATTENDANCES_TABLE)
                     .doc(
                         group.id +
-                            "-" +
-                            participants[j].id +
-                            "-session" +
-                            schedules[i].session
+                        "-" +
+                        participants[j].id +
+                        "-session" +
+                        schedules[i].session
                     );
                 batch.set(ref, obj);
             }
