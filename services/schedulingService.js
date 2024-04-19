@@ -117,13 +117,13 @@ const ScheduleService = class {
         return schedules;
     }
 
-    async editSchedule(Schedule_id, data) {
+    async editSchedule(data) {
         const dateString = moment(data.date).format("YYYY-MM-DD")
         this.checkScheduleAvailability(data, dateString)
 
         const res = await updateData(
             constants.SCHEDULE_SLOTS_TABLE,
-            Schedule_id,
+            data.id,
             data
         );
         return res;

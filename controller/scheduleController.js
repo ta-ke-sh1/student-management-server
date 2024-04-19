@@ -73,10 +73,12 @@ router.post("/", async (req, res) => {
 router.put("/", async (req, res) => {
     try {
         const result = await scheduleService.editSchedule(
-            req.query.id,
             req.body
         );
-        res.status(200).json(result);
+        res.status(200).json({
+            status: true,
+            data: result
+        });
     } catch (e) {
         res.status(200).json({
             status: false,
