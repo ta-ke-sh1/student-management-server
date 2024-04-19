@@ -58,11 +58,13 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
     try {
         const result = await scheduleService.addSchedule(req.body);
+        console.log(result)
         res.status(200).json({
             status: true,
             data: result,
         });
     } catch (e) {
+        console.log(e.toString())
         res.status(200).json({
             status: false,
             data: e.toString(),

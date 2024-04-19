@@ -157,7 +157,7 @@ const ScheduleService = class {
         this.checkScheduleAvailability(data, dateString)
 
         data.dateString = dateString;
-        const res = await this.scheduleRepository.setSchedule(data.course_id + "-" + slot, data)
+        const res = await this.scheduleRepository.setSchedule(data.course_id + "-" + data.session, data)
         return res;
     }
 
