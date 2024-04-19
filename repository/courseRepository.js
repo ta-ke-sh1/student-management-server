@@ -9,7 +9,7 @@ const {
 } = require("./firebaseRepository");
 
 module.exports = class CourseRepostory {
-    constructor() {}
+    constructor() { }
 
     async updateGroup(id, data) {
         return await db.collection(constants.CLASS_TABLE).doc(id).update(data);
@@ -174,11 +174,28 @@ module.exports = class CourseRepostory {
         return [];
     }
 
+    async editCourseAssignment(assignment) {
+        return await db
+            .collection(constants.CLASS_TABLE)
+            .doc(assignment.course_id)
+            .collection(constants.COURSEWORK_DETAILS_TABLE)
+            .doc(assignment.id)
+            .update(assignment)
+    }
+
+    async deleteCourseAssignment(id, courseId) {
+        return await db
+            .collection(constants.CLASS_TABLE)
+            .doc(courseId)
+            .collection(constants.COURSEWORK_DETAILS_TABLE)
+            .doc(id).delete()
+
+    }
+
     async addCourseAssignment(assignment) {
-        console.log(assignment);
         let doc = await db
             .collection(constants.CLASS_TABLE)
-            .doc(assignment.id)
+            .doc(assignment.course_id)
             .collection(constants.COURSEWORK_DETAILS_TABLE)
             .where("name", "==", assignment.name)
             .get();
@@ -189,7 +206,7 @@ module.exports = class CourseRepostory {
             assignment.status = true;
             return await db
                 .collection(constants.CLASS_TABLE)
-                .doc(assignment.id)
+                .doc(assignment.course_id)
                 .collection(constants.COURSEWORK_DETAILS_TABLE)
                 .add(assignment);
         }

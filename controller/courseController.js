@@ -263,7 +263,39 @@ router.post("/grade", async (req, res) => {
 
 router.post("/coursework", async (req, res) => {
     try {
+
         let result = await courseService.addCourseAssignment(req.body);
+        res.status(200).json({
+            status: true,
+            data: result,
+        });
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e.toString(),
+        });
+    }
+});
+
+router.delete("/coursework", async (req, res) => {
+    try {
+        let result = await courseService.deleteCourseAssignment(req.query.id, req.query.course_id);
+        res.status(200).json({
+            status: true,
+            data: result,
+        });
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e.toString(),
+        });
+    }
+});
+
+router.put("/coursework", async (req, res) => {
+    try {
+        console.log(req.body)
+        let result = await courseService.editCourseAssignment(req.body);
         res.status(200).json({
             status: true,
             data: result,

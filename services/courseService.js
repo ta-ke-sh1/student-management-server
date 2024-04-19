@@ -66,7 +66,7 @@ module.exports = class CourseService {
         return course;
     }
 
-    async fetchCourseByClassAndId(course_id, class_id) {}
+    async fetchCourseByClassAndId(course_id, class_id) { }
 
     async fetchCourseByUserIdAndCourseId(semester, user_id, course_id) {
         let course = await this.courseRepository.fetchCourseByUserIdAndCourseId(
@@ -137,8 +137,16 @@ module.exports = class CourseService {
         );
     }
 
+    async deleteCourseAssignment(id, courseId) {
+        return this.courseRepository.deleteCourseAssignment(id, courseId)
+    }
+
     async addCourseAssignment(assignment) {
         return this.courseRepository.addCourseAssignment(assignment);
+    }
+
+    async editCourseAssignment(assignment) {
+        return this.courseRepository.editCourseAssignment(assignment)
     }
 
     async fetchUserCourseById(id) {
