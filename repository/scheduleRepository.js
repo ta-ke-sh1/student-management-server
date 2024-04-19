@@ -218,9 +218,19 @@ module.exports = class ScheduleRepository {
                     .collection(constants.ATTENDANCES_TABLE)
                     .doc(report.attendance[i].id);
 
-                await ref.update({
-                    remark: parseInt(report.attendance[i].remark),
-                });
+                let doc = await ref.get();
+                if (doc.exists) {
+                    console.log(report.attendance[i])
+                    await ref.update({
+                        remark: parseInt(report.attendance[i].remark),
+                    });
+                } else {
+                    console.log("Set")
+                    db
+                        .collection(constants.ATTENDANCES_TABLE).doc(
+                            report.attendance[i].id
+                        ).set(report.attendance[i])
+                }
             } catch (e) {
                 throw e;
             }
