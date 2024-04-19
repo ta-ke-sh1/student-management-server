@@ -22,11 +22,13 @@ const FeedbackService = class {
         return feedbackes;
     }
 
-    async editFeedback(feedback_id, data) {
+    async editFeedback(feedback_id, comment) {
         const res = await updateData(
             constants.FEEDBACK_TABLE,
             feedback_id,
-            ...data
+            {
+                comments: comment
+            }
         );
         return res;
     }

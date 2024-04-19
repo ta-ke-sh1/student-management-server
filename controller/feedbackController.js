@@ -53,6 +53,20 @@ router.get("/course", async (req, res) => {
     }
 });
 
+router.put("/", async (req, res) => {
+    try {
+        await feedbackService.editFeedback(req.body.id, req.body.comments)
+        res.status(200).json({
+            status: true,
+        });
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            error: e.toString(),
+        });
+    }
+})
+
 router.post("/", async (req, res) => {
     try {
         console.log(req.body);
