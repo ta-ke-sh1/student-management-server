@@ -180,7 +180,6 @@ const ScheduleService = class {
         const participants = data.participants;
 
         const schedules = await this.fetchScheduleByGroupId(group.id);
-        console.log(schedules);
 
         for (const j in participants) {
             await db

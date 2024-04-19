@@ -296,6 +296,7 @@ router.get("/courseworks", async (req, res) => {
 router.get("/materials", async (req, res) => {
     try {
         let result = await courseService.fetchMaterialsByCourseId(req.query.id);
+        console.log(result)
         res.status(200).json({
             status: true,
             data: result,
@@ -349,6 +350,7 @@ router.get("/participants", async (req, res) => {
         let result = await courseService.fetchParticipantsByCourseId(
             req.query.id
         );
+        console.log(result)
         res.status(200).json({
             status: true,
             data: result,

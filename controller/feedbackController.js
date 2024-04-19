@@ -67,4 +67,19 @@ router.post("/", async (req, res) => {
     }
 });
 
+router.delete("/", async (req, res) => {
+    try {
+        console.log(req.query.id)
+        let result = await feedbackService.deleteFeedback(req.query.id);
+        res.status(200).json({
+            status: result
+        });
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            error: e.toString(),
+        });
+    }
+})
+
 module.exports = router;

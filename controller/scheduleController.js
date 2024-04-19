@@ -100,6 +100,21 @@ router.post("/participant", async (req, res) => {
     }
 });
 
+router.delete("/participant", async (req, res) => {
+    try {
+        const result = await scheduleService.deleteParticipantFromGroup(req.query.group_id, req.query.student_id)
+        res.status(200).json({
+            status: true,
+            data: result,
+        });
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e.toString(),
+        });
+    }
+});
+
 router.post("/group", async (req, res) => {
     try {
         let result = await scheduleService.addGroupAndCreateSchedules(req.body);
