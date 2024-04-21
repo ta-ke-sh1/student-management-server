@@ -130,6 +130,7 @@ module.exports = class CourseService {
         if (!asm) {
             throw "Missing assignment id!";
         }
+        console.log(id, user, asm)
         return this.submissionRepository.fetchSubmissionByCourseIdAndUserAndAssignmentId(
             id,
             user,
@@ -200,5 +201,49 @@ module.exports = class CourseService {
 
     async fetchAllRegistrations() {
         return this.courseRepository.fetchAllRegistrations();
+    }
+
+    async summarizeGradesByCourseId(id) {
+        console.log(id)
+        const assignments = await this.courseRepository.fetchAssignmentsByCourse(id)
+        const participants = await this.courseRepository.fetchParticipantsByCourseId(id)
+
+        for (let i = 0; i < participants.length; i++) {
+            console.log(participants[i])
+
+            let grade = 0;
+
+            for (let j = 0; j < assignments.length; j++) {
+                const submission = await this.fetchSubmissionByCourseIdAndUserAndAssignmentId(id, participants[i].student_id, assignments[j].id)
+                console.log(submission)
+                if (submission) {
+                    let value = submission.grade * assignments[j].percentage
+                    grade += value
+                }
+            }
+
+            let gradeText = this.getGradeTextFromNumber(grade)
+            let gradeTicket = {
+                grade: grade,
+                gradeText: gradeText
+            }
+
+            console.log(gradeTicket)
+            await this.courseRepository.updateCourseRegistration(participants[i].id, gradeTicket)
+        }
+    }
+
+    getGradeTextFromNumber(grade) {
+        if (grade < 4) {
+            return "Refer"
+        } else if (grade < 7) {
+            return "Pass"
+        } else if (grade < 10) {
+            return "Merit"
+        } else if (grade < 11) {
+            return "Distinction"
+        } else {
+            return "Invalid"
+        }
     }
 };

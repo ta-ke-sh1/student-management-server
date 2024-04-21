@@ -35,13 +35,13 @@ module.exports = class SubmissionRepository {
     async fetchSubmissionByCourseIdAndUserAndAssignmentId(group, user, asm) {
         let snapshots = await db
             .collection(constants.SUBMISSIONS_TABLE)
-            .where("group", "==", group)
+            .where("course_id", "==", group)
+            .where("user_id", "==", user)
             .where("assignment_id", "==", asm)
             .get();
-        return {
-            id: snapshots.id,
-            ...snapshots.data(),
-        };
+
+        let data = snapshotToArray(snapshots)
+        return data[0]
     }
 
     async fetchAssignmentsByCourseIdAndAssignmentId(course_id, assignment_id) {
@@ -91,5 +91,5 @@ module.exports = class SubmissionRepository {
         return await deleteData(constants.SUBMISSIONS_TABLE, id);
     }
 
-    async uploadSubmission(course, submissionFile) {}
+    async uploadSubmission(course, submissionFile) { }
 };

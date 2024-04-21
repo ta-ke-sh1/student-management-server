@@ -445,4 +445,20 @@ router.get("/registration/all", async (req, res) => {
     }
 });
 
+router.get("/summarize", async (req, res) => {
+    try {
+        let result = await courseService.summarizeGradesByCourseId(req.query.id);
+        res.status(200).json({
+            status: true,
+            data: result,
+        });
+    } catch (e) {
+        console.log(e.toString())
+        res.status(200).json({
+            status: false,
+            data: e.toString(),
+        });
+    }
+})
+
 module.exports = router;

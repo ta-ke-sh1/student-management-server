@@ -125,6 +125,11 @@ module.exports = class CourseRepostory {
     }
 
     async fetchAssignmentsByCourse(id) {
+        const snapshots = await db.collection(constants.CLASS_TABLE).doc(id).collection(constants.COURSEWORK_DETAILS_TABLE).get();
+        return snapshotToArray(snapshots)
+    }
+
+    async fetchAllSubmissionsByCourse(id) {
         const snapshots = await db
             .collection(constants.SUBMISSIONS_TABLE)
             .where("group", "==", id)
@@ -276,5 +281,13 @@ module.exports = class CourseRepostory {
 
     async fetchAllRegistrations() {
         return await fetchAllData(constants.COURSES_REGISTRATION_TABLE);
+    }
+
+    async updateCourseRegistration(id, updateObject) {
+        let doc = await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(id).get();
+        if (doc.exists) {
+            return await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(id).update(updateObject);
+        }
+
     }
 };
