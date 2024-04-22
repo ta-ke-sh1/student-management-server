@@ -45,7 +45,7 @@ module.exports = class ScheduleRepository {
             .where("course_id", "==", course_id)
             .get();
 
-        let data = await snapshotToArray(snapshots);
+        let data = snapshotToArray(snapshots);
 
         let schedules = data.filter(
             (s) => s.date >= parseInt(startDate) && s.date <= parseInt(endDate)
@@ -97,45 +97,41 @@ module.exports = class ScheduleRepository {
             .where("course_id", "==", course_id)
             .get();
 
-        let data = await snapshotToArray(snapshots);
+        let data = snapshotToArray(snapshots);
 
-        console.log(data);
-
+        // filter schedules in range
         let schedules = data.filter(
-            (s) => s.date >= parseInt(startDate) && s.date <= parseInt(endDate)
+            (schedule) => schedule.date <= endDate && schedule.date >= startDate
         );
-
+        console.log(schedules)
         const slots = [];
 
-        for (const schedule of schedules) {
-            let schedule_slot = await fetchDataById(
-                constants.ATTENDANCES_TABLE,
-                schedule.id + "-" + student_id
-            );
-            const group = schedule.course_id.split("-");
-            const _class = group[group.length - 1];
-
-            if (schedule_slot === -1) {
-                slots.push({
-                    slot_id: schedule.id,
-                    student_id: student_id,
-                    status: -1,
-                    slot: schedule.slot,
-                    date: schedule.date,
-                    room: schedule.room,
-                    lecturer: schedule.lecturer,
-                    course_id: schedule.course_id,
-                    class: _class,
-                    subject: schedule.subject,
-                });
+        for (let i = 0; i < schedules.length; i++) {
+            let snapshots = await db.collection(constants.ATTENDANCES_TABLE)
+                .where('student_id', '==', student_id)
+                .where('session', '==', schedules[i].session).get()
+            const schedule = snapshotToArray(snapshots)
+            if (schedule.length > 0) {
+                schedules[i].remark = schedule[0].remark
+                slots.push(schedules[i]);
             } else {
-                schedule.student_id = student_id;
-                schedule.status = schedule_slot.status;
-                schedule.class = _class;
-                schedule.group = group[group.length - 1];
-                slots.push(schedule);
+                slots.push({
+                    slot_id: schedules[i].id,
+                    student_id: student_id,
+                    status: true,
+                    remark: -1,
+                    slot: schedules[i].slot,
+                    date: schedules[i].date,
+                    room: schedules[i].room,
+                    lecturer: schedules[i].lecturer,
+                    course_id: schedules[i].course_id,
+                    class: course_id,
+                    subject: schedules[i].subject,
+                });
             }
         }
+
+        console.log(slots)
 
         return slots;
     }

@@ -1,5 +1,5 @@
 const constants = require("../utils/constants");
-const { addData, updateData, db, fetchAllData, fetchDataById, fetchMatchingDataByField } = require("./firebaseRepository");
+const { addData, updateData, db, fetchAllData, fetchDataById, fetchMatchingDataByField, deleteData } = require("./firebaseRepository");
 
 module.exports = class UserRepository {
   async addAdmin(data) {
@@ -28,6 +28,19 @@ module.exports = class UserRepository {
 
   async fetchAllLecturersByDepartment(dept) {
     return await fetchMatchingDataByField(constants.LECTURERS_TABLE, "department_id", dept)
+  }
+
+  async deleteUser(id, role) {
+    console.log(id, role)
+    switch (role) {
+      case "3":
+        throw "Cannot delete admin!"
+      case "2":
+        db.collection(constants.LECTURERS_TABLE).doc(id).delete()
+      case "1":
+        db.collection(constants.STUDENTS_TABLE).doc(id).delete()
+      default: return;
+    }
   }
 
   async fetchAllUsers(type) {

@@ -288,6 +288,10 @@ module.exports = class CourseRepostory {
         if (doc.exists) {
             return await db.collection(constants.COURSES_REGISTRATION_TABLE).doc(id).update(updateObject);
         }
+    }
 
+    async fetchCourseByUserId(user_id) {
+        let data = await db.collection(constants.COURSES_REGISTRATION_TABLE).where('student_id', '==', user_id).get()
+        return snapshotToArray(data)
     }
 };

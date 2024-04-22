@@ -1,5 +1,5 @@
 const constants = require("../utils/constants");
-const { addData, deleteData, updateData, fetchAllData, fetchDataById, fetchMatchingDataByField, db, snapshotToArray } = require("./firebaseRepository");
+const { deleteData, updateData, fetchAllData, db, snapshotToArray } = require("./firebaseRepository");
 
 module.exports = class GradeRepository {
   async fetchAllGrades() {
@@ -7,7 +7,8 @@ module.exports = class GradeRepository {
   }
 
   async fetchAllGradesByStudentId(id) {
-    return await fetchMatchingDataByField(constants.GRADE_TABLE, "student_id", id);
+    let snapshots = await db.collection(constants.COURSES_REGISTRATION_TABLE).where("student_id", "==", id).get();
+    return snapshotToArray(snapshots);
   }
 
   async fetchAllGradesByStudentIdAndSemester(id, semester) {

@@ -17,7 +17,8 @@ const uploader = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
       try {
-        var dir = path.resolve() + "\\asset\\avatar\\" + req.query.username ? req.query.username + "\\" : "";
+        console.log(req.query)
+        var dir = path.resolve() + "\\asset\\avatar\\" + req.query.username + "\\";
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true });
         }
@@ -130,6 +131,8 @@ router.get("/deactivate", async (req, res) => {
 
 router.put("/avatar", uploader.single("avatar"), async (req, res) => {
   try {
+    console.log(req.body)
+    await userService.editUser(req.body.id, req.body)
     res.status(200).json({
       status: true,
       data: "Success",
@@ -155,9 +158,14 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.delete("/", (req, res) => {
+router.delete("/", async (req, res) => {
   try {
+    await userService.deactivateUser(req.query.id, req.query.role);
+    res.status(200).json({
+      status: true,
+    })
   } catch (e) {
+    console.log(e.toString())
     res.status(200).json({
       status: false,
       data: e.toString(),
@@ -167,8 +175,21 @@ router.delete("/", (req, res) => {
 
 router.put("/password", async (req, res) => {
   try {
-    const id = req.query.id;
-    const role = req.query.role
+    console.log(req.body)
+    await userService.updatePassword(req.body)
+    res.status(200).json({ status: true })
+  } catch (e) {
+    res.status(200).json({
+      status: false,
+      data: e.toString()
+    })
+  }
+})
+
+router.get("/reset", async (req, res) => {
+  try {
+    const id = req.body.id;
+    const role = req.body.role
     console.log(id + "-" + role)
     console.log("Role is: " + role)
     await userService.resetPassword(id, role)
@@ -264,6 +285,7 @@ router.get("/curriculum", async (req, res) => {
       data: data,
     });
   } catch (e) {
+
     res.status(200).json({
       status: false,
       data: e.toString(),

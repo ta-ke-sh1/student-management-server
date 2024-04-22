@@ -10,6 +10,7 @@ const UserRepository = require("../repository/userRepository");
 const constants = require("../utils/constants");
 const { GradingService } = require("./gradingService");
 const SubjectService = require("./subjectService");
+const CourseRepository = require("../repository/courseRepository")
 
 const UserService = class {
     userRepository;
@@ -32,8 +33,8 @@ const UserService = class {
         return await this.userRepository.fetchAllUsers(type);
     }
 
-    async deactivateUser(id) {
-        return await this.userRepository.deactivateUser(id);
+    async deactivateUser(id, role) {
+        return await this.userRepository.deleteUser(id, role)
     }
 
     fetchRole(role) {
@@ -56,7 +57,7 @@ const UserService = class {
     }
 
     async editUser(user_id, user_obj) {
-        table = this.fetchRole(user_obj.role);
+        const table = this.fetchRole(user_obj.role);
 
         const res = await updateData(table, user_id, user_obj);
         return res;
@@ -204,42 +205,65 @@ const UserService = class {
             await this.subjectService.fetchAllSubjectsByDepartment(
                 student.department_id
             );
+
         let grades = await this.gradingService.fetchAllGradesByStudentId(
             student.id
         );
 
-        console.log(curricullum);
-        console.log(grades);
+        const courseRepository = new CourseRepository()
 
-        let res = [];
-        curricullum.forEach((subject) => {
-            let flag = false;
+        for (let i = 0; i < grades.length; i++) {
+            let course = await courseRepository.fetchCourseById(grades[i].group_id);
+            grades[i].subject_id = course.subject
+        }
 
-            if (grades !== -1) {
-                grades.forEach((grade) => {
-                    if (subject.id == grade.subject) {
-                        res.push({
-                            id: id,
-                            subject: subject.id,
-                            name: subject.name,
-                            grade: grade.grade,
-                        });
-                        flag = true;
-                    }
-                });
-            }
+        const res = [];
 
-            if (!flag) {
+        for (let i = 0; i < curricullum.length; i++) {
+            const grade = grades.find((grade) => curricullum[i].id === grade.subject_id)
+            if (grade) {
                 res.push({
-                    id: subject.id,
+                    id: curricullum[i].id,
                     student_id: id,
-                    name: subject.name,
-                    grade: "Not yet",
+                    subject: curricullum[i].id,
+                    name: curricullum[i].name,
+                    grade: grade.grade,
+                    gradeText: grade.gradeText
+                });
+            } else {
+                res.push({
+                    id: curricullum[i].id,
+                    student_id: id,
+                    name: curricullum[i].name,
+                    gradeText: "Not Yet",
+                    grade: "",
                 });
             }
-        });
+        }
 
         return res;
+    }
+
+    async updatePassword(user) {
+        switch (user.role) {
+            case 1:
+                await updateData(constants.STUDENTS_TABLE, user.id, {
+                    password: user.password
+                })
+                break;
+            case 2:
+                await updateData(constants.LECTURERS_TABLE, user.id, {
+                    password: user.password
+                })
+                break;
+            case 3:
+                await updateData(constants.ADMINS_TABLE, user.id, {
+                    password: user.password
+                })
+                break;
+            default:
+                throw "Invalid user role"
+        }
     }
 
     async resetPassword(id, role) {
@@ -266,7 +290,7 @@ const UserService = class {
             default:
                 throw "Invalid role!";
         }
-        const res = await updateData(table, id, { password: "123456" });
+        const res = await updateData(table, id, { password: "default" });
         return res;
     }
 };

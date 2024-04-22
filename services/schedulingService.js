@@ -20,8 +20,6 @@ const ScheduleService = class {
         if (!id) {
             throw "Missing id";
         } else {
-            console.log("Service:");
-            console.log(id);
             let res = await fetchMatchingDataByField(
                 constants.SCHEDULE_SLOTS_TABLE,
                 "course_id",
@@ -35,30 +33,26 @@ const ScheduleService = class {
         if (
             query.user_id &&
             query.startDate &&
-            query.endDate &&
-            query.course_id
+            query.endDate
         ) {
-            let courses = query.course_id.split("%");
+            let courses = await this.courseRepository.fetchCourseByUserId(query.user_id)
+            console.log(courses)
 
             let results = [];
             for (let index = 0; index < courses.length; index++) {
-                console.log(courses[index]);
                 if (courses[index] != "") {
                     const data =
                         await this.scheduleRepository.fetchScheduleByStudentIdAndCourseIdAndDate(
                             query.user_id,
-                            courses[index],
+                            courses[index].group_id,
                             query.startDate,
                             query.endDate
                         );
-
                     for (let j = 0; j < data.length; j++) {
                         results.push(data[j]);
                     }
                 }
             }
-
-            console.log(results);
             return results;
         } else {
             throw "Missing parameters";
@@ -74,7 +68,6 @@ const ScheduleService = class {
                     query.startDate,
                     query.endDate
                 );
-            console.log(res);
             return res;
         } else {
             throw "Missing parameters";
