@@ -26,6 +26,7 @@ module.exports = class CourseService {
         let snapshots;
         let results = [];
 
+        // Find student course in Course Registration table
         if (role === 1) {
             snapshots = await db
                 .collection(constants.COURSES_REGISTRATION_TABLE)
@@ -39,17 +40,20 @@ module.exports = class CourseService {
                     .collection(constants.CLASS_TABLE)
                     .doc(courses[i].group_id)
                     .get();
+
                 const group = {
                     id: snapshot.id,
                     ...snapshot.data(),
                 };
+
                 const data = {
                     ...courses[i],
                     ...group,
                 };
+
                 results.push(data);
             }
-        } else if (role === 2) {
+        } else if (role === 2) { // Find lecturer course in class table
             snapshots = await db
                 .collection(constants.CLASS_TABLE)
                 .where("lecturer", "==", id)
@@ -65,8 +69,6 @@ module.exports = class CourseService {
         let course = await this.courseRepository.fetchCourseById(id);
         return course;
     }
-
-    async fetchCourseByClassAndId(course_id, class_id) { }
 
     async fetchCourseByUserIdAndCourseId(semester, user_id, course_id) {
         let course = await this.courseRepository.fetchCourseByUserIdAndCourseId(
@@ -114,10 +116,6 @@ module.exports = class CourseService {
 
     async editCourse(id, course) {
         return this.courseRepository.editCourse(id, course);
-    }
-
-    async handleCourse(id, option) {
-        return this.courseRepository.editCourse(id, option);
     }
 
     async fetchSubmissionByCourseIdAndUserAndAssignmentId(id, user, asm) {
@@ -192,28 +190,70 @@ module.exports = class CourseService {
     }
 
     async fetchAttendancesByCourseId(id, session) {
-        return this.courseRepository.fetchAttendancesByCourseId(id, session);
+        // Get exisitng attendances ticket
+        let existingAttendances = await this.courseRepository.fetchAttendancesByCourseId(id, session);
+
+        // Get all the participants
+        let participants = await this.fetchParticipantsByCourseId(id);
+
+        for (let i = 0; i < participants.length; i++) {
+            // Find existing attendance ticket
+            let isExist = existingAttendances.find((attendance) => attendance.student_id === participants[i].student_id);
+
+            // Create a new one if ticket is not found
+            if (!isExist) {
+                existingAttendances.push({
+                    dob: participants[i].dob,
+                    group_id: id,
+                    status: true,
+                    student_id: participants[i].student_id,
+                    id: id + "-" + participants[i].student_id + "-session" + session,
+                    remark: -1,
+                    session: session
+                })
+            }
+        }
+
+        return existingAttendances;
     }
 
+    // Fetch lecturer course 
     async fetchCourseByLecturerId(id) {
         return this.courseRepository.fetchCourseByLecturerId(id);
     }
 
+    // Fetch student course registration
     async fetchAllRegistrations() {
         return this.courseRepository.fetchAllRegistrations();
     }
 
+    // SUmmarize grade by course
+    // Loop through all students within that course
     async summarizeGradesByCourseId(id) {
         console.log(id)
+        // Fetch all assignments
         const assignments = await this.courseRepository.fetchAssignmentsByCourse(id)
+
+        // Fetch all participants
         const participants = await this.courseRepository.fetchParticipantsByCourseId(id)
 
+        // Get sum percentage 
+        let totalPercentage = 0;
+        for (let i = 0; i < assignments.length; i++) {
+            totalPercentage += assignments[i].percentage;
+        }
+        totalPercentage *= 100;
+
+        // Loop through the participants
+        // then loop through the assignment to assess the grade
+        // O(n^2) complexity
         for (let i = 0; i < participants.length; i++) {
-            console.log(participants[i])
 
             let grade = 0;
 
             for (let j = 0; j < assignments.length; j++) {
+                // Find grade in database
+
                 const submission = await this.fetchSubmissionByCourseIdAndUserAndAssignmentId(id, participants[i].student_id, assignments[j].id)
                 console.log(submission)
                 if (submission) {
@@ -222,6 +262,10 @@ module.exports = class CourseService {
                 }
             }
 
+            // Multiply by ratio in case total percentage is less than 100%
+            grade = grade / totalPercentage * 100
+
+            // Get grade text
             let gradeText = this.getGradeTextFromNumber(grade)
             let gradeTicket = {
                 grade: grade,

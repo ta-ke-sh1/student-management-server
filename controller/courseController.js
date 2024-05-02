@@ -361,6 +361,7 @@ router.get("/courseworks/submissions", async (req, res) => {
     }
 });
 
+// Get all schedules by a course id
 router.get("/schedules", async (req, res) => {
     try {
         let result = await courseService.fetchSchedulesByCourseId(req.query.id);
@@ -376,6 +377,7 @@ router.get("/schedules", async (req, res) => {
     }
 });
 
+// Get all participants by a course's id
 router.get("/participants", async (req, res) => {
     try {
         console.log(req.query);
@@ -395,14 +397,14 @@ router.get("/participants", async (req, res) => {
     }
 });
 
+// Get all attendances by course id and session number
 router.get("/attendances", async (req, res) => {
     try {
-        console.log(req.query);
+        console.log("ROUTE: /course/attendances");
         let result = await courseService.fetchAttendancesByCourseId(
             req.query.id,
             parseInt(req.query.session)
         );
-        console.log(result);
         res.status(200).json({
             status: true,
             data: result,
