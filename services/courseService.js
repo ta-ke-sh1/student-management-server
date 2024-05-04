@@ -160,6 +160,10 @@ module.exports = class CourseService {
         return this.courseRepository.fetchMaterialsByCourseId(id);
     }
 
+    async deleteMaterialById(id, course) {
+        return this.courseRepository.deleteMaterialById(id, course);
+    }
+
     async fetchSubmissionById(id) {
         return await this.submissionRepository.fetchSubmissionById(id);
     }
@@ -289,5 +293,9 @@ module.exports = class CourseService {
         } else {
             return "Invalid"
         }
+    }
+
+    async addMaterial(material) {
+        return await this.courseRepository.addMaterial(material);
     }
 };

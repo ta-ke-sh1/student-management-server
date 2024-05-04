@@ -294,4 +294,20 @@ module.exports = class CourseRepostory {
         let data = await db.collection(constants.COURSES_REGISTRATION_TABLE).where('student_id', '==', user_id).get()
         return snapshotToArray(data)
     }
+
+    async addMaterial(material) {
+        return await db
+            .collection(constants.CLASS_TABLE)
+            .doc(material.course_id)
+            .collection(constants.MATERIALS_TABLE)
+            .add(material)
+    }
+
+    async deleteMaterialById(id, course_id) {
+        return await db
+            .collection(constants.CLASS_TABLE)
+            .doc(course_id)
+            .collection(constants.MATERIALS_TABLE)
+            .doc(id).delete()
+    }
 };

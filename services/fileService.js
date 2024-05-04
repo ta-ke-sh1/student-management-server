@@ -51,7 +51,7 @@ module.exports = class FileService {
   removeFileByPath(file_path) {
     try {
       if (file_path) {
-        fs.unlink(path.join(__dirname, file_path), (err) => {
+        fs.unlink(path.join(__dirname, file_path).replace("services", "asset"), (err) => {
           if (err) {
             console.log(err);
             return false;

@@ -5,24 +5,11 @@ const CourseService = require("../services/courseService");
 const fs = require("fs");
 const path = require("path");
 const Utils = require("../utils/utils");
+const FileService = require("../services/fileService");
 
 const courseService = new CourseService();
 
-const uploader = multer({
-    storage: multer.diskStorage({
-        destination: function (req, file, cb) {
-            console.log(req.body.path);
-            var dir = path.resolve() + "\\" + req.body.path ?? "";
-            if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir, { recursive: true });
-            }
-            cb(null, dir);
-        },
-        filename: function (req, file, cb) {
-            cb(null, Date.parse(new Date()) + "&" + file.originalname);
-        },
-    }),
-});
+const uploader = multer({ dest: "uploads/" });
 
 router.get("/resources", async (req, res) => {
     try {
@@ -325,7 +312,47 @@ router.get("/courseworks", async (req, res) => {
     }
 });
 
+// Method: POST
+// Add coursework material route
+// Required params:
+//
+router.post("/materials", uploader.single("file"), async (req, res) => {
+    console.log("ROUTE: /course/materials - POST");
+    try {
+        if (req.body.type === '1') {
+            const fileService = new FileService();
+            const p =
+                "\\materials\\" +
+                req.body.course_id +
+                "\\";
+            const folder = path.resolve() + "\\asset" + p;
+            fileService.addFileByPath(req.file, folder);
+            req.body.name = req.file.originalname;
+            req.body.path = (p).replaceAll("\\", "/");
+        }
+        // Save file into server folder
+        // Create folder and path
+
+        courseService.addMaterial(req.body);
+
+        res.status(200).json({
+            status: true,
+        });
+    } catch (e) {
+        res.status(200).json({
+            status: false,
+            data: e.toString(),
+        });
+    }
+})
+
+// Method: GET
+// Get coursework material route
+// Required params:
+// id: course id
 router.get("/materials", async (req, res) => {
+    console.log("ROUTE: /course/materials - GET");
+    console.log(req.query)
     try {
         let result = await courseService.fetchMaterialsByCourseId(req.query.id);
         console.log(result)
@@ -341,6 +368,34 @@ router.get("/materials", async (req, res) => {
     }
 });
 
+// Method: DELETE
+// Get coursework material route
+// Required params:
+// id: course id
+router.delete("/materials", async (req, res) => {
+    console.log("ROUTE: /course/materials - DELETE");
+    console.log(req.query)
+    try {
+        const fileService = new FileService();
+        fileService.removeFileByPath(req.query.path);
+        await courseService.deleteMaterialById(req.query.id, req.query.course_id);
+        res.status(200).json({
+            status: false,
+        });
+    } catch (e) {
+        console.log("Failed")
+        res.status(200).json({
+            status: false,
+            data: e.toString(),
+        });
+    }
+});
+
+// Method: GET
+// Get all submissions of an assignment within a course
+// Required params:
+// course_id: course ID
+// assignment_id: assignment ID
 router.get("/courseworks/submissions", async (req, res) => {
     try {
         let result =
@@ -361,7 +416,10 @@ router.get("/courseworks/submissions", async (req, res) => {
     }
 });
 
+// Method: GET
 // Get all schedules by a course id
+// Required params:
+// ID: course id
 router.get("/schedules", async (req, res) => {
     try {
         let result = await courseService.fetchSchedulesByCourseId(req.query.id);
@@ -377,7 +435,10 @@ router.get("/schedules", async (req, res) => {
     }
 });
 
+// Method: GET
 // Get all participants by a course's id
+// Required params:
+// ID: course id
 router.get("/participants", async (req, res) => {
     try {
         console.log(req.query);
@@ -397,7 +458,11 @@ router.get("/participants", async (req, res) => {
     }
 });
 
+// Method: GET
 // Get all attendances by course id and session number
+// Required params:
+// ID: course id
+// session: session number
 router.get("/attendances", async (req, res) => {
     try {
         console.log("ROUTE: /course/attendances");
@@ -417,6 +482,10 @@ router.get("/attendances", async (req, res) => {
     }
 });
 
+// Method: GET
+// Get all courses of a lecturer using their id
+// Required params:
+// ID: lecturer's id
 router.get("/lecturer/all", async (req, res) => {
     try {
         let result = await courseService.fetchCourseByLecturerId(req.query.id);
