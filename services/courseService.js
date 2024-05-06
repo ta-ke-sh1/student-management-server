@@ -234,7 +234,6 @@ module.exports = class CourseService {
     // SUmmarize grade by course
     // Loop through all students within that course
     async summarizeGradesByCourseId(id) {
-        console.log(id)
         // Fetch all assignments
         const assignments = await this.courseRepository.fetchAssignmentsByCourse(id)
 
@@ -268,6 +267,9 @@ module.exports = class CourseService {
 
             // Multiply by ratio in case total percentage is less than 100%
             grade = grade / totalPercentage * 100
+
+            // Limit to 1 number behind decimal point
+            grade = parseFloat(grade.toFixed(1))
 
             // Get grade text
             let gradeText = this.getGradeTextFromNumber(grade)

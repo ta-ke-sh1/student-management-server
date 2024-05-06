@@ -7,6 +7,7 @@ const {
 } = require("../repository/firebaseRepository");
 const constants = require("../utils/constants");
 const Utils = require("../utils/utils");
+const CourseService = require("./courseService");
 
 const utils = new Utils();
 
@@ -41,10 +42,31 @@ const FeedbackService = class {
     }
 
     async fetchFeedbackByCourse(course_id, lecturer_id) {
-        return await this.feedbackRepository.fetchFeedbackByCourse(
+        let courseService = new CourseService();
+        let participants = await courseService.fetchParticipantsByCourseId(course_id);
+        console.log(participants)
+
+        let feedbacks = await this.feedbackRepository.fetchFeedbackByCourse(
             course_id,
             lecturer_id
         );
+
+        let res = []
+
+
+        for (let i = 0; i < participants.length; i++) {
+            let feedback = feedbacks.find((f) => f.student_id === participants[i].student_id)
+            console.log(feedback)
+            if (feedback) {
+                res.push(feedback)
+            } else {
+                res.push({
+                    student_id: participants[i].student_id
+                })
+            }
+        }
+
+        return res
     }
 
     async addFeedback(data) {

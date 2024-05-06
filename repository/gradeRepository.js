@@ -21,7 +21,15 @@ module.exports = class GradeRepository {
     return snapshotToArray(snapshots);
   }
 
+  async fetchGradingByStudentIdAndCourseId(student_id, course_id) {
+    let snapshots = await db
+      .collection(constants.SUBMISSIONS_TABLE)
+      .where('course_id', '==', course_id)
+      .where('user_id', '==', student_id)
+      .get();
 
+    return snapshotToArray(snapshots);
+  }
 
   async submitGrade(document) {
     return await db.collection(constants.SUBMISSIONS_TABLE).doc(document.id).update({

@@ -33,10 +33,10 @@ router.get("/", async (req, res) => {
 
 router.get("/course", async (req, res) => {
     try {
-        console.log(req.query);
         let { course_id } = req.query;
         if (course_id) {
-            data = await feedbackService.fetchFeedbackByCourse(course_id);
+            const data = await feedbackService.fetchFeedbackByCourse(course_id);
+            console.log(data)
 
             res.status(200).json({
                 status: true,

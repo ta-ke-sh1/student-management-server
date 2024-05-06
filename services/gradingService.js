@@ -131,6 +131,10 @@ const GradingService = class {
     async submitGrade(grade) {
         await this.gradeRepository.submitGrade(grade)
     }
+
+    async fetchGradingByStudentIdAndCourseId(student_id, course_id) {
+        return await this.gradeRepository.fetchGradingByStudentIdAndCourseId(student_id, course_id)
+    }
 };
 
 module.exports = { GradingService };

@@ -53,7 +53,6 @@ router.get("/", async (req, res) => {
 router.get("/all", async (req, res) => {
   try {
     const users = await userService.fetchAllUsers("all");
-    console.log(users.length)
     res.status(200).json({
       status: true,
       data: users ?? [],
@@ -131,7 +130,6 @@ router.get("/deactivate", async (req, res) => {
 
 router.put("/avatar", uploader.single("avatar"), async (req, res) => {
   try {
-    console.log(req.body)
     await userService.editUser(req.body.id, req.body)
     res.status(200).json({
       status: true,
@@ -175,7 +173,6 @@ router.delete("/", async (req, res) => {
 
 router.put("/password", async (req, res) => {
   try {
-    console.log(req.body)
     await userService.updatePassword(req.body)
     res.status(200).json({ status: true })
   } catch (e) {
@@ -190,8 +187,6 @@ router.get("/reset", async (req, res) => {
   try {
     const id = req.body.id;
     const role = req.body.role
-    console.log(id + "-" + role)
-    console.log("Role is: " + role)
     await userService.resetPassword(id, role)
     res.status(200).json({ status: true })
   } catch (e) {
@@ -276,9 +271,10 @@ router.get("/grade/semester", async (req, res) => {
   }
 });
 
+// Get all student grades by id
 router.get("/curriculum", async (req, res) => {
   try {
-    console.log(req.query.id)
+    console.log("ROUTE: /user/curriculum")
     let data = await userService.fetchUserCurricullum(req.query.id);
     res.status(200).json({
       status: true,
@@ -292,5 +288,23 @@ router.get("/curriculum", async (req, res) => {
     });
   }
 });
+
+// Fetch student grades by course id & student id
+router.get("/grades", async (req, res) => {
+  try {
+    console.log("ROUTE: /user/grades")
+    let grades = await gradingService.fetchGradingByStudentIdAndCourseId
+      (req.query.student_id, req.query.course_id);
+    res.status(200).send({
+      status: true,
+      data: grades,
+    });
+  } catch (e) {
+    res.status(200).send({
+      status: false,
+      data: e.toString(),
+    });
+  }
+})
 
 module.exports = router;

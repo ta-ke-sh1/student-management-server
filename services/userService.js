@@ -1,6 +1,5 @@
 const {
     fetchDataById,
-    addData,
     deleteData,
     setData,
     updateData,
@@ -10,7 +9,8 @@ const UserRepository = require("../repository/userRepository");
 const constants = require("../utils/constants");
 const { GradingService } = require("./gradingService");
 const SubjectService = require("./subjectService");
-const CourseRepository = require("../repository/courseRepository")
+const CourseRepository = require("../repository/courseRepository");
+
 
 const UserService = class {
     userRepository;
@@ -176,7 +176,6 @@ const UserService = class {
             user = await fetchDataById(constants.LECTURERS_TABLE, username);
             if (user === -1) {
                 user = await fetchDataById(constants.STUDENTS_TABLE, username);
-                console.log(user);
                 if (user === -1) {
                     return false;
                 } else {
@@ -210,11 +209,14 @@ const UserService = class {
             student.id
         );
 
+        grades.sort((a, b) => a.date - b.date);
+
         const courseRepository = new CourseRepository()
 
         for (let i = 0; i < grades.length; i++) {
             let course = await courseRepository.fetchCourseById(grades[i].group_id);
             grades[i].subject_id = course.subject
+            grades[i].assignments = course.assignments;
         }
 
         const res = [];
@@ -223,6 +225,7 @@ const UserService = class {
             const grade = grades.find((grade) => curricullum[i].id === grade.subject_id)
             if (grade) {
                 res.push({
+                    course_id: grade.group_id,
                     id: curricullum[i].id,
                     student_id: id,
                     subject: curricullum[i].id,
