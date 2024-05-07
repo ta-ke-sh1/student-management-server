@@ -1,5 +1,5 @@
 const constants = require("../utils/constants");
-const { addData, deleteData, updateData, fetchAllData, fetchDataById, db, snapshotToArray, fetchMatchingDataByField } = require("./firebaseRepository");
+const { addData, deleteData, updateData, fetchAllData, fetchDataById, db, snapshotToArray, fetchMatchingDataByField, setData } = require("./firebaseRepository");
 
 module.exports = class AttendanceRepository {
     async fetchAttendance() {
@@ -37,7 +37,8 @@ module.exports = class AttendanceRepository {
     }
 
     async addAttendance(document) {
-        return await addData(constants.ATTENDANCES_TABLE, document);
+        let id = document.group_id + "-" + document.student_id + "-session" + document.session;
+        return await setData(constants.ATTENDANCES_TABLE, id, document);
     }
 
     async updateAttendance(id, document) {

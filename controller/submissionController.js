@@ -79,8 +79,9 @@ router.put("/", uploader.array("file", 10), async (req, res) => {
 
 router.delete("/file", async (req, res) => {
     try {
-        console.log(req.query);
-        fileService.removeFileByPath(req.query.path);
+        console.log("ROUTE: /submission/file - Delete")
+        fileService.removeFileByPath(req.query.filePath);
+        await gradingService.deleteSubmission(req.query.course_id, req.query.user_id, req.query.assignment_id)
         res.status(200).json({
             status: true,
         });

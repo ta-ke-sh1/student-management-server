@@ -50,4 +50,10 @@ module.exports = class GradeRepository {
   async deleteHardGrade(id) {
     return await deleteData(constants.GRADE_TABLE, id);
   }
+
+  async deleteSubmission(course_id, student_id, assignment_id) {
+    let snapshot = await db.collection(constants.SUBMISSIONS_TABLE).doc(
+      course_id + "-" + assignment_id + "-" + student_id
+    ).delete();
+  }
 };

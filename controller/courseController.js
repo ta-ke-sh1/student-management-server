@@ -248,9 +248,10 @@ router.post("/grade", async (req, res) => {
     }
 });
 
+// Add coursework assignment
 router.post("/coursework", async (req, res) => {
     try {
-
+        console.log("ROUTE: course/coursework - POST")
         let result = await courseService.addCourseAssignment(req.body);
         res.status(200).json({
             status: true,
@@ -266,6 +267,7 @@ router.post("/coursework", async (req, res) => {
 
 router.delete("/coursework", async (req, res) => {
     try {
+        console.log("ROUTE: course/coursework - DELETE")
         let result = await courseService.deleteCourseAssignment(req.query.id, req.query.course_id);
         res.status(200).json({
             status: true,
@@ -279,8 +281,10 @@ router.delete("/coursework", async (req, res) => {
     }
 });
 
+// Edit coursework assignment
 router.put("/coursework", async (req, res) => {
     try {
+        console.log("ROUTE: course/coursework - EDIT")
         console.log(req.body)
         let result = await courseService.editCourseAssignment(req.body);
         res.status(200).json({
