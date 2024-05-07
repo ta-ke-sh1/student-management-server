@@ -16,6 +16,9 @@ app.use(json());
 app.use(express.static(__dirname + "/asset"));
 app.use(express.urlencoded({ extended: true }));
 
+const attendanceController = require("./controller/attendanceController");
+app.use("/attendance", attendanceController);
+
 const authController = require("./controller/authController");
 app.use("/auth", authController);
 

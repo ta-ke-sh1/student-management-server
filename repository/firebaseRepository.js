@@ -22,6 +22,7 @@ initializeApp({
 
 const db = getFirestore();
 
+// Lay tat ca data tu trong bang
 const fetchAllData = async (collection) => {
     const snapshot = await db.collection(collection).get();
     let data = snapshotToArray(snapshot);
@@ -30,6 +31,7 @@ const fetchAllData = async (collection) => {
     });
 };
 
+// Lay 1 document = id
 const fetchDataById = async (collection, id) => {
     const snapshot = await db.collection(collection).doc(id).get();
     if (!snapshot.exists) {
@@ -41,6 +43,7 @@ const fetchDataById = async (collection, id) => {
     };
 };
 
+// Lay document theo 1 field nao day
 const fetchMatchingDataByField = async (collection, field, keyword) => {
     const snapshot = await db
         .collection(collection)
@@ -54,7 +57,6 @@ const fetchMatchingDataByField = async (collection, field, keyword) => {
 };
 
 // Add data to collection
-
 const addData = async (collection, obj) => {
     const res = await db.collection(collection).add(obj);
     return {
@@ -62,6 +64,7 @@ const addData = async (collection, obj) => {
     };
 };
 
+// Add data da co id 
 const setData = async (collection, id, obj) => {
     await db.collection(collection).doc(id).set(obj);
     console.log("Set data with ID: " + id);
@@ -70,6 +73,7 @@ const setData = async (collection, id, obj) => {
     };
 };
 
+// Update data
 const updateData = async (collection, id, obj) => {
     await db.collection(collection).doc(id).update(obj);
     return {
@@ -77,6 +81,7 @@ const updateData = async (collection, id, obj) => {
     };
 };
 
+// Xoa data
 const deleteData = async (collection, id) => {
     try {
         await db.collection(collection).doc(id).delete({ recursive: true });
@@ -86,6 +91,7 @@ const deleteData = async (collection, id) => {
     }
 };
 
+// Helper function de convert firebase format -> json format
 const snapshotToArray = (snapshot) => {
     let docs = [];
 
@@ -99,6 +105,7 @@ const snapshotToArray = (snapshot) => {
     return docs;
 };
 
+// Xoa collection
 async function deleteCollection(collectionPath, batchSize) {
     const collectionRef = db.collection(collectionPath);
     const query = collectionRef.orderBy("__name__").limit(batchSize);

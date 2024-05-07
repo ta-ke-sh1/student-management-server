@@ -76,7 +76,7 @@ const UserService = class {
             password: "default",
         };
 
-        let username = user.firstName.toLowerCase();
+        let username = user.firstName.toLowerCase().replace(" ", "");
         let lastnames = user.lastName.split(" ");
         lastnames.forEach((name) => {
             username += name[0].toLowerCase();
@@ -125,6 +125,7 @@ const UserService = class {
             temp.toLowerCase() +
             user.department_id.toLowerCase() +
             "@fpt.edu.vn";
+        temp.replace(" ", "");
         await setData(table, temp, user);
     }
 

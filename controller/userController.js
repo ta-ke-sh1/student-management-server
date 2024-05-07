@@ -201,8 +201,12 @@ router.put("/", async (req, res) => {
   try {
     const id = req.query.id;
     const update_obj = req.body;
+
+    console.log(update_obj)
+
     await userService.editUser(id, update_obj);
-    res.status(200).json({ status: true });
+
+    res.status(200).json({ status: false });
   } catch (e) {
     res.status(200).json({
       status: false,
